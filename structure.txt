@@ -1,0 +1,21 @@
+/.env                 # Конфиденциальные данные
+/.gitignore           # Файлы для игнорирования
+/src
+  /config
+    constants.js      # Все тексты и константы
+    prices.js         # Цены работ
+  /keyboards
+    builder.js        # Генератор клавиатур
+    templates.js      # Шаблоны клавиатур
+  /handlers
+    commands.js       # Обработчики команд (/start)
+    catalog.js        # Каталог работ
+    orders.js         # Система заказов
+    subscription.js   # Проверка подписки
+  /middlewares
+    session.js        # Управление сессиями
+  /services
+    cache.js          # Кеширование
+    orderService.js   # Логика заказов
+    utils.js          # Вспомогательные функции
+  app.js              # Главный файл
