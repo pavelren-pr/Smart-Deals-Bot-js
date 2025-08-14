@@ -1,4 +1,6 @@
 node_modules/
+src/
+procfile
 .env
 *.log
 structure.txt

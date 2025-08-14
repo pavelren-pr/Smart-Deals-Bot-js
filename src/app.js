@@ -7,7 +7,7 @@ const constants = require('./config/constants');
 const prices = require('./config/prices');
 const keyboards = require('./config/keyboard-templates');
 
-const bot = new Bot(process.env.BOT_API_KEY);
+const bot = new Bot(process.env.BOT_TOKEN);
 bot.use(hydrate());
 
 const userLastMessages = new Map(); 

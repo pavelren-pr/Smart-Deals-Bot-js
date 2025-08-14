@@ -1,3 +1,5 @@
+to run code manually: npm run dev
+
 /.env                 # Конфиденциальные данные
 /.gitignore           # Файлы для игнорирования
 /src
