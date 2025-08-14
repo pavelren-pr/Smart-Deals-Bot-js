@@ -3,4 +3,4 @@ src/
 procfile
 .env
 *.log
-structure.txt
+structure
