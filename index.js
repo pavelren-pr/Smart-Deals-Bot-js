@@ -21,25 +21,25 @@ bot.api.setMyCommands([
     },
 ]);
 
-const costVal = "990";
-const costBalka = "990";
-const costMSS_PZ1 = "490";
-const costMSS_PZ2 = "690";
-const costMSS_PZ3 = "490";
-const costMSS_PZ4 = "1090";
-const costMSS_test = "490";
-const costTUS_kurs = "2190";
-const costMOS_sea_Kurs = "1790";
-const costMOS_river_Kurs = "1790";
+const costVal = 990;
+const costBalka = 990;
+const costMSS_PZ1 = 490;
+const costMSS_PZ2 = 690;
+const costMSS_PZ3 = 490;
+const costMSS_PZ4 = 1090;
+const costMSS_test = 490;
+const costTUS_kurs = 2190;
+const costMOS_sea_Kurs = 1790;
+const costMOS_river_Kurs = 1790;
 const costMOS_river_PZ1 = "-";
-const costMOS_river_PZ2 = "590";
+const costMOS_river_PZ2 = 590;
 const costMOS_river_PZ3 = "-";
-const costMOS_river_PZ4 = "590";
-const costBS_high = "890";
-const costOLVVP_Stvor = "790";
-const costNIL_sea_RGR = "790";
-const costNIL_river_RGR = "2790";
-const costTSS_Test = "3290";
+const costMOS_river_PZ4 = 590;
+const costBS_high = 890;
+const costOLVVP_Stvor = 790;
+const costNIL_sea_RGR = 790;
+const costNIL_river_RGR = 2790;
+const costTSS_Test = 3290;
 
 const inlineKeyboar = new InlineKeyboard().text('Подписался!', 'sub1')
 const subKeyboard = new InlineKeyboard().text('✅Подписался!', 'sub');
