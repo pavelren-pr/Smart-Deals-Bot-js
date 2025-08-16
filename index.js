@@ -48,10 +48,12 @@ const mainKeyboard = new Keyboard()
     .text('Бесплатные полезные материалы 🕊').row()
     .text('Предложить работу или услугу 🥂').resized();
 const inlineKeyboard = new InlineKeyboard()
+    .text('1 курс ⭐️', '1-year').row()
     .text('2 курс ⭐️⭐️', '2-year').row()
     .text('3 курс ⭐️⭐️⭐️', '3-year').row()
     .text('4 курс ⭐️⭐️⭐️⭐️', '4-year');
 const inlineKeyboard1 = new InlineKeyboard()
+    .text('1 курс ⭐️', '1-year1').row()
     .text('2 курс ⭐️⭐️', '2-year1').row()
     .text('3 курс ⭐️⭐️⭐️', '3-year1').row()
     .text('4 курс ⭐️⭐️⭐️⭐️', '4-year1').row()
@@ -73,8 +75,9 @@ const urlKeyboard4 = new InlineKeyboard()
     .url("Написать менеджеру ✍️", "https://t.me/SmartDealsManager");
 const inlineKeyboard2 = new InlineKeyboard()
     .text('Механика ⚙', 'engine').row()
+    .text('Вышмат 📐', 'math2').row()
     .text('Назад 🔙', 'back');
- const inlineKeyboard6 = new InlineKeyboard()
+const inlineKeyboard6 = new InlineKeyboard()
     .text('МСС 📏', 'mss').row()
     .text('ТУС 🚢', 'tus').row()
     .text('МОС 🧮', 'mos').row()
@@ -84,6 +87,11 @@ const inlineKeyboard2 = new InlineKeyboard()
     .text('НиЛ 🧭', 'nil').row()
     .text('ТСС 📺', 'tss').row()
     .text('Назад 🔙', 'back');
+
+const inlineKeyboard1year = new InlineKeyboard()
+    .text('Вышмат 📐', 'math1').row()
+    .text('Назад 🔙', 'back');
+
 const inlineKeyboard7 = new InlineKeyboard()
     .text('ПЗ №1', 'pz1').row()
     .text('ПЗ №2', 'pz2').row()
@@ -258,6 +266,10 @@ const WriteManager10 = new InlineKeyboard()
     .text('Отправил скриншот', 'Pay10');
 const WriteManager11 = new InlineKeyboard()
     .text('Написал менеджеру', 'Pay11');
+
+const trackingMathLink = 'https://t.me/SmartDealsMathManager';
+const writeMathManager = new InlineKeyboard()
+    .url("Написать менеджеру по вышмату ✍️", trackingMathLink);
 const replyKeyBoard = new InlineKeyboard()
     .text('Взять заказ', 'take');
 const emailKeyboard = new InlineKeyboard()
@@ -338,7 +350,7 @@ bot.callbackQuery('sub1', async (ctx) => {
             const chatMember = await ctx.api.getChatMember(TARGET_GROUP, userId);
             
             if (["member", "creator", "administrator"].includes(chatMember.status)) {
-                await ctx.reply('Можем приступать к работе',{
+                await ctx.reply('✅ Спасибо за подписку!!! \nМожем приступать к работе 🤝',{
                     reply_markup: mainKeyboard,
                 })
 
@@ -392,6 +404,13 @@ bot.hears('Предложить работу или услугу 🥂', async (c
     await ctx.reply(`Мы ценим твою инициативу, ${user.first_name} ${user.last_name || ""} :)\nДля предложения работы или услуги напиши нашему менеджеру: <a href="https://t.me/SmartDealsManager">Менеджер</a>\nПриветствуется добавление бесплатных материалов в общий каталог, а так же выполнение работ через наш сервис`, {
         parse_mode: `HTML`,
         reply_markup: urlKeyboard4,
+    })
+    await ctx.answerCallbackQuery()
+})
+
+bot.callbackQuery('1-year', async (ctx) => {
+    await ctx.callbackQuery.message.editText('Выберите предмет', {
+        reply_markup: inlineKeyboard1year,
     })
     await ctx.answerCallbackQuery()
 })
@@ -455,8 +474,22 @@ bot.callbackQuery('back3', async (ctx) => {
     await ctx.answerCallbackQuery()
 })
 
+bot.callbackQuery('math1', async (ctx) => {
+    await ctx.callbackQuery.message.editText('Выбрано: Вышмат 📐\nПо вышмату Вы можете отправить интересующее Вас задание или работу в чат с менеджером нашего математического отдела, где Вас сориентирую по цене и срокам решения того или иного задания или услуги 🤝', {
+        reply_markup: writeMathManager,
+    })
+    await ctx.answerCallbackQuery()
+})
+
+bot.callbackQuery('math2', async (ctx) => {
+    await ctx.callbackQuery.message.editText('Выбрано: Вышмат 📐\n', {
+        reply_markup: writeMathManager,
+    })
+    await ctx.answerCallbackQuery()
+})
+
 bot.callbackQuery('engine', async (ctx) => {
-    await ctx.callbackQuery.message.editText('По Механике ⚙, Вы можете заказать следующие работы:', {
+    await ctx.callbackQuery.message.editText('Предмет: Механика ⚙\nВы можете заказать следующие работы:', {
         reply_markup: inlineKeyboard3,
     })
     await ctx.answerCallbackQuery()
@@ -532,6 +565,8 @@ bot.callbackQuery('lvvp', async (ctx) => {
     })
     await ctx.answerCallbackQuery()
 })
+
+
 
 bot.callbackQuery('pz1', async (ctx) => {
     await ctx.callbackQuery.message.editText(`Выбран 3 курс, предмет МСС\nЗадание ПЗ №1\nСтоимость работы - ${costMSS_PZ1}₽\nНомер варианта это последняя цифра номера по списку`, {
