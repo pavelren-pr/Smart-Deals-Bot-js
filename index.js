@@ -490,17 +490,6 @@ bot.use(async (ctx, next) => {
         });
         return
     }
-
-    // Инициализация сессии если не существует
-  if (!ctx.session) {
-    ctx.session = {
-      userInfo: {
-        waitingForPhone: false,
-        phoneNumber: null,
-        hasUsername: false
-      }
-    };
-  }
     return next();
 })
 
@@ -678,13 +667,12 @@ bot.hears('Бесплатные полезные материалы 🕊', async
 
 bot.hears('Предложить работу или услугу 🥂', async (ctx) => {
     const user = ctx.from;
-    await ctx.reply(`Мы ценим твою инициативу, ${user.first_name} ${user.last_name || ""} :)
+    await ctx.reply(`Мы ценим твою инициативу, \n✨${user.first_name}✨\n
 Для предложения работы или услуги напиши нашему менеджеру: <a href="https://t.me/SmartDealsManager">Менеджер</a>
 Приветствуется добавление бесплатных материалов в общий каталог, а так же выполнение работ через наш сервис`, {
         parse_mode: `HTML`,
         reply_markup: urlKeyboard4,
     })
-    await ctx.answerCallbackQuery()
 })
 
 bot.callbackQuery('1-year', async (ctx) => {
