@@ -1,7 +1,5 @@
 node_modules/
-src/
-procfile
 .env
-*.log
-structure
-Extensions
+structure.txt
+Extensions.txt
+ToDo.txt

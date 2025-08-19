@@ -9,7 +9,8 @@ const bot = new Bot(process.env.BOT_TOKEN);
 bot.use(hydrate());
 
 const TARGET_CHAT_ID = 7195122925; // ID менеджера (пока что так), куда будут отправляться уведомления
-const MATH_CHAT_ID = 0;
+const MATH_CHAT_ID = 0; // ID чата по вышмату
+const MY_CHAT_ID = 0; // ID чата, куда будут отправляться уведомления о заказах (не обо всех)
 const TARGET_GROUP = -1002162448649;
 const userLastMessages = new Map(); 
 const CACH_TTL =  10 * 1000;
@@ -508,8 +509,7 @@ bot.command('start', async (ctx) => {
     if (!ctx.session.userInfo.hasUsername) {
         ctx.session.userInfo.waitingForPhone = true;
         await ctx.reply('Привет! Для начала работы подпишись на канал: <a href="https://t.me/SmartDealsLTDink">ссылка</a>\n\n' +
-                       '❗ У вас не установлен username в Telegram. ❗\n' +
-                       'Для связи с вами нам нужен ваш номер телефона.\n' +
+                       '❗ У вас не установлен username в Telegram. ❗\n' + 'Для связи с вами нам нужен ваш номер телефона.\n' +
                        'Пожалуйста, нажмите кнопку ниже, чтобы поделиться номером:', {
             parse_mode: 'HTML',
             reply_markup: new Keyboard()
@@ -545,21 +545,12 @@ bot.callbackQuery('sub1', async (ctx) => {
     try {
         await ctx.answerCallbackQuery("🔍 Проверяем подписку...");
         
-        // Всегда проверяем наличие callbackQuery перед ответом
-        if (!ctx.callbackQuery) {
-            console.warn("Попытка ответить на несуществующий callback-запрос");
-            return;
-        }
-        
-        // Добавляем текст уведомления
         await ctx.answerCallbackQuery({ 
-            text: "🔍 Проверяем подписку...",
+            text: "🔍 Проверяем подписку...", // Добавляем текст уведомления
             show_alert: false // Или true для alert-окна
         });
 
-        if (!ctx.from) {
-            throw new Error("Не удалось получить данные пользователя");
-        }
+        if (!ctx.from) { throw new Error("Не удалось получить данные пользователя");}
         
         const userId = ctx.from.id;
         const timestamp = Date.now();
@@ -569,8 +560,7 @@ bot.callbackQuery('sub1', async (ctx) => {
             const chatMember = await ctx.api.getChatMember(TARGET_GROUP, userId);
             const isSubscribed = ["member", "creator", "administrator"].includes(chatMember.status);
             
-            if (isSubscribed) {
-                // ПРОВЕРЯЕМ КОНТАКТНЫЕ ДАННЫЕ
+            if (isSubscribed) {  // ПРОВЕРЯЕМ КОНТАКТНЫЕ ДАННЫЕ
                 if (!ctx.session.userInfo.hasUsername && !ctx.session.userInfo.phoneNumber) {
                     ctx.session.userInfo.waitingForPhone = true;
                     await ctx.reply('❗ Для связи нам нужен ваш номер телефона.\n' +
@@ -623,8 +613,7 @@ bot.callbackQuery('sub1', async (ctx) => {
         const chatMember = await ctx.api.getChatMember(TARGET_GROUP, userId);
         const isSubscribed = ["member", "creator", "administrator"].includes(chatMember.status);
 
-        if (isSubscribed) {
-            // Добавить эту проверку после успешной подписки
+        if (isSubscribed) { // Добавить эту проверку после успешной подписки
             if (!ctx.session.userInfo.hasUsername && !ctx.session.userInfo.phoneNumber) {
                 ctx.session.userInfo.waitingForPhone = true;
                 await ctx.reply('❗ Для связи нам нужен ваш номер телефона.\n' +
@@ -638,8 +627,7 @@ bot.callbackQuery('sub1', async (ctx) => {
         } catch (err) {
         console.error("Ошибка в обработчике sub1:", err);
         
-        // Всегда добавляем параметры при обработке ошибок
-        if (ctx.callbackQuery) {
+        if (ctx.callbackQuery) { // Всегда добавляем параметры при обработке ошибок
             await ctx.answerCallbackQuery({
                 text: "⚠️ Произошла ошибка. Попробуйте позже.",
                 show_alert: true
@@ -1253,7 +1241,6 @@ bot.callbackQuery('order23', async (ctx) => {
 })
 
 bot.on("message:text", async (ctx) => {
-
     // Проверяем, ожидаем ли мы номер телефона
     if (ctx.session.userInfo.waitingForPhone) {
         await ctx.reply('Пожалуйста, отправьте ваш номер телефона, используя кнопку ниже:', {
@@ -1299,14 +1286,9 @@ bot.on("message:text", async (ctx) => {
             ctx.session.order2.com2 = ctx.message.text;
 
             const user = ctx.from;
-            const userLink = `<a href="tg://user?id=${user.id}">${user.first_name}${user.last_name ? ' ' + user.last_name : ''}</a>`;
-            const userInfo = `Пользователь: ${userLink}`;
-            const msg = `Новый заказ!\n${userInfo}\n3 курс ⭐️⭐️⭐️\nПредмет - ГМОС 🌦️\nСроки и комментарии:\n${ctx.session.order2.com2}`;
-            await ctx.api.sendMessage(
-            TARGET_CHAT_ID,
-            msg,
-            {parse_mode: `HTML`}
-            );
+            const userReference = `\n\nПользователь: @${user.username}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
+            const msg = `Новый заказ!${userReference}\n3 курс\nПредмет - ГМОС 🌦️\n\nСроки и комментарии:\n${ctx.session.order2.com2}`;
+            await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
 
             await ctx.reply(`Заказ принят!\nДетали заказа:\n3 курс ⭐️⭐️⭐️\nПредмет - ГМОС 🌦️
 Сроки и комментарии: ${ctx.session.order2.com2}\nДля оплаты заказа и уточнения деталей напишите менеджеру✍: <a href="https://t.me/SmartDealsManager">ссылка</a>`,{
@@ -1465,16 +1447,10 @@ bot.on("message:text", async (ctx) => {
             ctx.session.order7.com7 = ctx.message.text;
 
             const user = ctx.from;
-            const userLink = `<a href="tg://user?id=${user.id}">${user.first_name}${user.last_name ? ' ' + user.last_name : ''}</a>`;
-            const userInfo = `Пользователь: ${userLink}`;
-            const msg = `Новый заказ!\n${userInfo}\n3 курс ⭐️⭐️⭐️\nПредмет - МСС 📏\nШпоры к летучками
+            const userReference = `\n\nПользователь: @${user.username}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
+            const msg = `Новый заказ!${userReference}\n3 курс\nПредмет - МСС 📏\nШпоры к летучками
 Сроки и комментарии:\n${ctx.session.order7.com7}`;
-            await ctx.api.sendMessage(
-            TARGET_CHAT_ID,
-            msg,
-            {parse_mode: `HTML`}
-            // {reply_markup: replyKeyBoard}
-            );
+            await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
 
             await ctx.reply(`Заказ принят!\nДетали заказа:\n3 курс ⭐️⭐️⭐️\nПредмет - МСС 📏\nШпоры к летучками
 Сроки и комментарии: ${ctx.session.order7.com7}
