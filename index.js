@@ -4,6 +4,8 @@ const { error } = require('node:console');
 const { hydrate } = require('@grammyjs/hydrate');
 const { parse } = require('node:path');
 const { is } = require('type-is');
+const { get } = require('node:http');
+const loyalty = require('./loyalty');
 
 const bot = new Bot(process.env.BOT_TOKEN);
 bot.use(hydrate());
@@ -163,51 +165,29 @@ bot.use(session({ initial: () => ({
 
 
 // Блок 1. Объявление констант для цен.
-const stock = 1.1; // коэффициент для акционной стоимости работ
-
 const costVal = 990;
-const costVal_2 = costVal * stock;
 const costBalka = 990;
-const costBalka_2 = costBalka * stock;
 const costMSS_PZ1 = 490;
-const costMSS_PZ1_2 = costMSS_PZ1 * stock;
 const costMSS_PZ2 = 690;
-const costMSS_PZ2_2 = costMSS_PZ2 * stock;
 const costMSS_PZ3 = 490;
-const costMSS_PZ3_2 = costMSS_PZ3 * stock;
 const costMSS_PZ4 = 1090;
-const costMSS_PZ4_2 = costMSS_PZ4 * stock;
 const costMSS_test = 490;
-const costMSS_test_2 = costMSS_test * stock;
 const costTUS_kurs = 2190;
-const costTUS_kurs_2 = costTUS_kurs * stock;
 const costMOS_sea_Kurs = 1790;
-const costMOS_sea_Kurs_2 = costMOS_sea_Kurs * stock;
 const costMOS_river_Kurs = 1790;
-const costMOS_river_Kurs_2 = costMOS_river_Kurs * stock;
 const costMOS_river_PZ1 = "-";
-const costMOS_river_PZ1_2 = "-";
 const costMOS_river_PZ2 = 590;
-const costMOS_river_PZ2_2 = costMOS_river_PZ2 * stock;
 const costMOS_river_PZ3 = "-";
-const costMOS_river_PZ3_2 = "-";
 const costMOS_river_PZ4 = 590;
-const costMOS_river_PZ4_2 = costMOS_river_PZ4 * stock;
 const costBS_high = 890;
-const costBS_high_2 = costBS_high * stock;
 const costOLVVP_Stvor = 790;
-const costOLVVP_Stvor_2 = costOLVVP_Stvor * stock;
 const costNIL_sea_RGR = 790;
-const costNIL_sea_RGR_2 = costNIL_sea_RGR * stock;
 const costNIL_river_RGR = 2790;
-const costNIL_river_RGR_2 = costNIL_river_RGR * stock;
 const costTSS_Test = 3290;
-const costTSS_Test_2 = costTSS_Test * stock;
 
 
 // Блок 1.2. Объявления других переменных
 const afterConfReply = `✅ Заказ успешно оформлен ✅ \n\n💬 Ожидайте ответ менеджера 💬`;
-
 
 //Блок 2. Объявление всех используемых клавиатур
 const inlineKeyboar = new InlineKeyboard().text('Подписался!', 'sub1')
@@ -497,12 +477,14 @@ bot.use(async (ctx, next) => {
 bot.command('start', async (ctx) => {
     await ctx.react('❤‍🔥')
 
+    tg_id = ctx.from.id; // Сохраняем ID пользователя
+
     // Гарантируем инициализацию userInfo
-  ctx.session.userInfo = ctx.session.userInfo || {
-    waitingForPhone: false,
-    phoneNumber: null,
-    hasUsername: false
-  };
+    ctx.session.userInfo = ctx.session.userInfo || {
+        waitingForPhone: false,
+        phoneNumber: null,
+        hasUsername: false
+    };
 
     // Проверяем наличие username
     ctx.session.userInfo.hasUsername = !!ctx.from.username;
@@ -758,10 +740,13 @@ bot.callbackQuery('engine', async (ctx) => {
 })
 
 bot.callbackQuery('beam', async (ctx) => {
-    await ctx.callbackQuery.message.editText(`Расчёт Балки 🧮\nСтоимость: <s>${costBalka_2}₽</s>    <u><b>${costBalka}₽</b></u>\n
-Работа выполняется полностью в электронном виде, Вам будет нужно только распечатать её и сдать\n\nДля расчёта необходимы следующие данные:
+    const info = loyalty.getPriceForUser(ctx.from.id, costBalka);
+    await ctx.callbackQuery.message.editText(`Расчёт Балки 🧮
+Стоимость: <s>${costBalka <= info.discountedPrice ? "" : costBalka+"₽"}</s>    ‼️ <u><b>${info.discountedPrice}₽</b></u> ‼️\n\nВаш ранг: <b>${info.rankName}</b>
+Ваша скидка: <b>${info.discountPercent > 0 ? info.discountPercent : 0}%</b>📈\n
+Работа выполняется полностью в электронном виде, Вам нужно будет только распечатать её и сдать\n\nДля расчёта необходимы следующие данные:
 1. Ваш номер по журналу (у преподавателя могут быть свои списки, поэтому лучше уточнить)\n2. Ваш номер учебной группы
-3. Ваша фамилия и инициалы (для оформления титульного листа)`, {
+3. Ваша фамилия и инициалы`, {
         reply_markup: inlineKeyboard4,
         parse_mode: 'HTML'
 })
@@ -769,11 +754,14 @@ bot.callbackQuery('beam', async (ctx) => {
 })
 
 bot.callbackQuery('shaft', async (ctx) => {
-    await ctx.callbackQuery.message.editText(`Расчёт Вала 📏\nСтоимость: <s>${costVal_2}₽</s>    <u><b>${costVal}₽</b></u>\n
-Работа выполняется полностью в электронном виде, Вам будет нужно только распечатать её и сдать. Срок выполнения: 1 день. \n
+    const info = loyalty.getPriceForUser(ctx.from.id, costVal);
+    await ctx.callbackQuery.message.editText(`Расчёт Вала 📏
+Стоимость: <s>${costVal <= info.discountedPrice ? "" : costVal+"₽"}</s>    ‼️ <u><b>${info.discountedPrice}₽</b></u> ‼️\n\nВаш ранг: <b>${info.rankName}</b>
+Ваша скидка: <b>${info.discountPercent > 0 ? info.discountPercent : 0}%</b>📈\n
+Работа выполняется полностью в электронном виде, Вам нужно будет только распечатать её и сдать. Срок выполнения: 1 день. \n
 Для расчёта необходимы следующие данные: 
 1. Ваш номер по журналу (у преподавателя могут быть свои списки, поэтому лучше уточнить) \n2. Ваш номер учебной группы
-3. Ваша фамилия и инициалы (для оформления титульного листа)`, {
+3. Ваша фамилия и инициалы`, {
         reply_markup: inlineKeyboard5,
         parse_mode: 'HTML'
     })
@@ -839,9 +827,11 @@ bot.callbackQuery('lvvp', async (ctx) => {
 })
 
 bot.callbackQuery('pz1', async (ctx) => {
+    const info = loyalty.getPriceForUser(ctx.from.id, costMSS_PZ1);
     await ctx.callbackQuery.message.editText(`Выбран 3 курс, предмет МСС\nЗадание ПЗ №1
-Стоимость: <s>${costMSS_PZ1_2}₽</s>  <b><u>${costMSS_PZ1}₽</u></b>
-Номер варианта это последняя цифра номера по списку`, {
+Стоимость: <s>${costMSS_PZ1 <= info.discountedPrice ? "" : costMSS_PZ1+"₽"}</s>    ‼️ <u><b>${info.discountedPrice}₽</b></u> ‼️\n\nВаш ранг: <b>${info.rankName}</b>
+Ваша скидка: <b>${info.discountPercent > 0 ? info.discountPercent : 0}%</b>📈\n
+Работа выполняется в электронном виде. Для выполнения работы нам необходим Ваш номер варианта - это последняя цифра номера по списку группы.\nСрок выполнения - 1 день`, {
         reply_markup: inlineKeyboard14,
         parse_mode: 'HTML'
     })
@@ -849,9 +839,11 @@ bot.callbackQuery('pz1', async (ctx) => {
 })
 
 bot.callbackQuery('pz2', async (ctx) => {
+    const info = loyalty.getPriceForUser(ctx.from.id, costMSS_PZ2);
     await ctx.callbackQuery.message.editText(`Выбран 3 курс, предмет МСС\nЗадание ПЗ №2
-Стоимость <s>${costMSS_PZ1}₽</s>    <b><u>${costMSS_PZ2}₽</u></b>\nНомер варианта это последняя цифра номера по списку
-Срок выполнения - 10 минут`, {
+Стоимость: <s>${costMSS_PZ2 <= info.discountedPrice ? "" : costMSS_PZ2+"₽"}</s>    ‼️ <u><b>${info.discountedPrice}₽</b></u> ‼️\n\nВаш ранг: <b>${info.rankName}</b>
+Ваша скидка: <b>${info.discountPercent > 0 ? info.discountPercent : 0}%</b>📈\n
+Номер варианта это последняя цифра номера по списку. Для выполнения работы нам необходим Ваш номер по списку учебной группы.\nСрок выполнения - 1 день`, {
         reply_markup: inlineKeyboard15,
         parse_mode: 'HTML'
     })
@@ -859,7 +851,8 @@ bot.callbackQuery('pz2', async (ctx) => {
 })
 
 bot.callbackQuery('pz3', async (ctx) => {
-    await ctx.callbackQuery.message.editText(`Выбран 3 курс, предмет МСС\nЗадание ПЗ №3\nСтоимость: ${costMSS_PZ3}₽
+    await ctx.callbackQuery.message.editText(`Выбран 3 курс, предмет МСС\nЗадание ПЗ №3
+Стоимость: ${costMSS_PZ3}₽
 Номер варианта это последняя цифра номера по списку\nСрок выполнения - 1 день`, {
         reply_markup: inlineKeyboard16,
     })
@@ -1286,7 +1279,7 @@ bot.on("message:text", async (ctx) => {
             ctx.session.order2.com2 = ctx.message.text;
 
             const user = ctx.from;
-            const userReference = `\n\nПользователь: @${user.username}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
+            const userReference = `\n\nПользователь: @${user.username}` + `\n${user.id}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
             const msg = `Новый заказ!${userReference}\n3 курс\nПредмет - ГМОС 🌦️\n\nСроки и комментарии:\n${ctx.session.order2.com2}`;
             await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
 
@@ -1447,7 +1440,7 @@ bot.on("message:text", async (ctx) => {
             ctx.session.order7.com7 = ctx.message.text;
 
             const user = ctx.from;
-            const userReference = `\n\nПользователь: @${user.username}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
+            const userReference = `\n\nПользователь: @${user.username}` + `\n${user.id}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
             const msg = `Новый заказ!${userReference}\n3 курс\nПредмет - МСС 📏\nШпоры к летучками
 Сроки и комментарии:\n${ctx.session.order7.com7}`;
             await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
@@ -1762,7 +1755,7 @@ bot.callbackQuery('pay', async (ctx) => {
 
     const user = ctx.from;
     const originaltext = lastMessage.text;
-    const userReference = `\n\nПользователь: @${user.username}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
+    const userReference = `\n\nПользователь: @${user.username}` + `\n${user.id}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
     const msg = `Новый заказ!${userReference}\n\n2 курс\nПредмет - Механика ⚙\nРабота - Расчёт Вала 📏\nСтоимость: ${costVal}₽\n\nДанные:\n${originaltext}`;
     await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
     await ctx.reply(afterConfReply);
@@ -1784,7 +1777,7 @@ bot.callbackQuery('pay1', async (ctx) => {
 
     const user = ctx.from;
     const originaltext = lastMessage.text;
-    const userReference = `\n\nПользователь: @${user.username}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
+    const userReference = `\n\nПользователь: @${user.username}` + `\n${user.id}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
     const msg = `Новый заказ!${userReference}\n\n2 курс\nПредмет - Механика ⚙\nРабота - Расчёт Балки 🧮\nСтоимость: ${costBalka}₽\n\nДанные:\n${originaltext}`;
     await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
     await ctx.reply(afterConfReply)
@@ -1804,7 +1797,7 @@ bot.callbackQuery('Pay3', async (ctx) => {
         return;
     }
     const user = ctx.from;
-    const userReference = `\n\nПользователь: @${user.username}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
+    const userReference = `\n\nПользователь: @${user.username}` + `\n${user.id}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
     const msg = `Новый заказ!${userReference}\n\n3 курс\nПредмет - МСС 📏\nРабота - ПЗ №1\nСтоимость: ${costMSS_PZ1}₽\n\nВариант: ${ctx.session.order3.var3}
 Сроки и комментарии:\n${ctx.session.order3.com3}`;
     await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
@@ -1829,7 +1822,7 @@ bot.callbackQuery('Pay4', async (ctx) => {
         return;
     }
     const user = ctx.from;
-    const userReference = `\n\nПользователь: @${user.username}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
+    const userReference = `\n\nПользователь: @${user.username}` + `\n${user.id}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
     const msg = `Новый заказ!${userReference}\n\n3 курс\nПредмет - МСС 📏\nРабота - ПЗ №2\nСтоимость: ${costMSS_PZ2}₽\n\nВариант: ${ctx.session.order4.var4}
 Сроки и комментарии:\n${ctx.session.order4.com4}`;
     await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
@@ -1854,7 +1847,7 @@ bot.callbackQuery('Pay5', async (ctx) => {
         return;
     }
     const user = ctx.from;
-    const userReference = `\n\nПользователь: @${user.username}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
+    const userReference = `\n\nПользователь: @${user.username}` + `\n${user.id}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
     const msg = `Новый заказ!${userReference}\n\n3 курс\nПредмет - МСС 📏\nРабота - ПЗ №3\nСтоимость: ${costMSS_PZ3}₽\n\nВариант: ${ctx.session.order5.var5}
 Сроки и комментарии:\n${ctx.session.order5.com5}`;
     await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
@@ -1879,7 +1872,7 @@ bot.callbackQuery('Pay6', async (ctx) => {
         return;
     }
     const user = ctx.from;
-    const userReference = `\n\nПользователь: @${user.username}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
+    const userReference = `\n\nПользователь: @${user.username}` + `\n${user.id}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
     const msg = `Новый заказ!${userReference}\n\n3 курс\nПредмет - МСС 📏\nРабота - ПЗ №4\nСтоимость: ${costMSS_PZ4}₽\n\nВариант: ${ctx.session.order6.var6}
 Сроки и комментарии:\n${ctx.session.order6.com6}`;
     await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
@@ -1906,7 +1899,7 @@ bot.callbackQuery('Pay10', async (ctx) => {
         return;
     }
     const user = ctx.from;
-    const userReference = `\n\nПользователь: @${user.username}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
+    const userReference = `\n\nПользователь: @${user.username}` + `\n${user.id}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
     const msg = `Новый заказ!${userReference}\n\n3 курс\nПредмет - МОС 🧮\nПоток: Море 🌊\nЗадание: Практические работы 1-10 🧩\n
 Сроки и комментарии:\n${ctx.session.order10.com10}`;
     await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
@@ -1932,7 +1925,7 @@ bot.callbackQuery('Pay11', async (ctx) => {
         return;
     }
     const user = ctx.from;
-    const userReference = `\n\nПользователь: @${user.username}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
+    const userReference = `\n\nПользователь: @${user.username}` + `\n${user.id}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
     const msg = `Новый заказ!${userReference}\n\n3 курс\nПредмет - МОС 🧮\nПоток: Море 🌊\nЗадание: Помощь на контрольных 🤝\n
 Сроки и комментарии:\n${ctx.session.order11.com11}`;
     await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
@@ -1958,7 +1951,7 @@ bot.callbackQuery('Pay16', async (ctx) => {
         return;
     }
     const user = ctx.from;
-    const userReference = `\n\nПользователь: @${user.username}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
+    const userReference = `\n\nПользователь: @${user.username}` + `\n${user.id}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
     const msg = `Новый заказ!${userReference}\n\n3 курс\nПредмет - МОС 🧮\nПоток: Река-море 🌉🌊\nЗадание: Помощь на контрольных 🤝\n
 Сроки и комментарии:\n${ctx.session.order16.com16}`;
     await ctx.api.sendMessage(TARGET_CHAT_ID, msg,);
@@ -1984,7 +1977,7 @@ bot.callbackQuery('Pay19', async (ctx) => {
         return;
     }
     const user = ctx.from;
-    const userReference = `\n\nПользователь: @${user.username}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
+    const userReference = `\n\nПользователь: @${user.username}` + `\n${user.id}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
     const msg = `Новый заказ!${userReference}\n\n3 курс\nПредмет - Общая лоции ВВП 🌉\nШпоры к экзамену\n
 Сроки и комментарии:\n${ctx.session.order19.com19}`;
     await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
@@ -2010,7 +2003,7 @@ bot.callbackQuery('Pay22', async (ctx) => {
         return;
     }
     const user = ctx.from;
-    const userReference = `\n\nПользователь: @${user.username}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
+    const userReference = `\n\nПользователь: @${user.username}` + `\n${user.id}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
     const msg = `Новый заказ!${userReference}\n\n3 курс\nПредмет - НиЛ 🧭\nПоток: Река-море 🌉🌊\nЗадание: Помощь на контрольных 🤝\n
 Сроки и комментарии:\n${ctx.session.order22.com22}`;
     await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
@@ -2060,7 +2053,7 @@ bot.callbackQuery('pay2', async (ctx) => {
     if (ctx.session.order8.dataReceived8) {
 
         const user = ctx.from;
-        const userReference = `\n\nПользователь: @${user.username}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
+        const userReference = `\n\nПользователь: @${user.username}` + `\n${user.id}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
         const msg = `Запрос доступа${userReference}\n\n3 курс\nПредмет - МСС 📏\nИтоговый тест по МСС 🖥️\nСтоимость: ${costMSS_test}₽\n
 Почта: ${ctx.session.order8.email8}`;
         await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
@@ -2075,7 +2068,7 @@ bot.callbackQuery('pay23', async (ctx) => {
     if (ctx.session.order23.dataReceived23) {
 
         const user = ctx.from;
-        const userReference = `\n\nПользователь: @${user.username}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
+        const userReference = `\n\nПользователь: @${user.username}` + `\n${user.id}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
         const msg = `Новый заказ!${userReference}\n\n3 курс\nПредмет - ТСС 📺\n11 тестов на фарватере🖥️\nСтоимость - ${costTSS_Test}₽\n
 Логин и пароль:\n${ctx.session.order23.com23}`;
         await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
@@ -2098,7 +2091,7 @@ bot.callbackQuery('pay4', async (ctx) => {
 
         const user = ctx.from;
         const originaltext = lastMessage.text;
-        const userReference = `\n\nПользователь: @${user.username}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
+        const userReference = `\n\nПользователь: @${user.username}` + `\n${user.id}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
         const msg = `Новый заказ!${userReference}\n\n3 курс\nПредмет - ТУС 🚢\nРабота - Курсовая 🎯\nСтоимость: ${costTUS_kurs}₽\n\nДанные:\n${originaltext}`;
         await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
         await ctx.reply(afterConfReply)
@@ -2120,7 +2113,7 @@ bot.callbackQuery('pay5', async (ctx) => {
 
         const user = ctx.from;
         const originaltext = lastMessage.text;
-        const userReference = `\n\nПользователь: @${user.username}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
+        const userReference = `\n\nПользователь: @${user.username}` + `\n${user.id}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
         const msg = `Новый заказ!${userReference}\n\n3 курс\nПредмет - МОС 🧮\nПоток: Море 🌊\nЗадание: Курсовая 🚢\nСтоимость: ${costMOS_sea_Kurs}₽
 \nДанные:\n${originaltext}`;
         await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
@@ -2143,7 +2136,7 @@ bot.callbackQuery('pay6', async (ctx) => {
 
         const user = ctx.from;
         const originaltext = lastMessage.text;
-        const userReference = `\n\nПользователь: @${user.username}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
+        const userReference = `\n\nПользователь: @${user.username}` + `\n${user.id}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
         const msg = `Новый заказ!${userReference}\n\n3 курс\nПредмет - МОС 🧮\nПоток: Река-море 🌉🌊\nЗадание: Курсовая 🚢\nСтоимость: ${costMOS_river_Kurs}₽
 \nДанные:\n${originaltext}`;
         await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
@@ -2166,7 +2159,7 @@ bot.callbackQuery('pay7', async (ctx) => {
 
         const user = ctx.from;
         const originaltext = lastMessage.text;
-        const userReference = `\n\nПользователь: @${user.username}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
+        const userReference = `\n\nПользователь: @${user.username}` + `\n${user.id}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
         const msg = `Новый заказ!${userReference}\n\n3 курс\nПредмет - МОС 🧮\nПоток: Море 🌊\nЗадание: ПЗ №2. Сферические треугольники
 Стоимость: ${costMOS_river_PZ2}₽\n\nВариант:\n${originaltext}`;
         await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
@@ -2189,7 +2182,7 @@ bot.callbackQuery('pay8', async (ctx) => {
 
         const user = ctx.from;
         const originaltext = lastMessage.text;
-        const userReference = `\n\nПользователь: @${user.username}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
+        const userReference = `\n\nПользователь: @${user.username}` + `\n${user.id}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
         const msg = `Новый заказ!${userReference}\n\n3 курс\nПредмет - МОС 🧮\nПоток: Море 🌊\nЗадание: ПЗ №4. Оценка нав параметров
 Стоимость: ${costMOS_river_PZ4}₽\n\nВариант:\n${originaltext}`;
         await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
@@ -2212,7 +2205,7 @@ bot.callbackQuery('pay9', async (ctx) => {
 
         const user = ctx.from;
         const originaltext = lastMessage.text;
-        const userReference = `\n\nПользователь: @${user.username}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
+        const userReference = `\n\nПользователь: @${user.username}` + `\n${user.id}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
         const msg = `Новый заказ!${userReference}\n\n3 курс ⭐️⭐️⭐️\nПредмет - Безопасность судоходства на ВВП🛟\nОпределение высоты подмостового габарита🌉
 Стоимость: ${costBS_high}₽\n\nДанные для расчёта:\n${originaltext}`;
         await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
@@ -2235,7 +2228,7 @@ bot.callbackQuery('pay10', async (ctx) => {
 
         const user = ctx.from;
         const originaltext = lastMessage.text;
-        const userReference = `\n\nПользователь: @${user.username}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
+        const userReference = `\n\nПользователь: @${user.username}` + `\n${user.id}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
         const msg = `Новый заказ!${userReference}\n\n3 курс\nПредмет - Общая лоции ВВП 🌉\nПЗ "Расчёт линейного навигационного створа"
 Стоимость: ${costOLVVP_Stvor}₽\n\nВариант:\n${originaltext}`;
         await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
@@ -2258,7 +2251,7 @@ bot.callbackQuery('pay11', async (ctx) => {
 
         const user = ctx.from;
         const originaltext = lastMessage.text;
-        const userReference = `\n\nПользователь: @${user.username}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
+        const userReference = `\n\nПользователь: @${user.username}` + `\n${user.id}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
         const msg = `Новый заказ!${userReference}\n\n3 курс\nПредмет - НиЛ 🧭 \nПоток: Море 🌊\nЗадание: РГР вертикальный угол (4 задачи)
 Стоимость: ${costNIL_sea_RGR}₽\n\nДанные:\n${originaltext}`;
         await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
@@ -2281,7 +2274,7 @@ bot.callbackQuery('pay12', async (ctx) => {
 
         const user = ctx.from;
         const originaltext = lastMessage.text;
-        const userReference = `\n\nПользователь: @${user.username}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
+        const userReference = `\n\nПользователь: @${user.username}` + `\n${user.id}` + (ctx.session.userInfo.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "");
         const msg = `Новый заказ!${userReference}\n\n3 курс ⭐️⭐️⭐️\nПредмет - НиЛ 🧭 \nПоток:  Река-море 🌉🌊\nЗадание: РГР 9 задач по 6 сборникам 📚
 Стоимость: ${costNIL_sea_RGR}₽\n\nВариант:\n${originaltext}`;
         await ctx.api.sendMessage(TARGET_CHAT_ID, msg);

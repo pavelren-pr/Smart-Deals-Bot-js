@@ -1,0 +1,14 @@
+{
+  "users": {
+    "421368986": { "username": "Karim", "total_spent": 0, "manual_discount_percent": -50 },
+    "1360448698": { "username": "Nord", "total_spent": 0, "manual_discount_percent": -50 },
+    "1012758149": { "username": "Pavel", "total_spent": 7001, "manual_discount_percent": -50 },
+    "4": { "username": "Elena", "total_spent": 6000, "manual_discount_percent": 0 }
+  },
+  "ranks": [
+    { "rank_name": "🌊 Искатель Глубин 🌊", "min_total": 0, "discount_percent": 0 },
+    { "rank_name": "🌀 Повелитель Течений 🌀", "min_total": 5000, "discount_percent": 5 },
+    { "rank_name": "🧜 Тритон Премудрости 🧜", "min_total": 7000, "discount_percent": 7 },
+    { "rank_name": "👑 Посланник Посейдона 👑", "min_total": 10000, "discount_percent": 10 }
+  ]
+}
