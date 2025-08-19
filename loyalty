@@ -1,0 +1,122 @@
+const { google } = require('googleapis');
+
+const SHEET_ID = process.env.LOYAL_SHEET_ID; // id таблицы
+const CREDS = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON); // или путь к файлу
+
+const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
+
+const jwtClient = new google.auth.JWT(
+  CREDS.client_email,
+  null,
+  CREDS.private_key,
+  SCOPES
+);
+
+const sheets = google.sheets({ version: 'v4', auth: jwtClient });
+
+async function findUserRow(telegramId) {
+  // Предполагаем, что telegram_id — в колонке A (A2:A...)
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId: SHEET_ID,
+    range: 'Loyalty!A2:A'
+  });
+  const rows = res.data.values || [];
+  for (let i = 0; i < rows.length; i++) {
+    if (rows[i][0] && String(rows[i][0]) === String(telegramId)) return i + 2; // строка в гугл-таблице
+  }
+  return null;
+}
+
+async function getUserData(telegramId) {
+  const row = await findUserRow(telegramId);
+  if (!row) return null;
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId: SHEET_ID,
+    range: `Loyalty!A${row}:F${row}`
+  });
+  const values = (res.data.values && res.data.values[0]) || [];
+  return {
+    telegram_id: values[0],
+    username: values[1],
+    total_spent: parseFloat(values[2] || 0),
+    current_rank: values[3] || '',
+    manual_discount_percent: parseFloat(values[4] || 0),
+    notes: values[5] || ''
+  };
+}
+
+async function upsertUser(telegramId, username) {
+  const row = await findUserRow(telegramId);
+  if (!row) {
+    // append new row
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: SHEET_ID,
+      range: 'Loyalty!A:F',
+      valueInputOption: 'USER_ENTERED',
+      requestBody: { values: [[telegramId, username, 0, '', 0, '']] }
+    });
+    return;
+  }
+  // optionally update username if changed
+}
+
+async function addToTotal(telegramId, amount) {
+  const row = await findUserRow(telegramId);
+  if (!row) {
+    // append new user with amount
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: SHEET_ID,
+      range: 'Loyalty!A:F',
+      valueInputOption: 'USER_ENTERED',
+      requestBody: { values: [[telegramId, '', amount, '', 0, '']] }
+    });
+    return;
+  }
+  // read old value
+  const cur = await getUserData(telegramId);
+  const newTotal = (cur?.total_spent || 0) + Number(amount);
+  await sheets.spreadsheets.values.update({
+    spreadsheetId: SHEET_ID,
+    range: `Loyalty!C${row}`,
+    valueInputOption: 'USER_ENTERED',
+    requestBody: { values: [[newTotal]] }
+  });
+}
+
+// Получаем конфиг порогов (лист Config), и вычисляем ранг
+async function getConfigRanks() {
+  const res = await sheets.spreadsheets.values.get({
+    spreadsheetId: SHEET_ID,
+    range: 'Config!A2:C'
+  });
+  const rows = res.data.values || [];
+  // rows: [ [rank_name, min_total, discount_percent], ... ]
+  return rows.map(r => ({ name: r[0], min: Number(r[1]), discount: Number(r[2]) }))
+}
+
+function computeRank(total, ranks) {
+  // предположим, ranks отсортирован по min asc
+  let found = ranks[0];
+  for (const r of ranks) {
+    if (total >= r.min) found = r;
+  }
+  return found;
+}
+
+async function getPriceForUser(telegramId, basePrice) {
+  const user = await getUserData(telegramId);
+  const ranks = await getConfigRanks();
+  // сортируем
+  ranks.sort((a,b)=>a.min-b.min);
+  const total = user?.total_spent || 0;
+  const rank = computeRank(total, ranks);
+  let discount = rank?.discount || 0;
+  if (user && user.manual_discount_percent) discount = user.manual_discount_percent;
+  const discounted = Math.round(basePrice * (1 - discount/100));
+  // compute progress to next
+  const next = ranks.find(r=>r.min>total);
+  const progressToNext = next ? { nextName: next.name, need: next.min - total } : null;
+  return { discountedPrice: discounted, rankName: rank?.name || '—', discountPercent: discount, total, progressToNext };
+}
+
+module.exports = { getUserData, upsertUser, addToTotal, getPriceForUser, jwtClient };
