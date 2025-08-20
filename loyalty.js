@@ -41,13 +41,38 @@ function setManualDiscount(telegramId, percent) {
 function getPriceForUser(telegramId, basePrice) {
   const data = loadData();
   const user = data.users[telegramId] || { total_spent: 0, manual_discount_percent: 0 };
+  const total = user.total_spent || 0;
+
+  basePrice = Number(basePrice) || 0;
   let rank = data.ranks[0];
+
   for (const r of data.ranks) {
-    if (user.total_spent >= r.min_total) rank = r;
+    if (total >= r.min_total) rank = r;
   }
+
   let discount = user.manual_discount_percent || rank.discount_percent;
-  const discounted = Math.round(basePrice * (1 - discount / 100));
-  return { discountedPrice: discounted, rankName: rank.rank_name, discountPercent: discount };
+  const discounted = Math.max(0, Math.round(basePrice * (1 - discount / 100)));
+
+  // ищем следующий ранг
+  let nextRank = null;
+  for (const r of data.ranks) {
+    if (r.min_total > total) {
+      nextRank = r;
+      break;
+    }
+  }
+
+  const progressToNext = nextRank
+    ? { need: nextRank.min_total - total, nextName: nextRank.rank_name }
+    : null;
+
+  return { 
+    discountedPrice: discounted,
+    rankName: rank.rank_name,
+    discountPercent: discount,
+    total,
+    progressToNext
+  };
 }
 
 module.exports = { 

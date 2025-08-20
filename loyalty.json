@@ -2,8 +2,8 @@
   "users": {
     "421368986": { "username": "Karim", "total_spent": 0, "manual_discount_percent": -50 },
     "1360448698": { "username": "Nord", "total_spent": 0, "manual_discount_percent": -50 },
-    "1012758149": { "username": "Pavel", "total_spent": 7001, "manual_discount_percent": -50 },
-    "4": { "username": "Elena", "total_spent": 6000, "manual_discount_percent": 0 }
+    "1012758149": { "username": "Pavel", "total_spent": 10000, "manual_discount_percent": 0 },
+    "911265479": { "username": "Adelina", "total_spent": 9999999999, "manual_discount_percent": 99 }
   },
   "ranks": [
     { "rank_name": "🌊 Искатель Глубин 🌊", "min_total": 0, "discount_percent": 0 },
