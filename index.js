@@ -50,26 +50,14 @@ bot.use(session({ initial: () => ({
         step2: 0,
         com2: null
     },
-    order3: { // МСС ПЗ №1
-        waitingForData3: false,
-        var3: null,
-        pay3: false,
+    
+    orderFlow: { //Все ПЗ по МСС
+        active: false,
+        workId: null,
+        needQueue: [],
+        data: {},
     },
-    order4: { // МСС ПЗ №2
-        waitingForData4: false,
-        var4: null,
-        pay4: false,
-    },
-    order5: { // МСС ПЗ №3
-        waitingForData5: false,
-        var5: null,
-          pay5: false,
-    },
-    order6: { // МСС ПЗ №4
-        waitingForData6: false,
-        var6: null,
-        pay6: false,
-    },  
+
     order8: { //МСС Тест
         waitingForData8: false,
         step8: 0,
@@ -146,6 +134,14 @@ const costNIL_sea_RGR = 790;
 const costNIL_river_RGR = 2790;
 const costTSS_Test = 3290;
 
+//Каталог работ (пока только ПЗ по МСС)
+const WORKS = {
+  "mss_pz1": { title: "МСС 📏 — ПЗ №1 🗒️", price: costMSS_PZ1, needs: ["variant"], back: "back4" },
+  "mss_pz2": { title: "МСС 📏 — ПЗ №2 📓", price: costMSS_PZ2, needs: ["variant"], back: "back4" },
+  "mss_pz3": { title: "МСС 📏 — ПЗ №3 📒", price: costMSS_PZ3, needs: ["variant"], back: "back4" },
+  "mss_pz4": { title: "МСС 📏 — ПЗ №4 📔", price: costMSS_PZ4, needs: ["variant"], back: "back4" },
+};
+
 // 1) Форматирование цены с учётом лояльности (loyalty.getPriceForUser)
 function formatPriceInfo(ctx, basePrice) {
     const info = loyalty.getPriceForUser(ctx.from.id, basePrice); // Итоговая строка с зачёркнутой базовой и жирной финальной ценой + ранг и скидка
@@ -219,6 +215,7 @@ const cherchenieMESS = `\n\nВсе работы делаются на бумаг
 const payconfmes = `\n\nПосле оплаты отправьте скиншот перевода нашему <a href="${trackingManagerLink}">менеджеру</a> ✍ и затем обязательно нажмите кнопку ⬇️ ниже\n"✅ Отправил скриншот"`;
 const helpONSubject = `\n\nЕсли Вас интересуют другие работы по этому предмету 🗒️ или же помощь на кр, зачёте или экзамене ✅, ` + 
 `то напишите нашему <a href="${trackingManagerLink}">менеджеру</a> ✍\n\nДля заказа доступны 🛒`;
+var waitingOrderMes; //Переменная для изменения сообщений, отправляемых в группу заказчиков
 
 //Блок 2. Объявление всех используемых клавиатур
 const inlineKeyboar = new InlineKeyboard().text('Подписался!', 'sub1')
@@ -343,10 +340,10 @@ const inlineKeyboard4 = orderKb('order', 'back2');
 const inlineKeyboard5 = orderKb('order1', 'back2');
 
 const inlineKeyboard11 = orderKb('order2', 'back3')
-const inlineKeyboard14 = orderKb('order3', 'back4');
-const inlineKeyboard15 = orderKb('order4', 'back4');
-const inlineKeyboard16 = orderKb('order5', 'back4');
-const inlineKeyboard17 = orderKb('order6', 'back4');
+const inlineKeyboard14 = orderKb('order:mss_pz1', WORKS["mss_pz1"].back);
+const inlineKeyboard15 = orderKb('order:mss_pz2', WORKS["mss_pz2"].back);
+const inlineKeyboard16 = orderKb('order:mss_pz3', WORKS["mss_pz3"].back);
+const inlineKeyboard17 = orderKb('order:mss_pz4', WORKS["mss_pz4"].back);
 const inlineKeyboard19 = orderKb('order8', 'back4');
 const inlineKeyboard20 = orderKb('order9', 'back5');
 const inlineKeyboard23 = orderKb('order12', 'back6');
@@ -399,14 +396,10 @@ const writeManager12 = new InlineKeyboard()
     .text('✅ Отправил скриншот', 'pay12');
 const writeManager23 = new InlineKeyboard()
     .text('✅ Отправил скриншот', 'pay23');
-const WriteManager3 = new InlineKeyboard()
-    .text('✅ Отправил скриншот', 'Pay3');
-const WriteManager4 = new InlineKeyboard()
-    .text('✅ Отправил скриншот', 'Pay4');
-const WriteManager5 = new InlineKeyboard()
-    .text('✅ Отправил скриншот', 'Pay5');
-const WriteManager6 = new InlineKeyboard()
-    .text('✅ Отправил скриншот', 'Pay6');
+const WriteManagerUnic = new InlineKeyboard()
+    .url('✍ Написать менеджеру', trackingManagerLink).row()
+    .text('✅ Отправил скриншот', 'confirm_payment');
+
 const WriteManager16 = new InlineKeyboard()
     .text('✅ Написал менеджеру', 'Pay16');
 const WriteManager19 = new InlineKeyboard()
@@ -417,6 +410,7 @@ const WriteManager10 = new InlineKeyboard()
     .text('✅ Отправил скриншот', 'Pay10');
 const WriteManager11 = new InlineKeyboard()
     .text('Написал менеджеру', 'Pay11');
+
 const writeMathManager1 = new InlineKeyboard()
     .url("Написать менеджеру по вышмату ✍️", trackingMathLink).row()
     .text('Назад 🔙', 'back1year');
@@ -480,8 +474,6 @@ bot.use(async (ctx, next) => {
 
 bot.command('start', async (ctx) => {
     await ctx.react('❤‍🔥')
-
-    tg_id = ctx.from.id; // Сохраняем ID пользователя
 
     // Гарантируем инициализацию userInfo
     ctx.session.userInfo = ctx.session.userInfo || {
@@ -1101,33 +1093,24 @@ bot.callbackQuery('order2', async (ctx) => {
     await ctx.answerCallbackQuery();
 })
 
-bot.callbackQuery('order3', async (ctx) => {
-    const { line } = formatPriceInfo(ctx, costMSS_PZ1);
-    ctx.session.order3.waitingForData3 = true;
-    await ctx.reply(`3 курс ⭐⭐⭐\nМСС 📏\nПЗ №1 🗒️\n\n${line}\n\nДля заказа работы введите номер своего варианта`, { parse_mode: 'HTML' });
-    await ctx.answerCallbackQuery();
-})
+bot.callbackQuery(/order:(.+)/, async (ctx) => {
+    const workId = ctx.match[1];
+    const work = WORKS[workId];
+    if (!work) return ctx.answerCallbackQuery({ text: "Неизвестная работа" });
 
-bot.callbackQuery('order4', async (ctx) => {
-    const { line } = formatPriceInfo(ctx, costMSS_PZ2);
-    ctx.session.order4.waitingForData4 = true;
-    await ctx.reply(`3 курс ⭐⭐⭐\nМСС 📏\nПЗ №2 📓\n\n${line}\n\nДля заказа работы введите номер своего варианта`, { parse_mode: 'HTML' });
-    await ctx.answerCallbackQuery();
-})
+    const { line } = formatPriceInfo(ctx, work.price);
 
-bot.callbackQuery('order5', async (ctx) => {
-    const { line } = formatPriceInfo(ctx, costMSS_PZ3);
-    ctx.session.order5.waitingForData5 = true;
-    await ctx.reply(`3 курс ⭐⭐⭐\nМСС 📏\nПЗ №3 📒\n\n${line}\n\nДля заказа работы введите номер своего варианта`, { parse_mode: 'HTML' });
-    await ctx.answerCallbackQuery();
-})
+    await ctx.reply(`${work.title}\n\n${line}\n\nДля заказа введите номер своего варианта`, { parse_mode: 'HTML' });
 
-bot.callbackQuery('order6', async (ctx) => {
-    const { line } = formatPriceInfo(ctx, costMSS_PZ4);
-    ctx.session.order6.waitingForData6 = true;
-    await ctx.reply(`3 курс ⭐⭐⭐\nМСС 📏\nПЗ №4 📔\n\n${line}\n\nДля заказа работы введите номер своего варианта`, { parse_mode: 'HTML' });
+    ctx.session.orderFlow = {
+        active: true,
+        workId,
+        needQueue: [...work.needs],
+        data: {},
+    };
+
     await ctx.answerCallbackQuery();
-})
+});
 
 bot.callbackQuery('order8', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costMSS_test);
@@ -1214,6 +1197,7 @@ bot.callbackQuery('order23', async (ctx) => {
 })
 
 bot.on("message:text", async (ctx) => {
+    
     // Проверяем, ожидаем ли мы номер телефона
     if (ctx.session.userInfo.waitingForPhone) {
         await ctx.reply('Пожалуйста, отправьте ваш номер телефона, используя кнопку ниже:', {
@@ -1224,6 +1208,43 @@ bot.on("message:text", async (ctx) => {
         return;
     }
 
+    //Обработчик для ПЗ1 - ПЗ4 по МСС
+    const flow = ctx.session.orderFlow;
+    if (!flow?.active) return;
+
+    const work = WORKS[flow.workId];
+    if (!work) { flow.active = false; return; }
+
+    const next = flow.needQueue[0];
+
+    if (next === "variant") {
+        const text = (ctx.message.text || "").trim();
+        if (!text) return ctx.reply("Введите номер варианта (только текст).");
+
+        flow.data.variant = text;
+        flow.needQueue.shift();
+    }
+
+    if (flow.needQueue.length === 0) {
+        const { line } = formatPriceInfo(ctx, work.price);
+
+        // уведомление пользователю
+        await ctx.reply(`${work.title}\n\n${line}\n\nВаш вариант: ${flow.data.variant}\n\n` +
+        `Для оплаты переведите указанную сумму на номер карты: ${myCardNumber}` + payconfmes, 
+        { disable_web_page_preview: true, parse_mode: 'HTML', reply_markup: WriteManagerUnic }
+        );
+
+        // сообщение менеджеру
+        const managerMsg =`${buildUserReference(ctx)} собирается сделать заказ\n\n${work.title}\n` +
+        (flow.data.variant ? `Вариант: ${flow.data.variant}\n` : "") + getPriceForWork(ctx, work.price);
+        waitingOrderMes = (await ctx.api.sendMessage(TARGET_CHAT_ID, managerMsg)).message_id;
+
+    } else {
+        const field = flow.needQueue[0];
+        await ctx.reply(field === "variant" ? "Введите номер вашего варианта:" : `Введите ${field}`);
+    }
+
+    //Все остальные обработчики заказов (пока старые)
     if (ctx.session.order?.waitingForData) {
     userLastMessages.set(ctx.from.id, ctx.message);
     const { line } = formatPriceInfo(ctx, costVal);
@@ -1273,51 +1294,6 @@ bot.on("message:text", async (ctx) => {
             };
             return;
         }
-    }
-
-    if (ctx.session.order3?.waitingForData3) {
-        const { line } = formatPriceInfo(ctx, costMSS_PZ1);
-        ctx.session.order3.var3 = ctx.message.text.trim();
-        userLastMessages.set(ctx.from.id, ctx.message);
-        await ctx.reply(`Ваш заказ:\n\n3 курс ⭐️⭐️⭐️\nПредмет - МСС 📏\nРабота - ПЗ №1\n\n${line}\n\nВариант: ${ctx.session.order3.var3}\n
-Для оплаты заказа переведите указанную сумму на номер карты: ${myCardNumber}${payconfmes}`, { parse_mode: 'HTML', reply_markup: WriteManager3 });
-        ctx.session.order3.waitingForData3 = false;
-        ctx.session.order3.pay3 = true;
-    return;
-    }
-
-    if (ctx.session.order4?.waitingForData4) {
-        const { line } = formatPriceInfo(ctx, costMSS_PZ2);
-        ctx.session.order4.var4 = ctx.message.text.trim();
-        userLastMessages.set(ctx.from.id, ctx.message);
-        await ctx.reply(`Ваш заказ:\n\n3 курс ⭐️⭐️⭐️\nПредмет - МСС 📏\nРабота - ПЗ №2\n\n${line}\n\nВариант: ${ctx.session.order4.var4}\n
-Для оплаты заказа переведите указанную сумму на номер карты: ${myCardNumber}${payconfmes}`, { parse_mode: 'HTML', reply_markup: WriteManager4 });
-        ctx.session.order4.waitingForData4 = false;
-        ctx.session.order4.pay4 = true;
-    return;
-    }
-
-
-    if (ctx.session.order5?.waitingForData5) {
-        const { line } = formatPriceInfo(ctx, costMSS_PZ3);
-        ctx.session.order5.var5 = ctx.message.text.trim();
-        userLastMessages.set(ctx.from.id, ctx.message);
-        await ctx.reply(`Ваш заказ:\n\n3 курс ⭐️⭐️⭐️\nПредмет - МСС 📏\nРабота - ПЗ №3\n\n${line}\n\nВариант: ${ctx.session.order5.var5}\n
-Для оплаты заказа переведите указанную сумму на номер карты: ${myCardNumber}${payconfmes}`, { parse_mode: 'HTML', reply_markup: WriteManager5 });
-        ctx.session.order5.waitingForData5 = false;
-        ctx.session.order5.pay5 = true;
-    return;
-    }
-
-    if (ctx.session.order6?.waitingForData6) {
-        const { line } = formatPriceInfo(ctx, costMSS_PZ4);
-        ctx.session.order6.var6 = ctx.message.text.trim();
-        userLastMessages.set(ctx.from.id, ctx.message);
-        await ctx.reply(`Ваш заказ:\n\n3 курс ⭐️⭐️⭐️\nПредмет - МСС 📏\nРабота - ПЗ №4\n\n${line}\n\nВариант: ${ctx.session.order6.var6}\n
-Для оплаты заказа переведите указанную сумму на номер карты: ${myCardNumber}${payconfmes}`, { parse_mode: 'HTML', reply_markup: WriteManager6 });
-        ctx.session.order6.waitingForData6 = false;
-        ctx.session.order6.pay6 = true;
-    return;
     }
 
     if (ctx.session.order8?.waitingForData8) {
@@ -1465,6 +1441,26 @@ ${line}\n\nВаш вариант:\n${ctx.message.text}\n\nДля оплаты з
 
 
 //Блок n пересылка сообщений в группы
+
+bot.callbackQuery("confirm_payment", async (ctx) => { //Универсальный обработчик (пока для МСС ПЗ1-4)
+    const flow = ctx.session.orderFlow;
+    if (!flow?.workId) { return ctx.answerCallbackQuery({ text: "Нет активного заказа" }); }
+
+    const work = WORKS[flow.workId];
+
+    // сообщение менеджеру
+    const managerMsg =`Новый заказ!${buildUserReference(ctx)}\n\n${work.title}\n` + (flow.data.variant ? `Вариант: ${flow.data.variant}\n` : "") +
+        getPriceForWork(ctx, work.price);
+
+    await ctx.api.editMessageText(TARGET_CHAT_ID, waitingOrderMes, managerMsg, {parse_mode: `HTML`, reply_markup: orederKeyboard1});
+
+    await ctx.reply(afterConfReply); // сообщение пользователю
+
+    ctx.session.orderFlow = { active: false, workId: null, needQueue: [], data: {} }; // сброс
+
+    await ctx.answerCallbackQuery();
+});
+
 bot.callbackQuery('pay', async (ctx) => {
     if (ctx.session.order.dataReceived) {
     const lastMessage = userLastMessages.get(ctx.from.id);
@@ -1499,50 +1495,6 @@ bot.callbackQuery('pay1', async (ctx) => {
     }
     await ctx.answerCallbackQuery()
 })
-
-bot.callbackQuery('Pay3', async (ctx) => {
-    if (ctx.session.order3.pay3) {
-        const msg = `Новый заказ!${buildUserReference(ctx)}\n\n3 курс\nПредмет - МСС 📏\nРабота - ПЗ №1${getPriceForWork(ctx, costMSS_PZ1)}Вариант: ${ctx.session.order3.var3}`;
-        await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
-        await ctx.reply(afterConfReply);
-        ctx.session.order3.pay3 = false;
-        ctx.session.order3.var3 = null;
-    }
-    await ctx.answerCallbackQuery();
-});
-
-bot.callbackQuery('Pay4', async (ctx) => {
-    if (ctx.session.order4.pay4) {
-        const msg = `Новый заказ!${buildUserReference(ctx)}\n\n3 курс\nПредмет - МСС 📏\nРабота - ПЗ №2${getPriceForWork(ctx, costMSS_PZ2)}Вариант: ${ctx.session.order4.var4}`;
-        await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
-        await ctx.reply(afterConfReply);
-        ctx.session.order4.pay4 = false;
-        ctx.session.order4.var4 = null;
-    }
-    await ctx.answerCallbackQuery();
-});
-
-bot.callbackQuery('Pay5', async (ctx) => {
-    if (ctx.session.order5.pay5) {
-        const msg = `Новый заказ!${buildUserReference(ctx)}\n\n3 курс\nПредмет - МСС 📏\nРабота - ПЗ №3${getPriceForWork(ctx, costMSS_PZ3)}Вариант: ${ctx.session.order5.var5}`;
-        await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
-        await ctx.reply(afterConfReply);
-        ctx.session.order5.pay5 = false;
-        ctx.session.order5.var5 = null;
-    } 
-    await ctx.answerCallbackQuery();
-});
-
-bot.callbackQuery('Pay6', async (ctx) => {
-    if (ctx.session.order6.pay6) {
-        const msg = `Новый заказ!${buildUserReference(ctx)}\n\n3 курс\nПредмет - МСС 📏\nРабота - ПЗ №4${getPriceForWork(ctx, costMSS_PZ4)}Вариант: ${ctx.session.order6.var6}`;
-        await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
-        await ctx.reply(afterConfReply);
-        ctx.session.order6.pay6 = false;
-        ctx.session.order6.var6 = null;
-    }
-    await ctx.answerCallbackQuery();
-});
 
 bot.callbackQuery('ok', async (ctx) => {
     if (ctx.session.order8.step8 === 2) {
