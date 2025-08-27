@@ -10,10 +10,11 @@ const loyalty = require('./loyalty');
 const bot = new Bot(process.env.BOT_TOKEN);
 bot.use(hydrate());
 
-const TARGET_CHAT_ID = 7195122925; // ID менеджера (пока что так), куда будут отправляться уведомления
-const MATH_CHAT_ID = 0; // ID чата по вышмату
-const MY_CHAT_ID = 0; // ID чата, куда будут отправляться уведомления о заказах (не обо всех)
-const TARGET_GROUP = -1002162448649;
+const MY_CHAT_ID = -4913298319; // ID чата с моими заказами
+const MATH_CHAT_ID = -4801211812; // ID чата по вышмату
+const CHERCHENIE_CHAT_ID = -4826274706; // ID чата, куда будут отправляться уведомления о заказах по Инженерной графике и Начерталке
+const OTHER_ORDERS_CHAT_ID = -4855479221; // ID чата, для всех остальных заказов
+const TARGET_GROUP = -1002162448649; //Наш тгк
 const userLastMessages = new Map(); 
 const CACH_TTL =  10 * 1000;
 const subscriptionCache = new Map();
@@ -141,7 +142,7 @@ const WORKS = {
         prompt: '📸 Прикрепите фотографии всех заданий по Инженерной графике 📸\n(если каких-то заданий у Вас ещё нет, Вы можете отправить их позже менеджеру)'
     },
     nachANDinjgraf: {
-        title: '2 курс ⭐⭐\nНачертательная геометрия 📒 + Инженерная графика 🗜️\n👑 Царский набор 👑\n',
+        title: '2 курс ⭐⭐\nНачертательная геометрия 📒 + Инженерная графика 🗜️\n👑 Царский набор 👑',
         price: nachANDinjgraf,
         back: 'back1',
         needs: ['photo'],
@@ -329,7 +330,7 @@ const seaTreasure = `💰 Морская Сокровищница 💰\n\nНаш
 `<a href="${loyaltyDocLink}">вознаграждение (см п. 4)</a> с нашей стороны 🤝\n
 "Наука сокращает нам опыты быстротекущей жизни" \n© Пушкин А.С., "Борис Годунов"`;
 const cherchenieMESS = `\n\nВсе работы делаются на бумаге для черчения 📜\n\nДоставка в Стрельну осуществляется в четверг и в пятницу, так же есть возможность вывоза с Межевого канала сразу после исполнения работы 🚚`;
-const payconfmes = `\n\nПосле оплаты отправьте скиншот перевода нашему <a href="${trackingManagerLink}">менеджеру</a> ✍`;
+const payconfmes = `\n\nПосле оплаты отправьте скиншот перевода боту 🤖`;
 const helpONSubject = `\n\nЕсли Вас интересуют другие работы по этому предмету 🗒️ или же помощь на кр, зачёте или экзамене ✅, ` + 
 `то напишите нашему <a href="${trackingManagerLink}">менеджеру</a> ✍\n\nДля заказа доступны 🛒`;
 var waitingOrderMes; //Переменная для изменения сообщений, отправляемых в группу заказчиков
@@ -491,7 +492,6 @@ const writeManager2 = new InlineKeyboard()
 
 const WriteManagerUnic = new InlineKeyboard()
     .url('✍ Написать менеджеру', trackingManagerLink).row()
-    .text('✅ Отправил скриншот', 'confirm_payment');
 
 const writeMathManager1 = new InlineKeyboard()
     .url("Написать менеджеру по вышмату ✍️", trackingMathLink).row()
@@ -1301,7 +1301,7 @@ bot.on("message:text", async (ctx) => {
         const managerMsg =`${buildUserReference(ctx)} собирается сделать заказ\n\n${work.title}\n` + (dataBlock ? dataBlock + '\n' : '') +
             getPriceForWork(ctx, work.price);
 
-        waitingOrderMes = (await ctx.api.sendMessage(TARGET_CHAT_ID, managerMsg)).message_id;
+        waitingOrderMes = (await ctx.api.sendMessage(MY_CHAT_ID, managerMsg)).message_id;
 
         // тут НЕ завершаем поток — ждём нажания "✅ Отправил скриншот"
         return;
@@ -1321,7 +1321,7 @@ bot.on("message:text", async (ctx) => {
             ctx.session.order2.com2 = ctx.message.text;
 
             const msg = `Новый заказ!${buildUserReference(ctx)}3 курс\nПредмет - ГМОС 🌦️\n\nСроки и комментарии:\n${ctx.session.order2.com2}`;
-            await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
+            await ctx.api.sendMessage(MY_CHAT_ID, msg);
 
             await ctx.reply(`Заказ принят!\n\nДетали заказа:\n3 курс ⭐️⭐️⭐️\nПредмет - ГМОС 🌦️\n
 Сроки и комментарии: ${ctx.session.order2.com2}\nДля оплаты заказа и уточнения деталей напишите менеджеру✍: <a href="${trackingManagerLink}">ссылка</a>`,{
@@ -1365,133 +1365,124 @@ bot.on("message:text", async (ctx) => {
 // Временное хранилище для альбомов
 const mediaBuffer = {};
 
-// Обработка фото и документов
+// Обработка фото и документов + чек об оплате
 bot.on(["message:photo", "message:document"], async (ctx) => {
-    const flow = ctx.session.orderFlow;
-    if (!flow?.active) return;
-    const work = WORKS[flow.workId];
-    if (!work) return;
+  const flow = ctx.session.orderFlow;
+  if (!flow?.active) return;
+  const work = WORKS[flow.workId];
+  if (!work) return;
 
-    const next = flow.needQueue[0];
-    if (next !== "photo") return;
+  let fileId, type;
+  if (ctx.message.photo) {
+    const largest = ctx.message.photo[ctx.message.photo.length - 1];
+    fileId = largest.file_id;
+    type = "photo";
+  } else if (ctx.message.document) {
+    fileId = ctx.message.document.file_id;
+    type = "document";
+  }
 
-    // Определяем file_id
-    let fileId;
-    let type;
-    if (ctx.message.photo) {
-        const largest = ctx.message.photo[ctx.message.photo.length - 1];
-        fileId = largest.file_id;
-        type = "photo";
-    } else if (ctx.message.document) {
-        fileId = ctx.message.document.file_id;
-        type = "document";
-    }
+  const next = flow.needQueue[0];
 
-    // Если это часть альбома
+  // === 1) Исходные данные (задание) ===
+  if (next === "photo") {
+    // Если это альбом
     if (ctx.message.media_group_id) {
-        const groupId = ctx.message.media_group_id;
-        mediaBuffer[groupId] = mediaBuffer[groupId] || { files: [], ctx, handled: false };
+      const groupId = ctx.message.media_group_id;
+      mediaBuffer[groupId] = mediaBuffer[groupId] || { files: [], ctx, handled: false };
 
-        mediaBuffer[groupId].files.push({ fileId, type });
+      mediaBuffer[groupId].files.push({ fileId, type });
 
-        // Запускаем обработку только один раз
-        if (!mediaBuffer[groupId].timer) {
-            mediaBuffer[groupId].timer = setTimeout(async () => {
-            const group = mediaBuffer[groupId];
-            if (!group || group.handled) return;
-            group.handled = true; // 🚫 больше не обрабатывать
+      if (!mediaBuffer[groupId].timer) {
+        mediaBuffer[groupId].timer = setTimeout(async () => {
+          const group = mediaBuffer[groupId];
+          if (!group || group.handled) return;
+          group.handled = true;
 
-            // Сохраняем в заказ
-            flow.data.media = flow.data.media || [];
-            flow.data.media.push(...group.files);
+          // Сохраняем все файлы альбома
+          flow.data.media = flow.data.media || [];
+          flow.data.media.push(...group.files);
 
-            flow.needQueue.shift();
+          // Завершаем очередь только здесь!
+          flow.needQueue.shift();
 
-            const { line } = formatPriceInfo(group.ctx, work.price);
+          const { line } = formatPriceInfo(group.ctx, work.price);
 
-            await group.ctx.reply( `${work.title}\n\n${line}\n\n📎 Файлы/фотографии задания получены\n\n` +
-                `Для оплаты переведите указанную сумму на номер карты: ${myCardNumber}` + payconfmes,
-                { disable_web_page_preview: true, parse_mode: 'HTML', reply_markup: WriteManagerUnic });
-
-            const managerMsg = `${buildUserReference(group.ctx)} собирается сделать заказ\n\n${work.title}\n` + getPriceForWork(group.ctx, work.price);
-
-            waitingOrderMes = (await group.ctx.api.sendMessage(TARGET_CHAT_ID, managerMsg)).message_id;
-
-            // Пересылаем все файлы менеджеру
-            for (const f of group.files) {
-                if (f.type === "photo") {
-                    await group.ctx.api.sendPhoto(TARGET_CHAT_ID, f.fileId);
-                } else {
-                    await group.ctx.api.sendDocument(TARGET_CHAT_ID, f.fileId);
-                }
-            }
-
-            delete mediaBuffer[groupId];
-            }, 500); // ждём полсекунды, чтобы все части альбома пришли
-        }
-    } else {
-        // Одиночное фото/файл
-        flow.data.media = flow.data.media || [];
-        flow.data.media.push({ fileId, type });
-
-        flow.needQueue.shift();
-
-        const { line } = formatPriceInfo(ctx, work.price);
-
-        await ctx.reply(`${work.title}\n\n${line}\n\n📎 Файл/фотография задания получен\n\n` +
+          await group.ctx.reply(
+            `${work.title}\n\n${line}\n\n📎 Файлы/фотографии задания получены\n\n` +
             `Для оплаты переведите указанную сумму на номер карты: ${myCardNumber}` + payconfmes,
-            { disable_web_page_preview: true, parse_mode: 'HTML', reply_markup: WriteManagerUnic });
+            { disable_web_page_preview: true, parse_mode: 'HTML', reply_markup: WriteManagerUnic }
+          );
 
-        const managerMsg = `${buildUserReference(ctx)} собирается сделать заказ\n\n${work.title}\n` + getPriceForWork(ctx, work.price);
+          const managerMsg =
+            `${buildUserReference(group.ctx)} собирается сделать заказ\n\n${work.title}\n` +
+            getPriceForWork(group.ctx, work.price);
 
-        waitingOrderMes = (await ctx.api.sendMessage(TARGET_CHAT_ID, managerMsg)).message_id;
+          waitingOrderMes = (await group.ctx.api.sendMessage(MY_CHAT_ID, managerMsg)).message_id;
 
-        if (type === "photo") {
-            await ctx.api.sendPhoto(TARGET_CHAT_ID, fileId);
-        } else {
-            await ctx.api.sendDocument(TARGET_CHAT_ID, fileId);
-        }
+          for (const f of group.files) {
+            if (f.type === "photo") {
+              await group.ctx.api.sendPhoto(MY_CHAT_ID, f.fileId);
+            } else {
+              await group.ctx.api.sendDocument(MY_CHAT_ID, f.fileId);
+            }
+          }
+
+          delete mediaBuffer[groupId];
+        }, 500); // ждём полсекунды, чтобы собрать весь альбом
+      }
+      return;
     }
+
+    // Если одиночное фото/файл
+    flow.data.media = flow.data.media || [];
+    flow.data.media.push({ fileId, type });
+
+    flow.needQueue.shift();
+
+    const { line } = formatPriceInfo(ctx, work.price);
+
+    await ctx.reply(
+      `${work.title}\n\n${line}\n\n📎 Файл/фотография задания получен\n\n` +
+      `Для оплаты переведите указанную сумму на номер карты: ${myCardNumber}`,
+      { disable_web_page_preview: true, parse_mode: 'HTML', reply_markup: WriteManagerUnic }
+    );
+
+    const managerMsg =
+      `${buildUserReference(ctx)} собирается сделать заказ\n\n${work.title}\n` +
+      getPriceForWork(ctx, work.price);
+
+    waitingOrderMes = (await ctx.api.sendMessage(MY_CHAT_ID, managerMsg)).message_id;
+
+    if (type === "photo") {
+      await ctx.api.sendPhoto(MY_CHAT_ID, fileId);
+    } else {
+      await ctx.api.sendDocument(MY_CHAT_ID, fileId);
+    }
+
+    return;
+  }
+
+  // === 2) Чек об оплате (заказ уже собран) ===
+  if (!next) {
+    const caption = `${buildUserReference(ctx)} прислал чек об оплате за заказ:\n\n${work.title}`;
+
+    await ctx.reply(`✅ Спасибо! Скриншот оплаты получен и отправлен <a href="${trackingManagerLink}">менеджеру</a> 💬\nОн скоро свяжется с Вами ✍️`, {parse_mode: 'HTML'} );
+
+    if (type === "photo") {
+      await ctx.api.sendPhoto(MY_CHAT_ID, fileId, { caption });
+    } else {
+      await ctx.api.sendDocument(MY_CHAT_ID, fileId, { caption });
+    }
+        // 🔒 Закрываем заказ — больше чеков/фото бот не принимает
+        flow.active = false;
+    return;
+  }
 });
-
-
 
 
 //Блок n пересылка сообщений в группы
 //После оплаты заказа пользователем
-bot.callbackQuery("confirm_payment", async (ctx) => {
-    const flow = ctx.session.orderFlow;
-    if (!flow?.workId) { return ctx.answerCallbackQuery({ text: "Нет активного заказа" }); }
-
-    const work = WORKS[flow.workId];
-    const dataBlock = flow.data.details ? `Данные:\n${flow.data.details}` : (flow.data.variant ? `Вариант: ${flow.data.variant}` : '');
-
-    const managerMsg =
-        `Новый заказ!${buildUserReference(ctx)}\n\n${work.title}\n` +
-        (dataBlock ? dataBlock + '\n' : '') +
-        getPriceForWork(ctx, work.price);
-
-    await ctx.api.editMessageText(
-        TARGET_CHAT_ID,
-        waitingOrderMes,
-        managerMsg,
-        { parse_mode: `HTML`, reply_markup: orederKeyboard1 }
-    );
-
-    await ctx.reply(afterConfReply);
-
-  // Лояльность. Добавление общей суммы выручки
-    const priceInfo = loyalty.getPriceForUser(ctx.from.id, work.price);
-    const discountedPrice = priceInfo.discountedPrice;
-    await loyalty.addToTotal(ctx.from.id, ctx.from.username, discountedPrice);
-
-  // Сброс потока
-    ctx.session.orderFlow = { active: false, workId: null, needQueue: [], data: {} };
-
-    await ctx.answerCallbackQuery();
-});
-
-
 bot.callbackQuery('ok', async (ctx) => {
     if (ctx.session.order8.step8 === 2) {
         const { line } = formatPriceInfo(ctx, costMSS_test);
@@ -1510,7 +1501,7 @@ bot.callbackQuery('pay2', async (ctx) => {
     if (ctx.session.order8.dataReceived8) {
         const msg = `Запрос доступа${buildUserReference(ctx)}\n\n3 курс\nПредмет - МСС 📏\nИтоговый тест по МСС 🖥️${getPriceForWork(ctx, costMSS_test)}
 Почта: ${ctx.session.order8.email8}`;
-        await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
+        await ctx.api.sendMessage(MY_CHAT_ID, msg);
         await ctx.reply(afterConfReply);
         ctx.session.order8.dataReceived8 = false;
     }
