@@ -37,71 +37,24 @@ bot.use(session({ initial: () => ({
             phoneNumber: null,
             hasUsername: false
         },
-    order: { //Расчёт Балки
-        waitingForData: false,
-        dataReceived: false,
-    },
-    order1: { //Расчёт Вала
-        waitingForData1: false,
-        dataReceived1: false,
-    },
+    
     order2: { //ГМОС всё (надо усложнить)
         waitingForData2: false,
         step2: 0,
         com2: null
     },
-    
-    orderFlow: { //Все ПЗ по МСС
+    orderFlow: { //Все остальные заказы
         active: false,
         workId: null,
         needQueue: [],
         data: {},
     },
-
     order8: { //МСС Тест
         waitingForData8: false,
         step8: 0,
         email8: null,
         com8: null,
         pay8: false,
-    },
-    order9: { //ТУС курсовая работа
-        waitingForData9: false,
-        pay9: false,
-    },
-    order12: { //Мос курсовая работа
-        waitingForData12: false,
-        pay12: false,
-    },
-    order14: { //МОС река-море ПЗ 2
-        waitingForData14: false,
-        pay14: false,
-    },
-    order15: { //МОС река-море ПЗ 4
-        waitingForData15: false,
-        pay15: false,
-    },
-    order17: { //Безопасность судоходства на ВВП РГР
-        waitingForData17: false,
-        pay17: false,
-    },
-    order18: { //Общая лоция ВВП РГР
-        waitingForData18: false,
-        pay18: false,
-    },
-    order20: { //НиЛ море ргр вертикальный угол
-        waitingForData20: false,
-        pay20: false,
-    },
-    order21: { //НиЛ река-море РГР 9 задач
-        waitingForData21: false,
-        pay21: false,
-    },
-    order23: { //ТСС Тест
-        waitingForData23: false,
-        com23: null,
-        step23: false,
-        dataReceived23: false,
     },
     })
 }));
@@ -116,7 +69,7 @@ const nachall10_12 = 1380;
 const nachANDinjgraf = 7690;
 const inj146 = 990;
 const inj5 = 790;
-const njALL = 4280;
+const injALL = 4280;
 const costVal = 990;
 const costBalka = 990;
 const costMSS_PZ1 = 490;
@@ -134,12 +87,173 @@ const costNIL_sea_RGR = 790;
 const costNIL_river_RGR = 2790;
 const costTSS_Test = 3290;
 
-//Каталог работ (пока только ПЗ по МСС)
+//Каталог работ
 const WORKS = {
-  "mss_pz1": { title: "МСС 📏 — ПЗ №1 🗒️", price: costMSS_PZ1, needs: ["variant"], back: "back4" },
-  "mss_pz2": { title: "МСС 📏 — ПЗ №2 📓", price: costMSS_PZ2, needs: ["variant"], back: "back4" },
-  "mss_pz3": { title: "МСС 📏 — ПЗ №3 📒", price: costMSS_PZ3, needs: ["variant"], back: "back4" },
-  "mss_pz4": { title: "МСС 📏 — ПЗ №4 📔", price: costMSS_PZ4, needs: ["variant"], back: "back4" },
+
+    //2 курс
+    nach1_9: {
+        title: '2 курс ⭐⭐\nНачертательная геометрия 📒\n1–9 задачи (каждая отдельно) 📎',
+        price: nach1_9,
+        back: 'backnachert',
+        needs: ['photo'],
+        prompt: '📸 Прикрепите фотографию(и) вашего задания (1–9) 📸'
+    },
+    nach10_12: {
+        title: '2 курс ⭐⭐\nНачертательная геометрия 📒\n10–12 задачи (каждая отдельно) 🖼️',
+        price: nach10_12,
+        back: 'backnachert',
+        needs: ['photo'],
+        prompt: '📸 Прикрепите фотографию вашего задания (10–12) 📸'
+    },
+    nachall1_9: {
+        title: '2 курс ⭐⭐\nНачертательная геометрия 📒\n1–9 задачи вместе 🪢',
+        price: nachall1_9,
+        back: 'backnachert',
+        needs: ['photo'],
+        prompt: '📸 Прикрепите фотографии всех заданий 1–9 📸'
+    },
+    nachall10_12: {
+        title: '2 курс ⭐⭐\nНачертательная геометрия 📒\n10–12 задачи вместе 🧺',
+        price: nachall10_12,
+        back: 'backnachert',
+        needs: ['photo'],
+        prompt: '📸 Прикрепите фотографии всех заданий 10–12 📸'
+    },
+    inj146: {
+        title: '2 курс ⭐⭐\nИнженерная графика 🗜️\n1–4 и 6 работа (каждая отдельно) 🕋',
+        price: inj146,
+        back: 'backinj',
+        needs: ['photo'],
+        prompt: '📸 Прикрепите фотографию(и) задания (1–4 и 6) 📸\n(если каких-то заданий у Вас ещё нет, Вы можете отправить их позже менеджеру) 🤝'
+    },
+    inj5: {
+        title: '2 курс ⭐⭐\nИнженерная графика 🗜️\n5 работа (эскизирование) 🖼️',
+        price: inj5,
+        back: 'backinj',
+        needs: ['photo'],
+        prompt: '📸 Прикрепите фотографию(и) задания (Эскизирование) 📸'
+    },
+    injALL: {
+        title: '2 курс ⭐⭐\nИнженерная графика 🗜️\n🦁 Весь комплект 🦁',
+        price: injALL,
+        back: 'backinj',
+        needs: ['photo'],
+        prompt: '📸 Прикрепите фотографии всех заданий по Инженерной графике 📸\n(если каких-то заданий у Вас ещё нет, Вы можете отправить их позже менеджеру)'
+    },
+    nachANDinjgraf: {
+        title: '2 курс ⭐⭐\nНачертательная геометрия 📒 + Инженерная графика 🗜️\n👑 Царский набор 👑\n',
+        price: nachANDinjgraf,
+        back: 'back1',
+        needs: ['photo'],
+        prompt: '📸 Прикрепите фотографии всех заданий по Начерту и Инжграфу 📸\n(если каких-то заданий у Вас ещё нет, Вы можете отпрвить их позже менеджеру)'
+    },
+    mech_beam: {
+        title: '2 курс ⭐⭐\nПредмет - Механика ⚙\nРабота - Расчёт Балки 🧮',
+        price: costBalka,
+        back: 'back2',
+        needs: ['details'],
+        prompt: 'Отправьте одним сообщением:\n1. Номер по журналу группы\n 2. Номер группы\n4. Вашу фамилию и инициалы'
+    },
+    mech_val: {
+        title: '2 курс ⭐⭐\nПредмет - Механика ⚙\nРабота - Расчёт Вала 📏',
+        price: costVal,
+        back: 'back2',
+        needs: ['details'],
+        prompt: 'Отправьте одним сообщением:\n1. Номер по журналу группы\n 2. Номер группы\n4. Вашу фамилию и инициалы'
+    },
+
+    //3 курс
+    mss_pz1: { 
+        title: "МСС 📏 — ПЗ №1 🗒️", 
+        price: costMSS_PZ1, 
+        needs: ["variant"], 
+        back: "back4",
+        prompt: 'Отправьте последнюю цифру Вашего номера по журналу группы'
+    },
+    mss_pz2: { 
+        title: "МСС 📏 — ПЗ №2 📓", 
+        price: costMSS_PZ2, 
+        needs: ["variant"], 
+        back: "back4",
+        prompt: 'Отправьте Ваш номер по журналу группы'
+    },
+    mss_pz3: { 
+        title: "МСС 📏 — ПЗ №3 📒", 
+        price: costMSS_PZ3, 
+        needs: ["variant"], 
+        back: "back4",
+        prompt: 'Отправьте последнюю цифру Вашего номера по журналу группы'
+    },
+    mss_pz4: { 
+        title: "МСС 📏 — ПЗ №4 📔", 
+        price: costMSS_PZ4, 
+        needs: ["variant"], 
+        back: "back4",
+        prompt: 'Отправьте Ваш номер по журналу группы'
+    },
+    tus_kurs: {
+        title: '3 курс ⭐⭐⭐\nПредмет - ТУС 🚢\nРабота - Курсовая 🎯',
+        price: costTUS_kurs,
+        back: 'back5',
+        needs: ['details'],
+        prompt: 'Отправьте одним сообщением:\n1. Номер по журналу группы\n 2. Номер группы\n4. Вашу фамилию и инициалы' // :contentReference[oaicite:11]{index=11}
+    },
+    mos_kurs: {
+        title: '3 курс ⭐⭐⭐\nМОС 🧮\nКурсовая работа 🚢',
+        price: costMOS_Kurs,
+        back: 'back6',
+        needs: ['details'],
+        prompt: 'Отправьте одним сообщением:\n1. Номер по журналу группы\n 2. Номер группы\n4. Вашу фамилию и инициалы'
+    },
+    mos_river_pz2: {
+        title: '3 курс ⭐⭐⭐\nМОС 🧮\nПоток: Река-море 🌉🌊\nПЗ №2. Сферические треугольники',
+        price: costMOS_river_PZ2,
+        back: 'back8',
+        needs: ['variant'],
+        prompt: 'Отправьте номер своего варианта' 
+    },
+    mos_river_pz4: {
+        title: '3 курс ⭐⭐⭐\nМОС 🧮\nПоток: Река-море 🌉🌊\nПЗ №4. Оценка нав параметров',
+        price: costMOS_river_PZ4,
+        back: 'back8',
+        needs: ['variant'],
+        prompt: 'Отправьте номер своего варианта'
+    },
+    bs_high: {
+        title: '3 курс ⭐⭐⭐\nБезопасность судоходства на ВВП 🛟\nОпределение высоты подмостового габарита',
+        price: costBS_high,
+        back: 'back9',
+        needs: ['details'],
+        prompt: 'Отправьте одним сообщением:\n1. Номер по журналу группы\n 2. Номер группы\n4. Вашу фамилию и инициалы\n5. День и месяц рождения' // :contentReference[oaicite:15]{index=15}
+    },
+    olvvp_stvor: {
+        title: '3 курс ⭐⭐⭐\nОбщая лоция ВВП 🌉\nПЗ «Расчёт линейного навигационного створа»',
+        price: costOLVVP_Stvor,
+        back: 'back10',
+        needs: ['variant'],
+        prompt: 'Отправьте номер варианта (две последние цифры номера зачётки)'
+    },
+    nil_sea_rgr: {
+        title: '3 курс ⭐⭐⭐\nНиЛ 🧭\nПоток: Море 🌊\nРГР «вертикальный угол» (4 задачи)',
+        price: costNIL_sea_RGR,
+        back: 'back12',
+        needs: ['details'],
+        prompt: 'Отправьте одним сообщением:\n1. Номер по журналу группы\n 2. Номер группы\n4. Вашу фамилию и инициалы'
+    },
+    nil_river_rgr9: {
+        title: '3 курс ⭐⭐⭐\nНиЛ 🧭\nПоток: Река-море 🌉🌊\nРГР «9 задач по 6 сборникам»',
+        price: costNIL_river_RGR,
+        back: 'back13',
+        needs: ['variant'],
+        prompt: 'Отправьте номер своего варианта'
+    },
+    tss_test: {
+        title: '3 курс ⭐⭐⭐\nТСС 📺\n11 тестов на фарватере 🖥️',
+        price: costTSS_Test,
+        back: 'back14',
+        needs: ['details'],
+        prompt: 'Отправьте одним сообщением логин и пароль от фарватера.'
+    },
 };
 
 // 1) Форматирование цены с учётом лояльности (loyalty.getPriceForUser)
@@ -163,39 +277,37 @@ function getPriceForWork(ctx, basePrice) {
 
 // 2) «Хвост» с данными пользователя для сообщений менеджеру
 function buildUserReference(ctx) {
-  const user = ctx.from;
-  const phone = ctx.session?.userInfo?.phoneNumber
-    ? `\n+${ctx.session.userInfo.phoneNumber}`
-    : "";
-  return `\n\nПользователь: ${user.first_name} ${user.last_name ? user.last_name : ''}\n@${user.username}\n${user.id} ${phone}`;
+    const user = ctx.from;
+    const phone = ctx.session?.userInfo?.phoneNumber ? `\n+${ctx.session.userInfo.phoneNumber}` : "";
+    return `\n\nПользователь: ${user.first_name} ${user.last_name ? user.last_name : ''}\n@${user.username}\n${user.id} ${phone}`;
 }
-
 
 // 3) Универсальный переход на экран (меньше кода в back-кнопках)
 async function go(ctx, text, keyboard) {
-  await ctx.callbackQuery.message.editText(text, { reply_markup: keyboard, disable_web_page_preview: true, parse_mode: 'HTML' });
-  await ctx.answerCallbackQuery();
+    await ctx.callbackQuery.message.editText(text, { reply_markup: keyboard, disable_web_page_preview: true, parse_mode: 'HTML' });
+    await ctx.answerCallbackQuery();
 }
 
 // 4) Фабрика типовых клавиатур: «Заказать» + «Назад»
 function orderKb(orderCode, backCode) {
-  return new InlineKeyboard()
-    .text('✅ Заказать работу', orderCode).row()
-    .text('Назад 🔙', backCode);
+    return new InlineKeyboard()
+        .text('✅ Заказать работу', orderCode).row()
+        .text('Назад 🔙', backCode);
 }
 
 // 5) Показ кнопки «Подписаться» (используем в проверке подписки)
 function subscribeKeyboard() {
-  const timestamp = Date.now();
-  return new InlineKeyboard()
-    .url("Подписаться 🔗", `${channelLink}?check=${timestamp}`).row()
-    .text("Проверить снова 🔄", "sub1");
+    const timestamp = Date.now();
+    return new InlineKeyboard()
+        .url("Подписаться 🔗", `${channelLink}?check=${timestamp}`).row()
+        .text("Проверить снова 🔄", "sub1");
 }
 
 // Блок 1.2. Объявление переменных для ссылок
 const channelLink = 'https://t.me/SmartDealsLTDink'
 const trackingManagerLink = 'https://t.me/SmartDealsManager';
 const trackingMathLink = 'https://t.me/SmartDealsMathManager';
+//Гугл диск
 const loyaltyDocLink = 'https://docs.google.com/document/d/1tcjS6BL9TVWVeH-cG7jj0lyYwJtyPViWj60lzhd3x-A/edit?usp=sharing';
 const DriveCatalogLink = 'https://drive.google.com/drive/folders/1oXGLvXAXfbeADoh07X3WhOX0WOLeg9mR?usp=sharing';
 const Drive1yearLink = 'https://drive.google.com/drive/folders/1nAbmEz2CvQAzk2yZG8jdBrZ7VpDy8Dle?usp=sharing';
@@ -203,6 +315,11 @@ const Drive2yearLink = 'https://drive.google.com/drive/folders/1GtQEJQESq0OVhOGm
 const Drive3yearLink = 'https://drive.google.com/drive/folders/1pU-uhO03bL6IJq9Js6f-DtaomNwPd90t?usp=sharing';
 const Drive4yearLink = 'https://drive.google.com/drive/folders/1ImX8bRsg1OFrsIY0LmuYjecOfuu2U4N_?usp=sharing';
 const DrivePractice = 'https://drive.google.com/drive/folders/1lNX7F6AUTA7SSIhwhLlQebDFvGnAJT-E?usp=sharing';
+//Примеры работ
+const exampNach1_9 = 'https://drive.google.com/drive/folders/1CSjpSp2XiJqxycJXp3o00CR1hqjqeRiM?usp=drive_link';
+const exampNach10_12 = 'https://drive.google.com/drive/folders/1bpOYzgQNVlOgCoLvcJPRf6wjuk04Q_zP?usp=drive_link';
+const exampNachANDinjg = 'https://drive.google.com/drive/folders/1Nacwdu7XOAtyDwlOAI4FCD1kRS-I_2dK?usp=drive_link';
+const exampInj = 'https://drive.google.com/drive/folders/159OVJn9QT20-hGvFLYNJkygWH3jPIP1t?usp=drive_link';
 
 // Блок 1.3. Объявления других переменных
 const afterConfReply = `✅ Заказ успешно оформлен ✅ \n\n💬 Ожидайте ответ менеджера 💬`;
@@ -212,7 +329,7 @@ const seaTreasure = `💰 Морская Сокровищница 💰\n\nНаш
 `<a href="${loyaltyDocLink}">вознаграждение (см п. 4)</a> с нашей стороны 🤝\n
 "Наука сокращает нам опыты быстротекущей жизни" \n© Пушкин А.С., "Борис Годунов"`;
 const cherchenieMESS = `\n\nВсе работы делаются на бумаге для черчения 📜\n\nДоставка в Стрельну осуществляется в четверг и в пятницу, так же есть возможность вывоза с Межевого канала сразу после исполнения работы 🚚`;
-const payconfmes = `\n\nПосле оплаты отправьте скиншот перевода нашему <a href="${trackingManagerLink}">менеджеру</a> ✍ и затем обязательно нажмите кнопку ⬇️ ниже\n"✅ Отправил скриншот"`;
+const payconfmes = `\n\nПосле оплаты отправьте скиншот перевода нашему <a href="${trackingManagerLink}">менеджеру</a> ✍`;
 const helpONSubject = `\n\nЕсли Вас интересуют другие работы по этому предмету 🗒️ или же помощь на кр, зачёте или экзамене ✅, ` + 
 `то напишите нашему <a href="${trackingManagerLink}">менеджеру</a> ✍\n\nДля заказа доступны 🛒`;
 var waitingOrderMes; //Переменная для изменения сообщений, отправляемых в группу заказчиков
@@ -336,80 +453,45 @@ const inlineKeyboard13 = new InlineKeyboard()
     .text('Назад 🔙', 'back3')
 
 //Клавиатуры через конструктор (доделать)
-const inlineKeyboard4 = orderKb('order', 'back2');
-const inlineKeyboard5 = orderKb('order1', 'back2');
+const inlineKeyboard11 = orderKb('order2', 'back3'); //ГМОС (надо доделать)
+const inlineKeyboard19 = orderKb('order8', 'back4'); //Итоговый тест по МСС (доделать)
 
-const inlineKeyboard11 = orderKb('order2', 'back3')
-const inlineKeyboard14 = orderKb('order:mss_pz1', WORKS["mss_pz1"].back);
-const inlineKeyboard15 = orderKb('order:mss_pz2', WORKS["mss_pz2"].back);
-const inlineKeyboard16 = orderKb('order:mss_pz3', WORKS["mss_pz3"].back);
-const inlineKeyboard17 = orderKb('order:mss_pz4', WORKS["mss_pz4"].back);
-const inlineKeyboard19 = orderKb('order8', 'back4');
-const inlineKeyboard20 = orderKb('order9', 'back5');
-const inlineKeyboard23 = orderKb('order12', 'back6');
+// 2 курс
+const inlineKeyboard4  = orderKb('order:mech_beam', 'back2'); // Механика. Балка
+const inlineKeyboard5  = orderKb('order:mech_val',  'back2'); // Механика. Вал
+const inlineKeyboardNachertorder1_9 = orderKb('order:nach1_9', 'backnachert') //Начерталка
+const inlineKeyboardNachertorder10_12 = orderKb('order:nach10_12', 'backnachert') //Начерталка
+const inlineKeyboardNachertALLorder1_9 = orderKb('order:nachall1_9', 'backnachert') //Начерталка
+const inlineKeyboardNachertALLorder10_12 = orderKb('order:nachall10_12', 'backnachert') //Начерталка
+const inlineKeyboardNacherANDinj = orderKb('order:nachANDinjgraf', 'back1') //Начерталка и Инжграф
+const inlineKeyboardinj146 = orderKb('order:inj146', 'backinj') //Инжграф
+const inlineKeyboardinj5 = orderKb('order:inj5', 'backinj') //Инжграф
+const inlineKeyboardinjALL = orderKb('order:injALL', 'backinj') //Инжграф
 
-const inlineKeyboard25 = orderKb('order14', 'back8');
-const inlineKeyboard26 = orderKb('order15', 'back8');
+// 3 курс
+const inlineKeyboard14 = orderKb('order:mss_pz1', WORKS["mss_pz1"].back); // МСС ПЗ1
+const inlineKeyboard15 = orderKb('order:mss_pz2', WORKS["mss_pz2"].back); // МСС ПЗ2
+const inlineKeyboard16 = orderKb('order:mss_pz3', WORKS["mss_pz3"].back); // МСС ПЗ3
+const inlineKeyboard17 = orderKb('order:mss_pz4', WORKS["mss_pz4"].back); // МСС ПЗ4
+const inlineKeyboard20 = orderKb('order:tus_kurs',      'back5');  // ТУС курсовая
+const inlineKeyboard23 = orderKb('order:mos_kurs',      'back6');  // МОС курсовая
+const inlineKeyboard25 = orderKb('order:mos_river_pz2', 'back8');  // МОС ПЗ2
+const inlineKeyboard26 = orderKb('order:mos_river_pz4', 'back8');  // МОС ПЗ4
+const inlineKeyboard28 = orderKb('order:bs_high',       'back9');  // БС ВВП подмостовой габарит
+const inlineKeyboard29 = orderKb('order:olvvp_stvor',   'back10'); // ОЛВВП линейный створ
+const inlineKeyboard31 = orderKb('order:nil_sea_rgr',   'back12'); // НиЛ море РГР
+const inlineKeyboard32 = orderKb('order:nil_river_rgr9','back13'); // НиЛ река-море РГР
+const inlineKeyboard35 = orderKb('order:tss_test',      'back14'); // ТСС 11 тестов
 
-const inlineKeyboard28 = orderKb('order17', 'back9');
-const inlineKeyboard29 = orderKb('order18', 'back10');
-
-const inlineKeyboard31 = orderKb('order20', 'back12');
-const inlineKeyboard32 = orderKb('order21', 'back13');
-
-const inlineKeyboard35 = orderKb('order23', 'back14');
-const inlineKeyboardNachertorder1_9 = orderKb('order24', 'backnachert')
-const inlineKeyboardNachertorder10_12 = orderKb('order25', 'backnachert')
-const inlineKeyboardNachertALLorder1_9 = orderKb('order26', 'backnachert')
-const inlineKeyboardNachertALLorder10_12 = orderKb('order27', 'backnachert')
-const inlineKeyboardNacherANDinj = orderKb('order28', 'back1')
-const inlineKeyboardinj146 = orderKb('order29', 'backinj')
-const inlineKeyboardinj5 = orderKb('order30', 'backinj')
-const inlineKeyboardinjALL = orderKb('order31', 'backinj')
 const orederKeyboard1 = new InlineKeyboard()
     .text('Заказ взят ✅', 'take1');
-const orederKeyboard2 = new InlineKeyboard()
-    .text('Заказ выполнен ✅', 'take2');
-const writeManager = new InlineKeyboard()
-    .text('✅ Отправил скриншот', 'pay');
-const writeManager1 = new InlineKeyboard()
-    .text('✅ Отправил скриншот', 'pay1');
+
 const writeManager2 = new InlineKeyboard()
     .text('✅ Отправил скриншот', 'pay2');
-const writeManager4 = new InlineKeyboard()
-    .text('✅ Отправил скриншот', 'pay4');
-const writeManager5 = new InlineKeyboard()
-    .text('✅ Отправил скриншот', 'pay5');
-const writeManager6 = new InlineKeyboard()
-    .text('✅ Отправил скриншот', 'pay6');
-const writeManager7 = new InlineKeyboard()
-    .text('✅ Отправил скриншот', 'pay7');
-const writeManager8 = new InlineKeyboard()
-    .text('✅ Отправил скриншот', 'pay8');
-const writeManager9 = new InlineKeyboard()
-    .text('✅ Отправил скриншот', 'pay9');
-const writeManager10 = new InlineKeyboard()
-    .text('✅ Отправил скриншот', 'pay10');
-const writeManager11 = new InlineKeyboard()
-    .text('✅ Отправил скриншот', 'pay11');
-const writeManager12 = new InlineKeyboard()
-    .text('✅ Отправил скриншот', 'pay12');
-const writeManager23 = new InlineKeyboard()
-    .text('✅ Отправил скриншот', 'pay23');
+
 const WriteManagerUnic = new InlineKeyboard()
     .url('✍ Написать менеджеру', trackingManagerLink).row()
     .text('✅ Отправил скриншот', 'confirm_payment');
-
-const WriteManager16 = new InlineKeyboard()
-    .text('✅ Написал менеджеру', 'Pay16');
-const WriteManager19 = new InlineKeyboard()
-    .text('✅ Написал менеджеру', 'Pay19');
-const WriteManager22 = new InlineKeyboard()
-    .text('✅ Написал менеджеру', 'Pay22');
-const WriteManager10 = new InlineKeyboard()
-    .text('✅ Отправил скриншот', 'Pay10');
-const WriteManager11 = new InlineKeyboard()
-    .text('Написал менеджеру', 'Pay11');
 
 const writeMathManager1 = new InlineKeyboard()
     .url("Написать менеджеру по вышмату ✍️", trackingMathLink).row()
@@ -422,9 +504,6 @@ const replyKeyBoard = new InlineKeyboard()
 const emailKeyboard = new InlineKeyboard()
     .text('Отправил не тот адрес, вернуться назад', 'backward').row()
     .text('Всё верно!', 'ok');
-const loginKeyboard = new InlineKeyboard()
-    .text('Отправил не тот логин и пароль', 'backward1').row()
-    .text('Всё верно!', 'ok1');
 
 
 //Блок 3. Проверка подписки на канал (+постоянная проверка подписки)
@@ -574,8 +653,7 @@ bot.hears('🥂 Предложить работу 🥂', async (ctx) => {
     const user = ctx.from;
     await ctx.reply(`Мы ценим твою инициативу, \n✨${user.first_name}✨\n
 Для предложения работы или услуги напиши нашему <a href="${trackingManagerLink}">менеджеру</a> \n\nБудем очень рады и достойно ` +
-`<a href="${loyaltyDocLink}">вознаградим Вас (см. п. 4)</a> ` + 
-`за пополнение общей сокровищницы, а так же выполнение работ через наш сервис`, {
+`<a href="${loyaltyDocLink}">вознаградим Вас (см. п. 4)</a> за пополнение общей сокровищницы, а так же выполнение работ через наш сервис`, {
         parse_mode: `HTML`,
         reply_markup: urlKeyboard4,
     })
@@ -736,13 +814,12 @@ bot.callbackQuery('engine', async (ctx) => {
 
 bot.callbackQuery('nach1_9', async (ctx) => {
     const { line } = formatPriceInfo(ctx, nach1_9);
-    await ctx.callbackQuery.message.editText(`1-9 задача (каждая отдельно)📎\n\n${line}\n
-После оплаты отправьте менеджеру фотографию задания 📸\n\nРаботы по номерам:
-1. Выполнить проекцию точки на всех плоскостях по двум проекциям.\n2. Выполнить проекцию точки на всех плоскостях по координатам. 
+    await ctx.callbackQuery.message.editText(`1-9 задача (каждая отдельно) 📎\n\n${line}\n
+Работы по номерам:\n1. Выполнить проекцию точки на всех плоскостях по двум проекциям.\n2. Выполнить проекцию точки на всех плоскостях по координатам. 
 3. Выполнить проекцию фигуры на плоскости.\n4. Найти пересечение фигур. \n5. Найти пересечение прямой с плоскостью. 
 6. Найти фигуру пересечения плоскости с обьемной фигурой.\n7. Найти фигуру пересечения плоскости с обьемной фигурой. 
-8. Найти точки пересечения прямой с фигурой.\n9. Выполнить вырез в фигуре на всех плоскостях.\n\n Примеры работ доступны по ` + 
-`<a href="https://drive.google.com/drive/folders/1CSjpSp2XiJqxycJXp3o00CR1hqjqeRiM?usp=drive_link">ссылке</a>`, {
+8. Найти точки пересечения прямой с фигурой.\n9. Выполнить вырез в фигуре на всех плоскостях.\n\nПосле оплаты отправьте менеджеру фотографию задания 📸\n
+Примеры работ доступны по <a href="${exampNach1_9}">ссылке</a> 🔍`, {
         disable_web_page_preview: true,
         reply_markup: inlineKeyboardNachertorder1_9,
         parse_mode: 'HTML'
@@ -752,9 +829,10 @@ bot.callbackQuery('nach1_9', async (ctx) => {
 
 bot.callbackQuery('nach10_12', async (ctx) => {
     const { line } = formatPriceInfo(ctx, nach10_12);
-    await ctx.callbackQuery.message.editText(`10-12 задача (каждая отдельно)📎\n\n${line}\n\nДля заказа напишите номер интересующей задачи:
-1. Построить линию пересечения поверхностей геометрических тел\n2. Определить расстояние от точки А до прямой l
-3. Определить расстояние от точки A до плоскости ɑ`, {
+    await ctx.callbackQuery.message.editText(`10-12 задача (каждая отдельно) 📎\n\n${line}\n
+Работы по номерам:\n1. Построить линию пересечения поверхностей геометрических тел\n2. Определить расстояние от точки А до прямой l
+3. Определить расстояние от точки A до плоскости ɑ\n\nПосле оплаты отправьте менеджеру фотографию задания 📸\n
+Примеры работ доступны по <a href="${exampNach10_12}">ссылке</a> 🔍`, {
         disable_web_page_preview: true,
         reply_markup: inlineKeyboardNachertorder10_12,
         parse_mode: 'HTML'
@@ -762,7 +840,81 @@ bot.callbackQuery('nach10_12', async (ctx) => {
     await ctx.answerCallbackQuery()
 })
 
+bot.callbackQuery('nachall1_9', async (ctx) => {
+    const { line } = formatPriceInfo(ctx, nachall1_9);
+    await ctx.callbackQuery.message.editText(`1-9 задача (вместе) 📎\n\n${line}\n\nРаботы по номерам:
+1. Выполнить проекцию точки на всех плоскостях по двум проекциям.\n2. Выполнить проекцию точки на всех плоскостях по координатам. 
+3. Выполнить проекцию фигуры на плоскости.\n4. Найти пересечение фигур. \n5. Найти пересечение прямой с плоскостью. 
+6. Найти фигуру пересечения плоскости с обьемной фигурой.\n7. Найти фигуру пересечения плоскости с обьемной фигурой. 
+8. Найти точки пересечения прямой с фигурой.\n9. Выполнить вырез в фигуре на всех плоскостях.\n\nПосле оплаты отправьте менеджеру фотографию заданий 📸\n
+Примеры работ доступны по <a href="${exampNach1_9}">ссылке</a> 🔍`, {
+        disable_web_page_preview: true,
+        reply_markup: inlineKeyboardNachertALLorder1_9,
+        parse_mode: 'HTML'
+    })
+    await ctx.answerCallbackQuery()
+})
 
+bot.callbackQuery('nachall10_12', async (ctx) => {
+    const { line } = formatPriceInfo(ctx, nachall10_12);
+    await ctx.callbackQuery.message.editText(`10-12 задача (вместе) 📎\n\n${line}\n\nРаботы по номерам:
+1. Построить линию пересечения поверхностей геометрических тел\n2. Определить расстояние от точки А до прямой l
+3. Определить расстояние от точки A до плоскости ɑ\n\nПосле оплаты отправьте менеджеру фотографию заданий 📸\n\nПримеры работ доступны по <a href="${exampNach10_12}">ссылке</a> 🔍`, {
+        disable_web_page_preview: true,
+        reply_markup: inlineKeyboardNachertALLorder10_12,
+        parse_mode: 'HTML'
+    })
+    await ctx.answerCallbackQuery()
+})
+
+bot.callbackQuery('nachANDinjgraf', async (ctx) => {
+    const { line } = formatPriceInfo(ctx, nachANDinjgraf);
+    await ctx.callbackQuery.message.editText(`🦁 Весь начерт и инжграф 🦁\n👑 Царский набор 👑\n\n${line}\n\n
+Что входит в заказ:\n1. Все, нужные для зачёта работы по начерталке (1 - 9)\n2. Все работы по инженерной графике (1 - 6)\n
+После оплаты отправьте менеджеру фотографии заданий 📸\n\nПримеры работ доступны по <a href="${exampNachANDinjg}">ссылке</a> 🔍`, {
+        disable_web_page_preview: true,
+        reply_markup: inlineKeyboardNacherANDinj,
+        parse_mode: 'HTML'
+    })
+    await ctx.answerCallbackQuery()
+})
+
+bot.callbackQuery('inj146', async (ctx) => {
+    const { line } = formatPriceInfo(ctx, inj146);
+    await ctx.callbackQuery.message.editText(`1-4 и 6 работа (каждая отдельно) 📐\n\n${line}\n\nРаботы по номерам:
+1. Выполнить чертёж детали.\n2. Выполнить чертёж детали.\n3. Выполнить чертёж в двух проекциях болтового соединения. 
+4. Выполнить чертёж в двух проекциях  шпилечного соединения.\n6. Выполнить чертёж отдельной детали со сборного чертежа.
+\nПосле оплаты отправьте менеджеру фотографии заданий 📸\n\nПримеры работ доступны по <a href="${exampInj}">ссылке</a> 🔍`, {
+        disable_web_page_preview: true,
+        reply_markup: inlineKeyboardinj146,
+        parse_mode: 'HTML'
+    })
+    await ctx.answerCallbackQuery()
+})
+
+bot.callbackQuery('inj5', async (ctx) => {
+    const { line } = formatPriceInfo(ctx, inj5);
+    await ctx.callbackQuery.message.editText(`5 работа (эскизирование) 🎈\n\n${line}\n\n
+После оплаты отправьте менеджеру фотографию задания 📸\n\nПримеры работ доступны по <a href="${exampInj}">ссылке</a> 🔍`, {
+        disable_web_page_preview: true,
+        reply_markup: inlineKeyboardinj5,
+        parse_mode: 'HTML'
+    })
+    await ctx.answerCallbackQuery()
+})
+
+bot.callbackQuery('injALL', async (ctx) => {
+    const { line } = formatPriceInfo(ctx, injALL);
+    await ctx.callbackQuery.message.editText(`Весь инжграф ‼️Выгода 1460₽‼️\n\n${line}\n\nРаботы по номерам:
+1. Выполнить чертёж детали.\n2. Выполнить чертёж детали.\n3. Выполнить чертёж в двух проекциях болтового соединения. 
+4. Выполнить чертёж в двух проекциях  шпилечного соединения.\n5. Выполнить эскиз детали.\n6. Выполнить чертёж отдельной детали со сборного чертежа.
+\nПосле оплаты отправьте менеджеру фотографии заданий 📸\n\nПримеры работ доступны по <a href="${exampInj}">ссылке</a> 🔍`, {
+        disable_web_page_preview: true,
+        reply_markup: inlineKeyboardinjALL,
+        parse_mode: 'HTML'
+    })
+    await ctx.answerCallbackQuery()
+})
 
 bot.callbackQuery('beam', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costBalka);
@@ -1063,27 +1215,15 @@ bot.callbackQuery('rgr1', async (ctx) => {
 
 
 //Блок 6. Обработка разных типов заказов
-bot.callbackQuery('ordernach1_9', async (ctx) => {
-    
-})
 
-bot.callbackQuery('order1', async (ctx) => {
-    const { line } = formatPriceInfo(ctx, costVal);
-    ctx.session.order.waitingForData = true;
-    await ctx.reply(`Расчёт Вала 📏\n\n${line}\n\nНапишите в сообщении боту следующие данные для выполнения работы:
-1. Ваш номер по журналу (у преподавателя могут быть свои списки, поэтому лучше уточнить)\n2. Ваш номер учебной группы
-3. Ваша фамилия и инициалы`, { parse_mode: 'HTML' });
+bot.callbackQuery('order8', async (ctx) => {
+    const { line } = formatPriceInfo(ctx, costMSS_test);
+    ctx.session.order8.waitingForData8 = true;
+    ctx.session.order8.step8 = 1;
+    await ctx.reply(`3 курс ⭐⭐⭐\nМСС 📏\nтоговый тест по МСС 🖥️\n\n${line}\n
+Для получения доступа к тестам Вам необходимо отправить свою почту боту`, { parse_mode: 'HTML' });
     await ctx.answerCallbackQuery();
-})
-
-bot.callbackQuery('order', async (ctx) => {
-    const { line } = formatPriceInfo(ctx, costBalka);
-    ctx.session.order1.waitingForData1 = true;
-    await ctx.reply(`Расчёт Балки 🧮\n\n${line}\n\nНапишите в сообщении боту следующие данные для выполнения работы:
-1. Ваш номер по журналу (у преподавателя могут быть свои списки, поэтому лучше уточнить)\n2. Ваш номер учебной группы
-3. Ваша фамилия и инициалы`, { parse_mode: 'HTML' });
-    await ctx.answerCallbackQuery()
-})
+});
 
 bot.callbackQuery('order2', async (ctx) => {
     ctx.session.order2.waitingForData2 = true;
@@ -1100,102 +1240,21 @@ bot.callbackQuery(/order:(.+)/, async (ctx) => {
 
     const { line } = formatPriceInfo(ctx, work.price);
 
-    await ctx.reply(`${work.title}\n\n${line}\n\nДля заказа введите номер своего варианта`, { parse_mode: 'HTML' });
+    // Заголовок + цена + индивидуальная подсказка к данным
+    await ctx.reply(`${work.title}\n\n${line}\n\n${work.prompt}`, { parse_mode: 'HTML' } );
 
+    // Запускаем универсальный поток
     ctx.session.orderFlow = {
         active: true,
         workId,
-        needQueue: [...work.needs],
+        needQueue: [...(work.needs || ['details'])],
         data: {},
     };
-
     await ctx.answerCallbackQuery();
 });
 
-bot.callbackQuery('order8', async (ctx) => {
-    const { line } = formatPriceInfo(ctx, costMSS_test);
-    ctx.session.order8.waitingForData8 = true;
-    ctx.session.order8.step8 = 1;
-    await ctx.reply(`3 курс ⭐⭐⭐\nМСС 📏\nтоговый тест по МСС 🖥️\n\n${line}\n
-Для получения доступа к тестам Вам необходимо отправить свою почту боту`, { parse_mode: 'HTML' });
-    await ctx.answerCallbackQuery();
-})
 
-bot.callbackQuery('order9', async (ctx) => {
-    const { line } = formatPriceInfo(ctx, costTUS_kurs);
-    ctx.session.order9.waitingForData9 = true;
-    await ctx.reply(`Предмет - ТУС 🚢\nКурсовая работа 🎯\n\n${line}\n
-Напишите в сообщении боту следующие данные для выполнения работы:\n1. Ваш номер по журналу\n2. Номер учебной группы
-3. Ваша фамилия и инициалы (для оформления титульного листа)`, { parse_mode: 'HTML' });
-    await ctx.answerCallbackQuery();    
-})
-
-bot.callbackQuery('order12', async (ctx) => {
-    const { line } = formatPriceInfo(ctx, costMOS_Kurs);
-    ctx.session.order12.waitingForData12 = true;
-    await ctx.reply(`Предмет - МОС 🧮\nЗадание: Курсовая работа 🚢\n\n${line}\n
-Для заказа работы введите номер своего варианта по журналу преподавателя, эти варианты могут не совпадать с номером по журналу группы.`, { parse_mode: 'HTML' });
-    await ctx.answerCallbackQuery();    
-})
-
-bot.callbackQuery('order14', async (ctx) => {
-    ctx.session.order14.waitingForData14 = true;
-    const { line } = formatPriceInfo(ctx, costMSS_PZ2);
-    await ctx.reply(`Предмет - МОС 🧮\nПоток: Река-море 🌉🌊\nПЗ №2. Сферические треугольники\n\n${line}\n
-Для заказа работы введите номер своего варианта`, { parse_mode: 'HTML' });
-    await ctx.answerCallbackQuery();    
-})
-
-bot.callbackQuery('order15', async (ctx) => {
-    ctx.session.order15.waitingForData15 = true;
-    const { line } = formatPriceInfo(ctx, costMSS_PZ4);
-    await ctx.reply(`Предмет - МОС 🧮\nПоток: Река-море 🌉🌊\nПЗ №4. Оценка нав параметров\n\n${line}\n
-Для заказа работы введите номер своего варианта`, { parse_mode: 'HTML' });
-    await ctx.answerCallbackQuery();    
-})
-
-bot.callbackQuery('order17', async (ctx) => {
-    ctx.session.order17.waitingForData17 = true;
-    const { line } = formatPriceInfo(ctx, costBS_high);
-    await ctx.reply(`Предмет - Безопасность судоходства на ВВП🛟\nОпределение высоты подмостового габарита🌉\n\n${line}\n
-Напишите в сообщении боту следующие данные для выполнения работы:\n1. Ваш номер по журналу\n2. Номер учебной группы
-3. Ваша фамилия и инициалы\n4. Ваш день и месяц рождения`, { parse_mode: 'HTML' });
-    await ctx.answerCallbackQuery();    
-})
-
-
-bot.callbackQuery('order18', async (ctx) => {
-    ctx.session.order18.waitingForData18 = true;
-    const { line } = formatPriceInfo(ctx, costOLVVP_Stvor);
-    await ctx.reply(`Предмет - Общая лоции ВВП 🌉\nПЗ "Расчёт линейного навигационного створа"\n\n${line}\n
-Для заказа работы введите номер своего варианта`, { parse_mode: 'HTML' });
-    await ctx.answerCallbackQuery();    
-})
-
-bot.callbackQuery('order20', async (ctx) => {
-    ctx.session.order20.waitingForData20 = true;
-    const { line } = formatPriceInfo(ctx, costNIL_sea_RGR);
-    await ctx.reply(`Предмет - НиЛ 🧭 \nПоток: Море 🌊\nЗадание: РГР вертикальный угол (4 задачи)\n\n${line}\n
-Напишите в сообщении боту следующие данные для выполнения работы:\n1. Ваш номер по журналу\n2. Номер учебной группы
-3. Ваша фамилия и инициалы (для оформления титульного листа)`, { parse_mode: 'HTML' });
-    await ctx.answerCallbackQuery();    
-})
-
-bot.callbackQuery('order21', async (ctx) => {
-    ctx.session.order21.waitingForData21 = true;
-    await ctx.reply(`Предмет - НиЛ 🧭 \nПоток:  Река-море 🌉🌊\nЗадание: РГР 9 задач по 6 сборникам 📚
-Стоимость: ${costNIL_river_RGR}₽\nДля заказа работы введите номер своего варианта`, { parse_mode: 'HTML' });
-    await ctx.answerCallbackQuery();    
-})
-
-bot.callbackQuery('order23', async (ctx) => {
-    ctx.session.order23.waitingForData23 = true;
-    const { line } = formatPriceInfo(ctx, costTSS_Test);
-    await ctx.reply(`Предмет - ТСС 📺\n11 тестов на фарватере🖥️\n\n${line}\n
-Напишите в сообщении боту Ваш логин и пароль от фарватера`, { parse_mode: 'HTML' });
-    await ctx.answerCallbackQuery();
-})
-
+//Работаем с текстом от пользователя
 bot.on("message:text", async (ctx) => {
     
     // Проверяем, ожидаем ли мы номер телефона
@@ -1208,10 +1267,9 @@ bot.on("message:text", async (ctx) => {
         return;
     }
 
-    //Обработчик для ПЗ1 - ПЗ4 по МСС
+    //Обработчик всех заказов
     const flow = ctx.session.orderFlow;
-    if (!flow?.active) return;
-
+    if (flow?.active) {
     const work = WORKS[flow.workId];
     if (!work) { flow.active = false; return; }
 
@@ -1219,60 +1277,43 @@ bot.on("message:text", async (ctx) => {
 
     if (next === "variant") {
         const text = (ctx.message.text || "").trim();
-        if (!text) return ctx.reply("Введите номер варианта (только текст).");
-
+        if (!text) return ctx.reply("Введите номер варианта.");
         flow.data.variant = text;
+        flow.needQueue.shift();
+    } else if (next === "details") {
+        const text = (ctx.message.text || "").trim();
+        if (!text) return ctx.reply("Отправьте одним сообщением все необходимые данные.");
+        flow.data.details = text;
+        // Сохраним исходное сообщение — пригодится, если нужен будет пересыл
+        userLastMessages.set(ctx.from.id, ctx.message);
         flow.needQueue.shift();
     }
 
     if (flow.needQueue.length === 0) {
         const { line } = formatPriceInfo(ctx, work.price);
+        const dataBlock = flow.data.details ? `Данные:\n${flow.data.details}` : (flow.data.variant ? `Ваш вариант: ${flow.data.variant}` : '');
 
-        // уведомление пользователю
-        await ctx.reply(`${work.title}\n\n${line}\n\nВаш вариант: ${flow.data.variant}\n\n` +
-        `Для оплаты переведите указанную сумму на номер карты: ${myCardNumber}` + payconfmes, 
-        { disable_web_page_preview: true, parse_mode: 'HTML', reply_markup: WriteManagerUnic }
-        );
+        // Сообщение пользователю
+        await ctx.reply(`${work.title}\n\n${line}\n\n${dataBlock}\n\n` + `Для оплаты переведите указанную сумму на номер карты: ${myCardNumber}` + payconfmes,
+        { disable_web_page_preview: true, parse_mode: 'HTML', reply_markup: WriteManagerUnic });
 
-        // сообщение менеджеру
-        const managerMsg =`${buildUserReference(ctx)} собирается сделать заказ\n\n${work.title}\n` +
-        (flow.data.variant ? `Вариант: ${flow.data.variant}\n` : "") + getPriceForWork(ctx, work.price);
+        // Черновик для менеджера (ожидаем подтверждение оплаты)
+        const managerMsg =`${buildUserReference(ctx)} собирается сделать заказ\n\n${work.title}\n` + (dataBlock ? dataBlock + '\n' : '') +
+            getPriceForWork(ctx, work.price);
+
         waitingOrderMes = (await ctx.api.sendMessage(TARGET_CHAT_ID, managerMsg)).message_id;
 
+        // тут НЕ завершаем поток — ждём нажания "✅ Отправил скриншот"
+        return;
     } else {
+        // Подсказка следующего шага
         const field = flow.needQueue[0];
-        await ctx.reply(field === "variant" ? "Введите номер вашего варианта:" : `Введите ${field}`);
+        await ctx.reply(field === "variant" ? "Введите номер вашего варианта:" : "Отправьте одним сообщением все необходимые данные:");
+        return;
     }
+}
 
     //Все остальные обработчики заказов (пока старые)
-    if (ctx.session.order?.waitingForData) {
-    userLastMessages.set(ctx.from.id, ctx.message);
-    const { line } = formatPriceInfo(ctx, costVal);
-    await ctx.reply(`Ваш заказ:\n\n2 курс ⭐️⭐️\nПредмет - Механика ⚙\nРабота - Расчёт Вала 📏\n\n${line}\n
-Данные:\n${ctx.message.text}\n\nДля оплаты заказа переведите указанную сумму на номер карты: ${myCardNumber}${payconfmes}`,{
-        parse_mode: `HTML`,
-        reply_markup: writeManager
-    })
-    ctx.session.order.waitingForData = false;
-    ctx.session.order.dataReceived = true;
-    return;
-    }
-
-
-    if (ctx.session.order1?.waitingForData1) {
-        console.log('Обработка данных заказа...');
-        userLastMessages.set(ctx.from.id, ctx.message);
-        const { line } = formatPriceInfo(ctx, costBalka);
-    await ctx.reply(`Ваш заказ:\n\n2 курс ⭐️⭐️\nПредмет - Механика ⚙\nРабота - Расчёт Балки 🧮\n\n${line}\n
-Данные:\n${ctx.message.text}\n\nДля оплаты заказа переведите указанную сумму на номер карты: ${myCardNumber}${payconfmes}`,{
-        parse_mode: `HTML`,
-        reply_markup: writeManager1
-    })
-    ctx.session.order1.waitingForData1 = false;
-    ctx.session.order1.dataReceived1 = true;
-    return;
-    }
-
     if (ctx.session.order2?.waitingForData2) {
 
         if (ctx.session.order2.step2 === 1) {
@@ -1318,183 +1359,138 @@ bot.on("message:text", async (ctx) => {
         await ctx.reply("Ошибка, для доступа к материалам необходимо ввести адрес электронной почты");
         
     }
-
-    if (ctx.session.order9?.waitingForData9) {
-    userLastMessages.set(ctx.from.id, ctx.message);
-    const { line } = formatPriceInfo(ctx, costTUS_kurs);
-    await ctx.reply(`Ваш заказ:\n\n3 курс ⭐️⭐️⭐️\nПредмет - ТУС 🚢\nКурсовая работа 🎯\n\n${line}\n\nДанные для расчёта:
-${ctx.message.text}\n\nДля оплаты заказа переведите указанную сумму на номер карты: ${myCardNumber}${payconfmes}`,{
-        parse_mode: `HTML`,
-        reply_markup: writeManager4
-    })
-    ctx.session.order9.waitingForData9 = false;
-    ctx.session.order9.pay9 = true;
-    return;
-    }
-
-    if (ctx.session.order12?.waitingForData12) {
-        userLastMessages.set(ctx.from.id, ctx.message);
-        const { line } = formatPriceInfo(ctx, costMOS_Kurs);
-        await ctx.reply(`Ваш заказ:\n\n3 курс ⭐️⭐️⭐️\nПредмет - МОС 🧮\nЗадание: Курсовая работа 🚢\n\n${line}
-\nДанные для расчёта:\n${ctx.message.text}\n\nДля оплаты заказа переведите указанную сумму на номер карты: ${myCardNumber}${payconfmes}`,{
-            parse_mode: `HTML`,
-            reply_markup: writeManager5
-        })
-        ctx.session.order12.waitingForData12 = false;
-        ctx.session.order12.pay12 = true;
-        return;
-    }
-
-    if (ctx.session.order14?.waitingForData14) {
-        const { line } = formatPriceInfo(ctx, costMOS_river_PZ2);
-        userLastMessages.set(ctx.from.id, ctx.message);
-        await ctx.reply(`Ваш заказ:\n\n3 курс ⭐️⭐️⭐️\nПредмет - МОС 🧮\nПоток: Река-море 🌉🌊\nЗадание: ПЗ №2. Сферические треугольники\n
-${line}\n\nВаш вариант:\n${ctx.message.text}\n\nДля оплаты заказа переведите указанную сумму на номер карты: ${myCardNumber}${payconfmes}`,{
-            parse_mode: `HTML`,
-            reply_markup: writeManager7
-        })
-        ctx.session.order14.waitingForData14 = false;
-        ctx.session.order14.pay14 = true;
-        return;
-    }
-
-    if (ctx.session.order15?.waitingForData15) {
-        const { line } = formatPriceInfo(ctx, costMOS_river_PZ4);
-        userLastMessages.set(ctx.from.id, ctx.message);
-        await ctx.reply(`Ваш заказ:\n\n3 курс ⭐️⭐️⭐️\nПредмет - МОС 🧮\nПоток: Река-море 🌉🌊
-Задание: ПЗ №4. Оценка навигационных параметров.\n\n${line}\n
-Ваш вариант:\n${ctx.message.text}\nДля оплаты заказа переведите указанную сумму на номер карты: ${myCardNumber}${payconfmes}`,{
-            parse_mode: `HTML`,
-            reply_markup: writeManager8
-        })
-        ctx.session.order15.waitingForData15 = false;
-        ctx.session.order15.pay15 = true;
-        return;
-    }
-
-    if (ctx.session.order17?.waitingForData17) {
-        const { line } = formatPriceInfo(ctx, costBS_high);
-        userLastMessages.set(ctx.from.id, ctx.message);
-        await ctx.reply(`Ваш заказ:\n\n3 курс ⭐️⭐️⭐️\nПредмет - Безопасность судоходства на ВВП🛟
-Определение высоты подмостового габарита🌉\n\n${line}\nДанные для расчёта:\n${ctx.message.text}\n
-Для оплаты заказа переведите указанную сумму на номер карты: ${myCardNumber}${payconfmes}`,{
-            parse_mode: `HTML`,
-            reply_markup: writeManager9
-        })
-        ctx.session.order17.waitingForData17 = false;
-        ctx.session.order17.pay17 = true;
-        return;
-    }
-
-    if (ctx.session.order18?.waitingForData18) {
-        const { line } = formatPriceInfo(ctx, costOLVVP_Stvor);
-        userLastMessages.set(ctx.from.id, ctx.message);
-        await ctx.reply(`Ваш заказ:\n\n3 курс ⭐️⭐️⭐️\nПредмет - Общая лоции ВВП 🌉\nПЗ "Расчёт линейного навигационного створа"
-\n${line}\n\nВаш вариант:\n${ctx.message.text}\n
-Для оплаты заказа переведите указанную сумму на номер карты: ${myCardNumber}${payconfmes}`,{
-            parse_mode: `HTML`,
-            reply_markup: writeManager10
-        })
-        ctx.session.order18.waitingForData18 = false;
-        ctx.session.order18.pay18 = true;
-        return;
-    }
-
-    if (ctx.session.order20?.waitingForData20) {
-    const { line } = formatPriceInfo(ctx, costNIL_sea_RGR);
-    userLastMessages.set(ctx.from.id, ctx.message);
-    await ctx.reply(`Ваш заказ:\n\n3 курс ⭐️⭐️⭐️\nПредмет - НиЛ 🧭 \nПоток: Море 🌊\nЗадание: РГР вертикальный угол (4 задачи)
-\n${line}\n\nДанные для расчёта:\n${ctx.message.text}\n
-Для оплаты заказа переведите указанную сумму на номер карты: ${myCardNumber}${payconfmes}`,{
-        parse_mode: `HTML`,
-        reply_markup: writeManager11
-    })
-    ctx.session.order20.waitingForData20 = false;
-    ctx.session.order20.pay20 = true;
-    return;
-    }
-
-    if (ctx.session.order21?.waitingForData21) {
-        const { line } = formatPriceInfo(ctx, costNIL_river_RGR);
-        userLastMessages.set(ctx.from.id, ctx.message);
-        await ctx.reply(`Ваш заказ:\n\n3 курс ⭐️⭐️⭐️\nПредмет - НиЛ 🧭 \nПоток:  Река-море 🌉🌊\nЗадание: РГР 9 задач по 6 сборникам 📚
-\n${line}\n\nВаш вариант:\n${ctx.message.text}\n
-Для оплаты заказа переведите ${costNIL_river_RGR} на номер карты: ${myCardNumber}${payconfmes}`,{
-            parse_mode: `HTML`,
-            reply_markup: writeManager12
-        })
-        ctx.session.order21.waitingForData21 = false;
-        ctx.session.order21.pay21 = true;
-        return;
-    }
-
-    if (ctx.session.order23?.waitingForData23) {
-        ctx.session.order23.com23 = ctx.message.text;
-        await ctx.reply(`Спасибо, Ваш логин и пароль принят\nПроверьте все ли верно: \n${ctx.session.order23.com23}`,{
-            reply_markup: loginKeyboard
-        });
-            ctx.session.order23.waitingForData23 = false;
-            ctx.session.order23.step23 = true;
-        return;
-    } 
 });
 
 
-//Блок n пересылка сообщений в группы
+// Временное хранилище для альбомов
+const mediaBuffer = {};
 
-bot.callbackQuery("confirm_payment", async (ctx) => { //Универсальный обработчик (пока для МСС ПЗ1-4)
+// Обработка фото и документов
+bot.on(["message:photo", "message:document"], async (ctx) => {
+    const flow = ctx.session.orderFlow;
+    if (!flow?.active) return;
+    const work = WORKS[flow.workId];
+    if (!work) return;
+
+    const next = flow.needQueue[0];
+    if (next !== "photo") return;
+
+    // Определяем file_id
+    let fileId;
+    let type;
+    if (ctx.message.photo) {
+        const largest = ctx.message.photo[ctx.message.photo.length - 1];
+        fileId = largest.file_id;
+        type = "photo";
+    } else if (ctx.message.document) {
+        fileId = ctx.message.document.file_id;
+        type = "document";
+    }
+
+    // Если это часть альбома
+    if (ctx.message.media_group_id) {
+        const groupId = ctx.message.media_group_id;
+        mediaBuffer[groupId] = mediaBuffer[groupId] || { files: [], ctx, handled: false };
+
+        mediaBuffer[groupId].files.push({ fileId, type });
+
+        // Запускаем обработку только один раз
+        if (!mediaBuffer[groupId].timer) {
+            mediaBuffer[groupId].timer = setTimeout(async () => {
+            const group = mediaBuffer[groupId];
+            if (!group || group.handled) return;
+            group.handled = true; // 🚫 больше не обрабатывать
+
+            // Сохраняем в заказ
+            flow.data.media = flow.data.media || [];
+            flow.data.media.push(...group.files);
+
+            flow.needQueue.shift();
+
+            const { line } = formatPriceInfo(group.ctx, work.price);
+
+            await group.ctx.reply( `${work.title}\n\n${line}\n\n📎 Файлы/фотографии задания получены\n\n` +
+                `Для оплаты переведите указанную сумму на номер карты: ${myCardNumber}` + payconfmes,
+                { disable_web_page_preview: true, parse_mode: 'HTML', reply_markup: WriteManagerUnic });
+
+            const managerMsg = `${buildUserReference(group.ctx)} собирается сделать заказ\n\n${work.title}\n` + getPriceForWork(group.ctx, work.price);
+
+            waitingOrderMes = (await group.ctx.api.sendMessage(TARGET_CHAT_ID, managerMsg)).message_id;
+
+            // Пересылаем все файлы менеджеру
+            for (const f of group.files) {
+                if (f.type === "photo") {
+                    await group.ctx.api.sendPhoto(TARGET_CHAT_ID, f.fileId);
+                } else {
+                    await group.ctx.api.sendDocument(TARGET_CHAT_ID, f.fileId);
+                }
+            }
+
+            delete mediaBuffer[groupId];
+            }, 500); // ждём полсекунды, чтобы все части альбома пришли
+        }
+    } else {
+        // Одиночное фото/файл
+        flow.data.media = flow.data.media || [];
+        flow.data.media.push({ fileId, type });
+
+        flow.needQueue.shift();
+
+        const { line } = formatPriceInfo(ctx, work.price);
+
+        await ctx.reply(`${work.title}\n\n${line}\n\n📎 Файл/фотография задания получен\n\n` +
+            `Для оплаты переведите указанную сумму на номер карты: ${myCardNumber}` + payconfmes,
+            { disable_web_page_preview: true, parse_mode: 'HTML', reply_markup: WriteManagerUnic });
+
+        const managerMsg = `${buildUserReference(ctx)} собирается сделать заказ\n\n${work.title}\n` + getPriceForWork(ctx, work.price);
+
+        waitingOrderMes = (await ctx.api.sendMessage(TARGET_CHAT_ID, managerMsg)).message_id;
+
+        if (type === "photo") {
+            await ctx.api.sendPhoto(TARGET_CHAT_ID, fileId);
+        } else {
+            await ctx.api.sendDocument(TARGET_CHAT_ID, fileId);
+        }
+    }
+});
+
+
+
+
+//Блок n пересылка сообщений в группы
+//После оплаты заказа пользователем
+bot.callbackQuery("confirm_payment", async (ctx) => {
     const flow = ctx.session.orderFlow;
     if (!flow?.workId) { return ctx.answerCallbackQuery({ text: "Нет активного заказа" }); }
 
     const work = WORKS[flow.workId];
+    const dataBlock = flow.data.details ? `Данные:\n${flow.data.details}` : (flow.data.variant ? `Вариант: ${flow.data.variant}` : '');
 
-    // сообщение менеджеру
-    const managerMsg =`Новый заказ!${buildUserReference(ctx)}\n\n${work.title}\n` + (flow.data.variant ? `Вариант: ${flow.data.variant}\n` : "") +
+    const managerMsg =
+        `Новый заказ!${buildUserReference(ctx)}\n\n${work.title}\n` +
+        (dataBlock ? dataBlock + '\n' : '') +
         getPriceForWork(ctx, work.price);
 
-    await ctx.api.editMessageText(TARGET_CHAT_ID, waitingOrderMes, managerMsg, {parse_mode: `HTML`, reply_markup: orederKeyboard1});
+    await ctx.api.editMessageText(
+        TARGET_CHAT_ID,
+        waitingOrderMes,
+        managerMsg,
+        { parse_mode: `HTML`, reply_markup: orederKeyboard1 }
+    );
 
-    await ctx.reply(afterConfReply); // сообщение пользователю
+    await ctx.reply(afterConfReply);
 
-    ctx.session.orderFlow = { active: false, workId: null, needQueue: [], data: {} }; // сброс
+  // Лояльность. Добавление общей суммы выручки
+    const priceInfo = loyalty.getPriceForUser(ctx.from.id, work.price);
+    const discountedPrice = priceInfo.discountedPrice;
+    await loyalty.addToTotal(ctx.from.id, ctx.from.username, discountedPrice);
+
+  // Сброс потока
+    ctx.session.orderFlow = { active: false, workId: null, needQueue: [], data: {} };
 
     await ctx.answerCallbackQuery();
 });
 
-bot.callbackQuery('pay', async (ctx) => {
-    if (ctx.session.order.dataReceived) {
-    const lastMessage = userLastMessages.get(ctx.from.id);
-
-    if (!lastMessage) {
-        await ctx.answerCallbackQuery("Не найдено предыдущее сообщение");
-        return;
-    }
-    const originaltext = lastMessage.text;
-    const msg = `Новый заказ!${buildUserReference(ctx)}\n\n2 курс\nПредмет - Механика ⚙
-Работа - Расчёт Вала 📏${getPriceForWork(ctx, costVal)}Данные:\n${originaltext}`;
-    await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
-    await ctx.reply(afterConfReply);
-    ctx.session.order.dataReceived = false;
-    }
-    await ctx.answerCallbackQuery()
-})
-
-bot.callbackQuery('pay1', async (ctx) => {
-    if (ctx.session.order1.dataReceived1) {
-    const lastMessage = userLastMessages.get(ctx.from.id);
-
-    if (!lastMessage) {
-        await ctx.answerCallbackQuery("Не найдено предыдущее сообщение");
-        return;
-    }
-    const originaltext = lastMessage.text;
-    const msg = `Новый заказ!${buildUserReference(ctx)}\n\n2 курс\nПредмет - Механика ⚙\nРабота - Расчёт Балки 🧮${getPriceForWork(ctx, costBalka)}Данные:\n${originaltext}`;
-    await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
-    await ctx.reply(afterConfReply)
-    ctx.session.order1.dataReceived1 = false;
-    }
-    await ctx.answerCallbackQuery()
-})
 
 bot.callbackQuery('ok', async (ctx) => {
     if (ctx.session.order8.step8 === 2) {
@@ -1510,20 +1506,6 @@ bot.callbackQuery('ok', async (ctx) => {
     }
 })
 
-bot.callbackQuery('ok1', async (ctx) => {
-    if (ctx.session.order23.step23) {
-        const { line } = formatPriceInfo(ctx, costTSS_Test);
-        await ctx.reply(`Предмет - ТСС 📺\n11 тестов на фарватере🖥️\n\n${line}\n\nВаш логин и пароль:\n${ctx.session.order23.com23}
-Для оплаты заказа и получения доступа переведите указанную сумму на номер карты:\n${myCardNumber}${payconfmes}`, {
-            parse_mode: `HTML`,
-            reply_markup: writeManager23
-        });
-        await ctx.answerCallbackQuery();
-        ctx.session.order23.step23 = false;
-        ctx.session.order23.dataReceived23 = true;
-    }
-})
-
 bot.callbackQuery('pay2', async (ctx) => {
     if (ctx.session.order8.dataReceived8) {
         const msg = `Запрос доступа${buildUserReference(ctx)}\n\n3 курс\nПредмет - МСС 📏\nИтоговый тест по МСС 🖥️${getPriceForWork(ctx, costMSS_test)}
@@ -1535,151 +1517,6 @@ bot.callbackQuery('pay2', async (ctx) => {
     await ctx.answerCallbackQuery()
 })
 
-bot.callbackQuery('pay23', async (ctx) => {
-    if (ctx.session.order23.dataReceived23) {
-        const msg = `Новый заказ!${buildUserReference(ctx)}}\n\n3 курс\nПредмет - ТСС 📺\n11 тестов на фарватере🖥️${getPriceForWork(ctx, costTSS_Test)}
-Логин и пароль:\n${ctx.session.order23.com23}`;
-        await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
-        await ctx.reply(afterConfReply);
-        ctx.session.order23.dataReceived23 = false;
-    }
-    await ctx.answerCallbackQuery()
-})
-
-bot.callbackQuery('pay4', async (ctx) => {
-    if (ctx.session.order9.pay9) {
-        const lastMessage = userLastMessages.get(ctx.from.id);
-        const originaltext = lastMessage.text;
-        if (!lastMessage) {
-            await ctx.answerCallbackQuery("Не найдено предыдущее сообщение");
-            return;
-        }
-        const msg = `Новый заказ!${buildUserReference(ctx)}\n\n3 курс\nПредмет - ТУС 🚢\nРабота - Курсовая 🎯${getPriceForWork(ctx, costTUS_kurs)}Данные:\n${originaltext}`;
-        await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
-        await ctx.reply(afterConfReply)
-        ctx.session.order9.pay9 = false;
-    }
-    await ctx.answerCallbackQuery()
-})
-
-bot.callbackQuery('pay5', async (ctx) => {
-    if (ctx.session.order12.pay12) {
-        const lastMessage = userLastMessages.get(ctx.from.id);
-        const originaltext = lastMessage.text;
-        if (!lastMessage) {
-            await ctx.answerCallbackQuery("Не найдено предыдущее сообщение");
-            return;
-        }
-        const msg = `Новый заказ!${buildUserReference(ctx)}\n\n3 курс\nПредмет - МОС 🧮
-Задание: Курсовая 🚢${getPriceForWork(ctx, costMOS_Kurs)}Данные:\n${originaltext}`;
-        await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
-        await ctx.reply(afterConfReply)
-        ctx.session.order12.pay12 = false;
-    }
-    await ctx.answerCallbackQuery()
-})
-
-bot.callbackQuery('pay7', async (ctx) => {
-    if (ctx.session.order14.pay14) {
-        const lastMessage = userLastMessages.get(ctx.from.id);
-        const originaltext = lastMessage.text;
-        if (!lastMessage) {
-            await ctx.answerCallbackQuery("Не найдено предыдущее сообщение");
-            return;
-        }
-        const msg = `Новый заказ!${buildUserReference(ctx)}\n\n3 курс\nПредмет - МОС 🧮\nПоток: Море 🌊\nЗадание: ПЗ №2. Сферические треугольники
-${getPriceForWork(ctx, costMOS_river_PZ2)}\nВариант:\n${originaltext}`;
-        await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
-        await ctx.reply(afterConfReply)
-        ctx.session.order14.pay14 = false;
-    }
-    await ctx.answerCallbackQuery()
-})
-
-bot.callbackQuery('pay8', async (ctx) => {
-    if (ctx.session.order15.pay15) {
-        const lastMessage = userLastMessages.get(ctx.from.id);
-        const originaltext = lastMessage.text;
-        if (!lastMessage) {
-            await ctx.answerCallbackQuery("Не найдено предыдущее сообщение");
-            return;
-        }
-        const msg = `Новый заказ!${buildUserReference(ctx)}\n\n3 курс\nПредмет - МОС 🧮\nПоток: Море 🌊\nЗадание: ПЗ №4. Оценка нав параметров
-${getPriceForWork(ctx, costMOS_river_PZ4)}Вариант:\n${originaltext}`;
-        await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
-        await ctx.reply(afterConfReply)
-        ctx.session.order15.pay15 = false;
-    }
-    await ctx.answerCallbackQuery()
-})
-
-bot.callbackQuery('pay9', async (ctx) => {
-    if (ctx.session.order17.pay17) {
-        const lastMessage = userLastMessages.get(ctx.from.id);
-        const originaltext = lastMessage.text;
-        if (!lastMessage) {
-            await ctx.answerCallbackQuery("Не найдено предыдущее сообщение");
-            return;
-        }
-        const msg = `Новый заказ!${buildUserReference(ctx)}\n\n3 курс ⭐️⭐️⭐️\nПредмет - Безопасность судоходства на ВВП🛟\nОпределение высоты подмостового габарита🌉
-${getPriceForWork(ctx, costBS_high)}Данные для расчёта:\n${originaltext}`;
-        await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
-        await ctx.reply(afterConfReply)
-        ctx.session.order17.pay17 = false;
-    }
-    await ctx.answerCallbackQuery()
-})
-
-bot.callbackQuery('pay10', async (ctx) => {
-    if (ctx.session.order18.pay18) {
-        const lastMessage = userLastMessages.get(ctx.from.id);
-        const originaltext = lastMessage.text;
-        if (!lastMessage) {
-            await ctx.answerCallbackQuery("Не найдено предыдущее сообщение");
-            return;
-        }
-        const msg = `Новый заказ!${buildUserReference(ctx)}\n\n3 курс\nПредмет - Общая лоции ВВП 🌉\nПЗ "Расчёт линейного навигационного створа"
-${getPriceForWork(ctx, costOLVVP_Stvor)}Вариант:\n${originaltext}`;
-        await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
-        await ctx.reply(afterConfReply)
-        ctx.session.order18.pay18 = false;
-    }
-    await ctx.answerCallbackQuery()
-})
-
-bot.callbackQuery('pay11', async (ctx) => {
-    if (ctx.session.order20.pay20) {
-        const lastMessage = userLastMessages.get(ctx.from.id);
-        const originaltext = lastMessage.text;
-        if (!lastMessage) {
-            await ctx.answerCallbackQuery("Не найдено предыдущее сообщение");
-            return;
-        }
-        const msg = `Новый заказ!${buildUserReference(ctx)}\n\n3 курс\nПредмет - НиЛ 🧭 \nПоток: Море 🌊\nЗадание: РГР вертикальный угол (4 задачи)
-${getPriceForWork(ctx, costNIL_sea_RGR)}Данные:\n${originaltext}`;
-        await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
-        await ctx.reply(afterConfReply)
-        ctx.session.order20.pay20 = false;
-    }
-    await ctx.answerCallbackQuery()
-})
-
-bot.callbackQuery('pay12', async (ctx) => {
-    if (ctx.session.order21.pay21) {
-        const lastMessage = userLastMessages.get(ctx.from.id);
-        const originaltext = lastMessage.text;
-        if (!lastMessage) {
-            await ctx.answerCallbackQuery("Не найдено предыдущее сообщение");
-            return;
-        }
-        const msg = `Новый заказ!${buildUserReference(ctx)}\n\n3 курс ⭐️⭐️⭐️\nПредмет - НиЛ 🧭 \nПоток:  Река-море 🌉🌊\nЗадание: РГР 9 задач по 6 сборникам 📚
-${getPriceForWork(ctx, costNIL_sea_RGR)}Вариант:\n${originaltext}`;
-        await ctx.api.sendMessage(TARGET_CHAT_ID, msg);
-        await ctx.reply(afterConfReply)
-        ctx.session.order21.pay21 = false;
-    }
-    await ctx.answerCallbackQuery()
-})
 
 bot.callbackQuery('backward', async (ctx) => {
     if (ctx.session.order8.step8 === 2) {
@@ -1687,19 +1524,9 @@ bot.callbackQuery('backward', async (ctx) => {
         ctx.session.order8.step8 = 1;
         const { line } = formatPriceInfo(ctx, costMSS_test);
         await ctx.reply(`Итоговый тест по МСС 🖥️\n\n${line}\n
-Для получения доступа к тестам Вам необходимо отправить свою почту боту`, { parse_mode: 'HTML' });
+Для получения доступа к тестам Вам необходимо отправить свою почту боту (желательно @gmail.com)`, { parse_mode: 'HTML' });
         await ctx.answerCallbackQuery();
         return;
-    }
-})
-
-bot.callbackQuery('backward1', async (ctx) => {
-    if (ctx.session.order23.step23) {
-        ctx.session.order23.waitingForData23 = true;
-        const { line } = formatPriceInfo(ctx, costTSS_Test);
-        await ctx.reply(`11 тестов на фарватере🖥️\n\n${line}\n
-Срок выполнения: 1 -2 дня.\nДля выполнения работы Вам нужно отправить логин и пароль от фарватера`, { parse_mode: 'HTML' });
-        await ctx.answerCallbackQuery();
     }
 })
 
@@ -1727,6 +1554,10 @@ bot.callbackQuery('back2', async (ctx) => {
 
 bot.callbackQuery('backnachert', async (ctx) => {
     await go(ctx, `2 курс ⭐⭐\nНачерталка 📒${cherchenieMESS}${helpONSubject}`, inlineKeyboardNachert);
+});
+
+bot.callbackQuery('backinj', async (ctx) => {
+    await go(ctx, `2 курс ⭐⭐\nИнженерная графика 🗜️${cherchenieMESS}${helpONSubject}`, inlineKeyboarInjgraf);
 });
 
 bot.callbackQuery('back4', async (ctx) => {
