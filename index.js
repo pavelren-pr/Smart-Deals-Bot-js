@@ -12,8 +12,8 @@ bot.use(hydrate());
 
 const MY_CHAT_ID = -4913298319; // ID чата с моими заказами
 const MATH_CHAT_ID = -4801211812; // ID чата по вышмату
-const CHERCHENIE_CHAT_ID = -4826274706; // ID чата, куда будут отправляться уведомления о заказах по Инженерной графике и Начерталке
-const OTHER_ORDERS_CHAT_ID = -4855479221; // ID чата, для всех остальных заказов
+const CHERCHENIE_CHAT_ID = -4970188906; // ID чата, куда будут отправляться уведомления о заказах по Инженерной графике и Начерталке
+const OTHER_ORDERS_CHAT_ID = -4794000059; // ID чата, для всех остальных заказов
 const TARGET_GROUP = -1002162448649; //Наш тгк
 const userLastMessages = new Map(); 
 const CACH_TTL =  10 * 1000;
@@ -259,35 +259,35 @@ const WORKS = {
 
 //Разделение способов оплаты
 const WORK_PAYMENT = {
-  // Начерталка
-  nach1_9: myCardNumber,
-  nach10_12: myCardNumber,
-  nachall1_9: myCardNumber,
-  nachall10_12: myCardNumber,
-  inj146: ivanCardNumber,
-  inj5: ivanCardNumber,
-  injALL: ivanCardNumber,
-  nachANDinjgraf: myCardNumber,
-  // Механика
-  mech_beam: myCardNumber,
-  mech_val: myCardNumber,
-  // МСС
-  mss_pz1: myCardNumber,
-  mss_pz2: myCardNumber,
-  mss_pz3: myCardNumber,
-  mss_pz4: myCardNumber,
-  // Курсовые
-  tus_kurs: ivanCardNumber,
-  mos_kurs: ivanCardNumber,
-  // МОС ПЗ (река-море)
-  mos_river_pz2: myCardNumber,
-  mos_river_pz4: myCardNumber,
-  // Остальное
-  bs_high: myCardNumber,
-  olvvp_stvor: myCardNumber,
-  nil_sea_rgr: myCardNumber,
-  nil_river_rgr9: myCardNumber,
-  tss_test: myCardNumber,
+    // Начерталка
+    nach1_9: myCardNumber,
+    nach10_12: myCardNumber,
+    nachall1_9: myCardNumber,
+    nachall10_12: myCardNumber,
+    inj146: ivanCardNumber,
+    inj5: ivanCardNumber,
+    injALL: ivanCardNumber,
+    nachANDinjgraf: myCardNumber,
+    // Механика
+    mech_beam: myCardNumber,
+    mech_val: myCardNumber,
+    // МСС
+    mss_pz1: myCardNumber,
+    mss_pz2: myCardNumber,
+    mss_pz3: myCardNumber,
+    mss_pz4: myCardNumber,
+    // Курсовые
+    tus_kurs: ivanCardNumber,
+    mos_kurs: ivanCardNumber,
+    // МОС ПЗ (река-море)
+    mos_river_pz2: myCardNumber,
+    mos_river_pz4: myCardNumber,
+    // Остальное
+    bs_high: myCardNumber,
+    olvvp_stvor: myCardNumber,
+    nil_sea_rgr: myCardNumber,
+    nil_river_rgr9: myCardNumber,
+    tss_test: myCardNumber,
 };
 
 //Разделение работ по чатам
@@ -1386,7 +1386,6 @@ bot.on("message:text", async (ctx) => {
 
         waitingOrderMes = (await ctx.api.sendMessage(targetChat, managerMsg)).message_id;
 
-        // тут НЕ завершаем поток — ждём нажания "✅ Отправил скриншот"
         return;
     } else {
         // Подсказка следующего шага
@@ -1552,15 +1551,20 @@ bot.on(["message:photo", "message:document"], async (ctx) => {
     if (!next) {
         const caption = `${buildUserReference(ctx)} прислал чек об оплате заказа:\n\n${work.title}`;
 
+        // Лояльность. Добавление общей суммы выручки
+        const priceInfo = loyalty.getPriceForUser(ctx.from.id, work.price);
+        const discountedPrice = priceInfo.discountedPrice;
+        loyalty.addToTotal(ctx.from.id, ctx.from.username, discountedPrice);
+
         await ctx.reply(`✅ Спасибо! Скриншот оплаты получен и отправлен <a href="${trackingManagerLink}">менеджеру</a> 💬\nОн скоро свяжется с Вами ✍️`, {parse_mode: 'HTML'} );
 
         const targetChat = getTargetChat(flow.workId);
 
-        if (type === "photo") {
+        if (targetChat) {
+            if (type === "photo") {
             await ctx.api.sendPhoto(targetChat, fileId, { caption });
-        } else {
-            await ctx.api.sendDocument(targetChat, fileId, { caption });
-        }
+            } else { await ctx.api.sendDocument(targetChat, fileId, { caption });}
+        } else { console.error("❌ Не найден чат для работы:", flow.workId);}
             // 🔒 Закрываем заказ — больше чеков/фото бот не принимает
             flow.active = false;
         return;
