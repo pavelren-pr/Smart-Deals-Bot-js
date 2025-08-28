@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('dotenv').config();
 const { Bot, session, GrammyError, HttpError, Keyboard, InlineKeyboard } = require('grammy');
 const { error } = require('node:console');
 const { hydrate } = require('@grammyjs/hydrate');
@@ -13,7 +13,7 @@ bot.use(hydrate());
 const MY_CHAT_ID = -4913298319; // ID чата с моими заказами
 const MATH_CHAT_ID = -4801211812; // ID чата по вышмату
 const CHERCHENIE_CHAT_ID = -4970188906; // ID чата, куда будут отправляться уведомления о заказах по Инженерной графике и Начерталке
-const OTHER_ORDERS_CHAT_ID = -4794000059; // ID чата, для всех остальных заказов
+const OTHER_ORDERS_CHAT_ID = -1003079570200; // ID чата, для всех остальных заказов
 const TARGET_GROUP = -1002162448649; //Наш тгк
 const userLastMessages = new Map(); 
 const CACH_TTL =  10 * 1000;
