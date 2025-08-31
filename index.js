@@ -377,7 +377,7 @@ function getPaymentTarget(workId) {
 // Блок 1.2. Объявление переменных для ссылок
 const channelLink = 'https://t.me/SmartDealsLTDink'
 const trackingManagerLink = 'https://t.me/SmartDealsManager';
-const trackingMathLink = 'https://t.me/SmartDealsMathManager';
+const trackingMathLink = 'https://t.me/SmartDeals_Math';
 //Гугл диск
 const loyaltyDocLink = 'https://docs.google.com/document/d/1tcjS6BL9TVWVeH-cG7jj0lyYwJtyPViWj60lzhd3x-A/edit?usp=sharing';
 const DriveCatalogLink = 'https://drive.google.com/drive/folders/1oXGLvXAXfbeADoh07X3WhOX0WOLeg9mR?usp=sharing';
