@@ -39,11 +39,6 @@ bot.use(session({ initial: () => ({
             hasUsername: false
         },
     
-    order2: { //ГМОС всё (надо усложнить)
-        waitingForData2: false,
-        step2: 0,
-        com2: null
-    },
     orderFlow: { //Все остальные заказы
         active: false,
         workId: null,
@@ -78,6 +73,11 @@ const costMSS_PZ2 = 690;
 const costMSS_PZ3 = 490;
 const costMSS_PZ4 = 1090;
 const costMSS_test = 490;
+const costGMOS_PZ1 = 490;
+const costGMOS_PZ2 = 490;
+const costGMOS_PZ3 = 490;
+const costGMOS_PZ4 = 490;
+const costGMOS_laba = 8990;
 const costTUS_kurs = 2190;
 const costMOS_Kurs = 1790;
 const costMOS_river_PZ2 = 590;
@@ -192,6 +192,41 @@ const WORKS = {
         back: "back4",
         prompt: 'Отправьте Ваш номер по журналу группы'
     },
+    GMOS_PZ1: {
+        title: "ГМОС 🌦️ — Практическая работа №1 🌡️", 
+        price: costGMOS_PZ1, 
+        needs: ["variant"], 
+        back: "bbackToGMOS",
+        prompt: 'Отправьте Ваш вариант (Если Ваш номер по списку ≤ 25, то вариант = номеру по списку, иначе варинат = (номер по списку - 25) :-)'
+    },
+    GMOS_PZ2: {
+        title: "ГМОС 🌦️ — Практическая работа №2 🪁", 
+        price: costGMOS_PZ2, 
+        needs: ["variant"], 
+        back: "bbackToGMOS",
+        prompt: 'Отправьте Ваш вариант (Если Ваш номер по списку ≤ 12, то вариант = номеру по списку, иначе варинат = (номер по списку - (12 или 24)) :-)'
+    },
+    GMOS_PZ3: {
+        title: "ГМОС 🌦️ — Практическая работа №3 💦", 
+        price: costGMOS_PZ3, 
+        needs: ["variant"], 
+        back: "bbackToGMOS",
+        prompt: 'Отправьте Ваш вариант (Если Ваш номер по списку ≤ 20, то вариант = номеру по списку, иначе варинат = (номер по списку - 20 :-)'
+    },
+    GMOS_PZ4: {
+        title: "ГМОС 🌦️ — Практическая работа №4 ⛈️", 
+        price: costGMOS_PZ4, 
+        needs: ["variant"], 
+        back: "backToGMOS",
+        prompt: 'Отправьте Ваш вариант (Если Ваш номер по списку ≤ 16, то вариант = номеру по списку, иначе варинат = (номер по списку - 16 :-)'
+    },
+    GMOS_laba: {
+        title: "ГМОС 🌦️ — БОЛЬШАЯ ЛАБА (Бояринов) 💎", 
+        price: costGMOS_laba, 
+        needs: ["details"], 
+        back: "backToGMOS",
+        prompt: 'Отправьте одним сообщением:\n\n(Если каких-то данных не хватает или Вы их не знаете - не пишите их, позже наш менеджер уточнит всё)\n\n1. Порт отхода\n2. Порт прихода\n3. Дату и время выхода\n4. Скорость хода на тихой воде\n5. Водоизмещение\n6. Период собственного колебания судна\n7. Осадку судна в порту выхода\n8. Фамилию и инициалы всех в команде'
+    },
     tus_kurs: {
         title: '3 курс ⭐⭐⭐\nПредмет - ТУС 🚢\nРабота - Курсовая 🎯',
         price: costTUS_kurs,
@@ -276,6 +311,12 @@ const WORK_PAYMENT = {
     mss_pz2: myCardNumber,
     mss_pz3: myCardNumber,
     mss_pz4: myCardNumber,
+    //ГМОС
+    GMOS_PZ1: myCardNumber,
+    GMOS_PZ2: myCardNumber,
+    GMOS_PZ3: myCardNumber,
+    GMOS_PZ4: myCardNumber,
+    GMOS_laba: myCardNumber,
     // Курсовые
     tus_kurs: ivanCardNumber,
     mos_kurs: ivanCardNumber,
@@ -306,6 +347,11 @@ const WORK_CHAT = {
     mss_pz2: MY_CHAT_ID,
     mss_pz3: MY_CHAT_ID,
     mss_pz4: OTHER_ORDERS_CHAT_ID,
+    GMOS_PZ1: MY_CHAT_ID,
+    GMOS_PZ2: MY_CHAT_ID,
+    GMOS_PZ3: MY_CHAT_ID,
+    GMOS_PZ4: MY_CHAT_ID,
+    GMOS_laba: MY_CHAT_ID,
     tus_kurs: OTHER_ORDERS_CHAT_ID,
     mos_kurs: OTHER_ORDERS_CHAT_ID,
     mos_river_pz2: MY_CHAT_ID,
@@ -490,6 +536,13 @@ const inlineKeyboard7 = new InlineKeyboard()
     .text('ПЗ №4 📔', 'pz4').row()
     .text('Итоговый тест по МСС 🖥️', 'test').row()
     .text('Назад 🔙', 'back3')
+const inlineKeyboardGMOSworks = new InlineKeyboard()
+    .text('Практическая работа №1 🌡️', 'GMOSpz1').row()
+    .text('Практическая работа №2 🪁', 'GMOSpz2').row()
+    .text('Практическая работа №3 💦', 'GMOSpz3').row()
+    .text('Практическая работа №4 ⛈️', 'GMOSpz4').row()
+    .text('БОЛЬШАЯ ЛАБА (Бояринов) 💎', 'GMOSlaba').row()
+    .text('Назад 🔙', 'back3')
 const inlineKeyboard8 = new InlineKeyboard()
     .text('Расчет линейного навигационного створа', 'rlns').row()
     .text('Назад 🔙', 'back3')
@@ -526,7 +579,6 @@ const inlineKeyboard13 = new InlineKeyboard()
     .text('Назад 🔙', 'back3')
 
 //Клавиатуры через конструктор (доделать)
-const inlineKeyboard11 = orderKb('order2', 'back3'); //ГМОС (надо доделать)
 const inlineKeyboard19 = orderKb('order8', 'back4'); //Итоговый тест по МСС (доделать)
 
 // 2 курс
@@ -546,6 +598,11 @@ const inlineKeyboard14 = orderKb('order:mss_pz1', WORKS["mss_pz1"].back); // М�
 const inlineKeyboard15 = orderKb('order:mss_pz2', WORKS["mss_pz2"].back); // МСС ПЗ2
 const inlineKeyboard16 = orderKb('order:mss_pz3', WORKS["mss_pz3"].back); // МСС ПЗ3
 const inlineKeyboard17 = orderKb('order:mss_pz4', WORKS["mss_pz4"].back); // МСС ПЗ4
+const inlineKeyboardGMOSpz1 = orderKb('order:GMOS_PZ1',      'backToGMOS');  // ГМОС ПЗ1
+const inlineKeyboardGMOSpz2 = orderKb('order:GMOS_PZ2',      'backToGMOS');  // ГМОС ПЗ2
+const inlineKeyboardGMOSpz3 = orderKb('order:GMOS_PZ3',      'backToGMOS');  // ГМОС ПЗ3
+const inlineKeyboardGMOSpz4 = orderKb('order:GMOS_PZ4',      'backToGMOS');  // ГМОС ПЗ4
+const inlineKeyboardGMOSlaba = orderKb('order:GMOS_laba',      'backToGMOS');  // ГМОС ЛАБА
 const inlineKeyboard20 = orderKb('order:tus_kurs',      'back5');  // ТУС курсовая
 const inlineKeyboard23 = orderKb('order:mos_kurs',      'back6');  // МОС курсовая
 const inlineKeyboard25 = orderKb('order:mos_river_pz2', 'back8');  // МОС ПЗ2
@@ -1041,10 +1098,10 @@ bot.callbackQuery('tss', async (ctx) => {
 })
 
 bot.callbackQuery('gmos', async (ctx) => {
-    await ctx.callbackQuery.message.editText(`3 курс ⭐⭐⭐\nГМОС 🌦️ доступны для заказа все лабы у Гордиенко, а также большая лабораторка у Бояринова\n 
-Для уточнения цен пишите <a href="${trackingManagerLink}">менеджеру</a> ✍`, {
+    await ctx.callbackQuery.message.editText(`3 курс ⭐⭐⭐\nГМОС 🌦️${helpONSubject}`, {
+        disable_web_page_preview: true,
         parse_mode: `HTML`,
-        reply_markup: inlineKeyboard11,
+        reply_markup: inlineKeyboardGMOSworks,
     })
     await ctx.answerCallbackQuery()
 })
@@ -1156,6 +1213,61 @@ bot.callbackQuery('test1', async (ctx) => {
         disable_web_page_preview: true,
         parse_mode: 'HTML',
         reply_markup: inlineKeyboard35,
+    })
+    await ctx.answerCallbackQuery()
+})
+
+bot.callbackQuery('GMOSpz1', async (ctx) => {
+    const { line } = formatPriceInfo(ctx, costGMOS_PZ1);
+    await ctx.callbackQuery.message.editText(`Практическая работа №1 🌡️\n\n${line}\n
+Срок выполнения: 1 день`, {
+        disable_web_page_preview: true,
+        parse_mode: 'HTML',
+        reply_markup: inlineKeyboardGMOSpz1,
+    })
+    await ctx.answerCallbackQuery()
+})
+
+bot.callbackQuery('GMOSpz2', async (ctx) => {
+    const { line } = formatPriceInfo(ctx, costGMOS_PZ2);
+    await ctx.callbackQuery.message.editText(`Практическая работа №2 🪁\n\n${line}\n
+Срок выполнения: 1 день`, {
+        disable_web_page_preview: true,
+        parse_mode: 'HTML',
+        reply_markup: inlineKeyboardGMOSpz2,
+    })
+    await ctx.answerCallbackQuery()
+})
+
+bot.callbackQuery('GMOSpz3', async (ctx) => {
+    const { line } = formatPriceInfo(ctx, costGMOS_PZ3);
+    await ctx.callbackQuery.message.editText(`Практическая работа №3 💦\n\n${line}\n
+Срок выполнения: 1 день`, {
+        disable_web_page_preview: true,
+        parse_mode: 'HTML',
+        reply_markup: inlineKeyboardGMOSpz3,
+    })
+    await ctx.answerCallbackQuery()
+})
+
+bot.callbackQuery('GMOSpz4', async (ctx) => {
+    const { line } = formatPriceInfo(ctx, costGMOS_PZ4);
+    await ctx.callbackQuery.message.editText(`Практическая работа №4 ⛈️\n\n${line}\n
+Срок выполнения: 1 день`, {
+        disable_web_page_preview: true,
+        parse_mode: 'HTML',
+        reply_markup: inlineKeyboardGMOSpz4,
+    })
+    await ctx.answerCallbackQuery()
+})
+
+bot.callbackQuery('GMOSlaba', async (ctx) => {
+    const { line } = formatPriceInfo(ctx, costGMOS_laba);
+    await ctx.callbackQuery.message.editText(`БОЛЬШАЯ ЛАБА (Бояринов) 💎\n\n${line}\n
+Срок выполнения: 1 день`, {
+        disable_web_page_preview: true,
+        parse_mode: 'HTML',
+        reply_markup: inlineKeyboardGMOSlaba,
     })
     await ctx.answerCallbackQuery()
 })
@@ -1643,11 +1755,11 @@ bot.callbackQuery('backinj', async (ctx) => {
 });
 
 bot.callbackQuery('back4', async (ctx) => {
-    await go(ctx, '3 курс ⭐⭐⭐\nПо МСС 📏, Вы можете заказать следующие работы:', inlineKeyboard7);
+    await go(ctx, `3 курс ⭐⭐⭐\nМСС 📏${helpONSubject}`, inlineKeyboard7);
 });
 
 bot.callbackQuery('back5', async (ctx) => {
-    await go(ctx, '3 курс ⭐⭐⭐\nПо ТУС 🚢, Вы можете заказать следующие работы:', inlineKeyboard9);
+    await go(ctx, `3 курс ⭐⭐⭐\nТУС 🚢${helpONSubject}`, inlineKeyboard9);
 });
 
 bot.callbackQuery('back6', async (ctx) => {
@@ -1680,6 +1792,10 @@ bot.callbackQuery('back12', async (ctx) => {
 
 bot.callbackQuery('back13', async (ctx) => {
     await go(ctx, `3 курс ⭐⭐⭐\nНиЛ 🧭\nПоток: Река-море 🌉🌊${helpONSubject}`, nilkeyboard1);
+});
+
+bot.callbackQuery('backToGMOS', async (ctx) => {
+    await go(ctx, `3 курс ⭐⭐⭐\nГМОС 🌦️${helpONSubject}`, inlineKeyboardGMOSworks);
 });
 
 bot.callbackQuery('back14', async (ctx) => {
