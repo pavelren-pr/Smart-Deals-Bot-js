@@ -86,6 +86,7 @@ const costBS_high = 890;
 const costOLVVP_Stvor = 790;
 const costNIL_sea_RGR = 790;
 const costNIL_river_RGR = 2790;
+const costNil_1tide = 1176;
 const costTSS_Test = 3290;
 
 //Каталог работ
@@ -286,7 +287,23 @@ const WORKS = {
     tss_test: {
         title: '3 курс ⭐⭐⭐\nТСС 📺\n11 тестов на фарватере 🖥️',
         price: costTSS_Test,
-        back: 'back14',
+        back: 'backTSS',
+        needs: ['details'],
+        prompt: 'Отправьте одним сообщением логин и пароль от фарватера.'
+    },
+
+    // 4 курс
+    nil_1tide: {
+        title: '4 курс ⭐⭐⭐⭐\nНиЛ 🧭\nПриливы 1 задача 🏄',
+        price: costNil_1tide,
+        back: 'back15',
+        needs: ['details'],
+        prompt: 'Отправьте номер своего варианта (101 - 170)'
+    },
+    tss_test2: {
+        title: '4 курс ⭐⭐⭐⭐\nТСС 📺\n11 тестов на фарватере 🖥️',
+        price: costTSS_Test,
+        back: 'backTSS2',
         needs: ['details'],
         prompt: 'Отправьте одним сообщением логин и пароль от фарватера.'
     },
@@ -329,6 +346,8 @@ const WORK_PAYMENT = {
     nil_sea_rgr: myCardNumber,
     nil_river_rgr9: myCardNumber,
     tss_test: myCardNumber,
+    tss_test2: myCardNumber,
+    nil_1tide: myCardNumber,
 };
 
 //Разделение работ по чатам
@@ -360,7 +379,9 @@ const WORK_CHAT = {
     olvvp_stvor: MY_CHAT_ID,
     nil_sea_rgr: MY_CHAT_ID,
     nil_river_rgr9: MY_CHAT_ID,
+    nil_1tide: MY_CHAT_ID,
     tss_test: OTHER_ORDERS_CHAT_ID,
+    tss_test2: OTHER_ORDERS_CHAT_ID,
 };
 
 // Форматирование цены с учётом лояльности (loyalty.getPriceForUser)
@@ -511,6 +532,8 @@ const inlineKeyboard6 = new InlineKeyboard()
     .text('ТСС 📺', 'tss').row()
     .text('Назад 🔙', 'back');
 const inlineKeyboard4year = new InlineKeyboard()
+    .text('НиЛ 🧭', 'nil4').row()
+    .text('ТСС 📺', 'tss2').row()
     .text('Назад 🔙', 'back');
 const inlineKeyboardNachert = new InlineKeyboard()
     .text('1-9 задача (каждая отдельно) 📎', 'nach1_9').row()
@@ -577,6 +600,12 @@ const nilkeyboard1 = new InlineKeyboard()
 const inlineKeyboard13 = new InlineKeyboard()
     .text('Опр. высоты подмостового габарита 🌉', 'high').row()
     .text('Назад 🔙', 'back3')
+const inlineKeyboardTSS4 = new InlineKeyboard()
+    .text('Тесты на фарватере 🖥️', 'tss4test').row()
+    .text('Назад 🔙', 'back4year')
+const inlineKeyboardNil = new InlineKeyboard()
+    .text('Приливы 1 задача 🏄', 'nil1tide').row()
+    .text('Назад 🔙', 'back4year')
 
 //Клавиатуры через конструктор (доделать)
 const inlineKeyboard19 = orderKb('order8', 'back4'); //Итоговый тест по МСС (доделать)
@@ -611,7 +640,11 @@ const inlineKeyboard28 = orderKb('order:bs_high',       'back9');  // БС ВВ�
 const inlineKeyboard29 = orderKb('order:olvvp_stvor',   'back10'); // ОЛВВП линейный створ
 const inlineKeyboard31 = orderKb('order:nil_sea_rgr',   'back12'); // НиЛ море РГР
 const inlineKeyboard32 = orderKb('order:nil_river_rgr9','back13'); // НиЛ река-море РГР
-const inlineKeyboard35 = orderKb('order:tss_test',      'back14'); // ТСС 11 тестов
+const inlineKeyboard35 = orderKb('order:tss_test',      'backNil1tide'); // ТСС 11 тестов
+
+// 4 курс
+const inlineKeyboardNil1tide = orderKb('order:nil_1tide',      'backNil1tide');  // НиЛ приливы 1 задача
+const inlineKeyboardTSStest = orderKb('order:tss_test2',      'backTSS2');  // ТСС 11 тестов
 
 const orederKeyboard1 = new InlineKeyboard()
     .text('Заказ взят ✅', 'take1');
@@ -1151,6 +1184,24 @@ bot.callbackQuery('lvvp', async (ctx) => {
     await ctx.answerCallbackQuery()
 })
 
+bot.callbackQuery('nil4', async (ctx) => {
+    await ctx.callbackQuery.message.editText(`4 курс ⭐⭐⭐⭐\nНиЛ 🧭${helpONSubject}`, {
+        disable_web_page_preview: true,
+        parse_mode: 'HTML',
+        reply_markup: inlineKeyboardNil,
+    })
+    await ctx.answerCallbackQuery()
+})
+
+bot.callbackQuery('tss4test', async (ctx) => {
+    await ctx.callbackQuery.message.editText(`4 курс ⭐⭐⭐⭐\nТСС 📺${helpONSubject}`, {
+        disable_web_page_preview: true,
+        parse_mode: 'HTML',
+        reply_markup: inlineKeyboardTSS4,
+    })
+    await ctx.answerCallbackQuery()
+})
+
 bot.callbackQuery('pz1', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costMSS_PZ1);
     await ctx.callbackQuery.message.editText(`ПЗ №1 🗒️\n\n${line}\n\nРабота выполняется в электронном виде.` + 
@@ -1405,6 +1456,28 @@ bot.callbackQuery('rgr1', async (ctx) => {
     await ctx.answerCallbackQuery()
 })
 
+bot.callbackQuery('nil1tide', async (ctx) => {
+    const { line } = formatPriceInfo(ctx, costNil_1tide);
+    await ctx.callbackQuery.message.editText(`Приливы 1 задача 🏄\n\n${line}\n
+Пример готовой <a href="https://drive.google.com/file/d/1gd06b4hiFlD7dkxbrdSILC_XCApGSwYO/view?usp=drive_link">работы</a>\n
+Срок выполнения: 1 день`, {
+        disable_web_page_preview: true,
+        parse_mode: 'HTML',
+        reply_markup: inlineKeyboardNil1tide,
+    })
+    await ctx.answerCallbackQuery()
+})
+
+bot.callbackQuery('tss4test', async (ctx) => {
+    const { line } = formatPriceInfo(ctx, costTSS_Test);
+    await ctx.callbackQuery.message.editText(`11 тестов на фарватере🖥️\n\n${line}\n
+Срок выполнения: 1 - 2 дня.\nДля выполнения работы Вам нужно отправить логин и пароль от фарватера`, {
+        disable_web_page_preview: true,
+        parse_mode: 'HTML',
+        reply_markup: inlineKeyboardTSStest,
+    })
+    await ctx.answerCallbackQuery()
+})
 
 //Блок 6. Обработка разных типов заказов
 
@@ -1416,14 +1489,6 @@ bot.callbackQuery('order8', async (ctx) => {
 Для получения доступа к тестам Вам необходимо отправить свою почту боту`, { parse_mode: 'HTML' });
     await ctx.answerCallbackQuery();
 });
-
-bot.callbackQuery('order2', async (ctx) => {
-    ctx.session.order2.waitingForData2 = true;
-    ctx.session.order2.step2 = 1;
-    await ctx.reply(`3 курс ⭐⭐⭐\nГМОС 🌦️\n Доступны для заказа все лабы у Гордиенко и большая лабораторка у Бояринова\n
-Теперь напишите ограничения по срокам исполнения заказа и комментарии к заказу`, { parse_mode: 'HTML' });
-    await ctx.answerCallbackQuery();
-})
 
 bot.callbackQuery(/order:(.+)/, async (ctx) => {
     const workId = ctx.match[1];
@@ -1508,28 +1573,6 @@ bot.on("message:text", async (ctx) => {
 }
 
     //Все остальные обработчики заказов (пока старые)
-    if (ctx.session.order2?.waitingForData2) {
-
-        if (ctx.session.order2.step2 === 1) {
-        
-            ctx.session.order2.com2 = ctx.message.text;
-
-            const msg = `Новый заказ!${buildUserReference(ctx)}3 курс\nПредмет - ГМОС 🌦️\n\nСроки и комментарии:\n${ctx.session.order2.com2}`;
-            await ctx.api.sendMessage(MY_CHAT_ID, msg);
-
-            await ctx.reply(`Заказ принят!\n\nДетали заказа:\n3 курс ⭐️⭐️⭐️\nПредмет - ГМОС 🌦️\n
-Сроки и комментарии: ${ctx.session.order2.com2}\nДля оплаты заказа и уточнения деталей напишите менеджеру✍: <a href="${trackingManagerLink}">ссылка</a>`,{
-            parse_mode: `HTML`
-            });
-
-            ctx.session.order2 = {
-                waitingForData2: false,
-                step2: 0,
-                com2: null
-            };
-            return;
-        }
-    }
 
     if (ctx.session.order8?.waitingForData8) {
         if (ctx.message.entities) {
@@ -1742,6 +1785,10 @@ bot.callbackQuery('back3', async (ctx) => {
     await go(ctx, '3 курс ⭐⭐⭐\nВыберите предмет 🛒', inlineKeyboard6);
 });
 
+bot.callbackQuery('back4year', async (ctx) => {
+    await go(ctx, '4 курс ⭐⭐⭐⭐\nВыберите предмет 🛒', inlineKeyboard4year);
+});
+
 bot.callbackQuery('back2', async (ctx) => {
     await go(ctx, `2 курс ⭐⭐\nМеханика ⚙${helpONSubject}`, inlineKeyboard3);
 });
@@ -1797,6 +1844,19 @@ bot.callbackQuery('back13', async (ctx) => {
 bot.callbackQuery('backToGMOS', async (ctx) => {
     await go(ctx, `3 курс ⭐⭐⭐\nГМОС 🌦️${helpONSubject}`, inlineKeyboardGMOSworks);
 });
+
+bot.callbackQuery('backTSS', async (ctx) => {
+    await go(ctx, `3 курс ⭐⭐⭐\nТСС 📺${helpONSubject}`, inlineKeyboard34);
+});
+
+bot.callbackQuery('backTSS2', async (ctx) => {
+    await go(ctx, `4 курс ⭐⭐⭐⭐\nТСС 📺${helpONSubject}`, inlineKeyboardTSS4);
+});
+
+bot.callbackQuery('backNil1tide', async (ctx) => {
+    await go(ctx, `4 курс ⭐⭐⭐⭐\nНиЛ 🧭${helpONSubject}`, inlineKeyboardNil);
+});
+
 
 bot.callbackQuery('back14', async (ctx) => {
     await go(ctx, seaTreasure, inlineKeyboard1);
