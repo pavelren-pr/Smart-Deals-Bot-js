@@ -898,7 +898,7 @@ bot.callbackQuery('3-year1', async (ctx) => {
 })
 
 bot.callbackQuery('4-year', async (ctx) => {
-    await ctx.callbackQuery.message.editText('4 курс ⭐⭐⭐\nВыберите предмет 🛒\n\nСкоро тут появится что-то интересное', {
+    await ctx.callbackQuery.message.editText('4 курс ⭐⭐⭐\nВыберите предмет 🛒', {
         parse_mode: 'HTML',
         reply_markup: inlineKeyboard4year,
     })
@@ -1193,7 +1193,7 @@ bot.callbackQuery('nil4', async (ctx) => {
     await ctx.answerCallbackQuery()
 })
 
-bot.callbackQuery('tss4test', async (ctx) => {
+bot.callbackQuery('tss2', async (ctx) => {
     await ctx.callbackQuery.message.editText(`4 курс ⭐⭐⭐⭐\nТСС 📺${helpONSubject}`, {
         disable_web_page_preview: true,
         parse_mode: 'HTML',
