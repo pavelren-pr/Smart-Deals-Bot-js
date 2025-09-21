@@ -1470,7 +1470,7 @@ bot.callbackQuery('nil1tide', async (ctx) => {
 
 bot.callbackQuery('tss4test', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costTSS_Test);
-    await ctx.callbackQuery.message.editText(`11 тестов на фарватере🖥️\n\n${line}\n
+    await ctx.callbackQuery.message.editText(`11 тестов на фарватере 🖥️\n\n${line}\n
 Срок выполнения: 1 - 2 дня.\nДля выполнения работы Вам нужно отправить логин и пароль от фарватера`, {
         disable_web_page_preview: true,
         parse_mode: 'HTML',
