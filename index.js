@@ -311,43 +311,42 @@ const WORKS = {
 
 //Разделение способов оплаты
 const WORK_PAYMENT = {
-    // Начерталка
+    
+    // 2 курс
     nach1_9: myCardNumber,
     nach10_12: myCardNumber,
     nachall1_9: myCardNumber,
     nachall10_12: myCardNumber,
-    inj146: ivanCardNumber,
-    inj5: ivanCardNumber,
-    injALL: ivanCardNumber,
+    inj146: myCardNumber,
+    inj5: myCardNumber,
+    injALL: myCardNumber,
     nachANDinjgraf: myCardNumber,
-    // Механика
     mech_beam: myCardNumber,
     mech_val: myCardNumber,
-    // МСС
+    
+    //3 курс
     mss_pz1: myCardNumber,
     mss_pz2: myCardNumber,
     mss_pz3: myCardNumber,
     mss_pz4: myCardNumber,
-    //ГМОС
     GMOS_PZ1: myCardNumber,
     GMOS_PZ2: myCardNumber,
     GMOS_PZ3: myCardNumber,
     GMOS_PZ4: myCardNumber,
     GMOS_laba: myCardNumber,
-    // Курсовые
-    tus_kurs: ivanCardNumber,
-    mos_kurs: ivanCardNumber,
-    // МОС ПЗ (река-море)
     mos_river_pz2: myCardNumber,
     mos_river_pz4: myCardNumber,
-    // Остальное
+    mos_kurs: myCardNumber,
     bs_high: myCardNumber,
     olvvp_stvor: myCardNumber,
     nil_sea_rgr: myCardNumber,
     nil_river_rgr9: myCardNumber,
     tss_test: myCardNumber,
-    tss_test2: myCardNumber,
-    nil_1tide: myCardNumber,
+    tus_kurs: myCardNumber,
+    
+    // 4 курс
+    tss_test2: myCellNumber,
+    nil_1tide: myCellNumber,
 };
 
 //Разделение работ по чатам
