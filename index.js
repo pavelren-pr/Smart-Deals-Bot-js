@@ -1558,8 +1558,6 @@ bot.on("message:text", async (ctx) => {
         await ctx.reply(`${work.title}\n\n${line}\n\n${dataBlock}\n\n` + `Для оплаты переведите указанную сумму: ${paymentTarget}`,
         { disable_web_page_preview: true, parse_mode: 'HTML', reply_markup: WriteManagerUnic });
 
-        await ctx.reply(payconfmes, { disable_web_page_preview: true, parse_mode: 'HTML' });
-
         // Черновик для менеджера (ожидаем подтверждение оплаты)
         const managerMsg =`${buildUserReference(ctx)} собирается сделать заказ\n\n${work.title}\n` + (dataBlock ? dataBlock + '\n' : '') +
             getPriceForWork(ctx, work.price);
@@ -1567,6 +1565,8 @@ bot.on("message:text", async (ctx) => {
         const targetChat = getTargetChat(flow.workId);
 
         waitingOrderMes = (await ctx.api.sendMessage(targetChat, managerMsg)).message_id;
+
+        await ctx.reply(payconfmes, { disable_web_page_preview: true, parse_mode: 'HTML' });
 
         return;
     } else {
