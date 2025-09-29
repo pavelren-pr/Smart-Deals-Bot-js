@@ -58,9 +58,9 @@ bot.use(session({ initial: () => ({
 
 // Блок 1. Объявление констант для цен.
 const commission = 20;
-const nach1_9 = 490;
-const nach10_12 = 550;
-const nachall1_9 = 3690;
+const nach1_9 = 490; // 375
+const nach10_12 = 550; 
+const nachall1_9 = 3690; // 3375
 const nachall10_12 = 1380;
 const nachANDinjgraf = 7690;
 const inj146 = 990;
@@ -1204,7 +1204,9 @@ bot.callbackQuery('tss2', async (ctx) => {
 bot.callbackQuery('pz1', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costMSS_PZ1);
     await ctx.callbackQuery.message.editText(`ПЗ №1 🗒️\n\n${line}\n\nРабота выполняется в электронном виде.` + 
-` Для выполнения работы нам необходим Ваш номер варианта - это последняя цифра номера по списку группы.\n\nСрок выполнения - 1 день`, {
+`Для выполнения работы нам необходим Ваш номер варианта - это последняя цифра номера по списку группы.\n
+Пример готовой <a href="https://drive.google.com/file/d/1WhHlsomBeMD3nz6kEiT_WrtTOzKmRHgI/view?usp=drive_link">работы</a> 🔍\n
+Срок выполнения - 1 день`, {
         disable_web_page_preview: true,
         reply_markup: inlineKeyboard14,
         parse_mode: 'HTML'
@@ -1215,7 +1217,9 @@ bot.callbackQuery('pz1', async (ctx) => {
 bot.callbackQuery('pz2', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costMSS_PZ2);
     await ctx.callbackQuery.message.editText(`ПЗ №2 📓\n\n${line}\n\nНомер варианта это последняя цифра номера по списку. ` + 
-`Для выполнения работы нам необходим Ваш номер по списку учебной группы.\n\nСрок выполнения - 1 день`, {
+`Для выполнения работы нам необходим Ваш номер по списку учебной группы.\n
+Пример готовой <a href="https://drive.google.com/file/d/1-Q_KDObrjOvk1S-lz7iOiR8zbNX8Ly5_/view?usp=drive_link">работы</a> 🔍
+Срок выполнения - 1 день`, {
         disable_web_page_preview: true,
         reply_markup: inlineKeyboard15,
         parse_mode: 'HTML'
@@ -1458,7 +1462,7 @@ bot.callbackQuery('rgr1', async (ctx) => {
 bot.callbackQuery('nil1tide', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costNil_1tide);
     await ctx.callbackQuery.message.editText(`Приливы 1 задача 🏄\n\n${line}\n
-Пример готовой <a href="https://drive.google.com/file/d/1gd06b4hiFlD7dkxbrdSILC_XCApGSwYO/view?usp=drive_link">работы</a>\n
+Пример готовой <a href="https://drive.google.com/file/d/1YA1Pt6gvx2FD_BmadUO286rwK6X53FIL/view?usp=drive_link">работы</a>\n
 Срок выполнения: 1 день`, {
         disable_web_page_preview: true,
         parse_mode: 'HTML',
@@ -1683,7 +1687,7 @@ bot.on(["message:photo", "message:document"], async (ctx) => {
         const paymentTarget = getPaymentTarget(flow.workId);
 
         await ctx.reply(`${work.title}\n\n${line}\n\n📎 Файл/фотография задания получен\n\n` +
-            `Для оплаты переведите указанную сумму на номер карты: ${paymentTarget}`,
+            `Для оплаты переведите указанную сумму: ${paymentTarget}`  + payconfmes,
             { disable_web_page_preview: true, parse_mode: 'HTML', reply_markup: WriteManagerUnic });
 
         const managerMsg = `${buildUserReference(ctx)} собирается сделать заказ\n\n${work.title}\n` + getPriceForWork(ctx, work.price);
