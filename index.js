@@ -466,7 +466,7 @@ const seaTreasure = `💰 Морская Сокровищница 💰\n\nНаш
 `<a href="${loyaltyDocLink}">вознаграждение (см п. 4)</a> с нашей стороны 🤝\n
 "Наука сокращает нам опыты быстротекущей жизни" \n© Пушкин А.С., "Борис Годунов"`;
 const cherchenieMESS = `\n\nВсе работы делаются на бумаге для черчения 📜\n\nДоставка в Стрельну осуществляется в четверг и в пятницу, так же есть возможность вывоза с Межевого канала сразу после исполнения работы 🚚`;
-const payconfmes = `\n\nПосле оплаты отправьте скиншот перевода боту 🤖`;
+const payconfmes = `\n\nДля <b><u>подтверждения</b></u> заказа отправьте скиншот перевода боту 🤖`;
 const helpONSubject = `\n\nЕсли Вас интересуют другие работы по этому предмету 🗒️ или же помощь на кр, зачёте или экзамене ✅, ` + 
 `то напишите нашему <a href="${trackingManagerLink}">менеджеру</a> ✍\n\nДля заказа доступны 🛒`;
 var waitingOrderMes; //Переменная для изменения сообщений, отправляемых в группу заказчиков
@@ -1555,8 +1555,10 @@ bot.on("message:text", async (ctx) => {
 
         // Сообщение пользователю
         const paymentTarget = getPaymentTarget(flow.workId);
-        await ctx.reply(`${work.title}\n\n${line}\n\n${dataBlock}\n\n` + `Для оплаты переведите указанную сумму: ${paymentTarget}` + payconfmes,
+        await ctx.reply(`${work.title}\n\n${line}\n\n${dataBlock}\n\n` + `Для оплаты переведите указанную сумму: ${paymentTarget}`,
         { disable_web_page_preview: true, parse_mode: 'HTML', reply_markup: WriteManagerUnic });
+
+        await ctx.reply(payconfmes, { disable_web_page_preview: true, parse_mode: 'HTML' });
 
         // Черновик для менеджера (ожидаем подтверждение оплаты)
         const managerMsg =`${buildUserReference(ctx)} собирается сделать заказ\n\n${work.title}\n` + (dataBlock ? dataBlock + '\n' : '') +
@@ -1651,10 +1653,11 @@ bot.on(["message:photo", "message:document"], async (ctx) => {
             const paymentTarget = getPaymentTarget(flow.workId);
 
             await group.ctx.reply(
-                `${work.title}\n\n${line}\n\n📎 Файлы/фотографии задания получены\n\n` +
-                `Для оплаты переведите указанную сумму: ${paymentTarget}` + payconfmes,
+                `${work.title}\n\n${line}\n\n📎 Файлы/фотографии задания получены\n\nДля оплаты переведите указанную сумму: ${paymentTarget}`,
                 { disable_web_page_preview: true, parse_mode: 'HTML', reply_markup: WriteManagerUnic }
             );
+
+            await ctx.reply(payconfmes, { disable_web_page_preview: true, parse_mode: 'HTML' });
 
             const managerMsg = `${buildUserReference(group.ctx)} собирается сделать заказ\n\n${work.title}\n` + getPriceForWork(group.ctx, work.price);
             
@@ -1686,9 +1689,10 @@ bot.on(["message:photo", "message:document"], async (ctx) => {
 
         const paymentTarget = getPaymentTarget(flow.workId);
 
-        await ctx.reply(`${work.title}\n\n${line}\n\n📎 Файл/фотография задания получен\n\n` +
-            `Для оплаты переведите указанную сумму: ${paymentTarget}`  + payconfmes,
-            { disable_web_page_preview: true, parse_mode: 'HTML', reply_markup: WriteManagerUnic });
+        await ctx.reply(`${work.title}\n\n${line}\n\n📎 Файл/фотография задания получен\n\nДля оплаты переведите указанную сумму: ${paymentTarget}`,
+        { disable_web_page_preview: true, parse_mode: 'HTML', reply_markup: WriteManagerUnic });
+        
+        await ctx.reply(payconfmes, { disable_web_page_preview: true, parse_mode: 'HTML' });
 
         const managerMsg = `${buildUserReference(ctx)} собирается сделать заказ\n\n${work.title}\n` + getPriceForWork(ctx, work.price);
 
