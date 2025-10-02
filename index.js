@@ -297,14 +297,14 @@ const WORKS = {
     nil_1tide: {
         title: '4 курс ⭐⭐⭐⭐\nНиЛ 🧭\nПриливы 1 задача 🏄',
         price: costNil_1tide,
-        back: 'back15',
+        back: 'backNil4',
         needs: ['details'],
         prompt: 'Отправьте номер своего варианта (101 - 170)'
     },
     nil_2tide: {
         title: '4 курс ⭐⭐⭐⭐\nНиЛ 🧭\nПриливы 2 задача 🦞',
         price: costNil_2tide,
-        back: 'back15',
+        back: 'backNil4',
         needs: ['details'],
         prompt: 'Отправьте номер своего варианта (201 - 270)'
     },
@@ -650,11 +650,11 @@ const inlineKeyboard28 = orderKb('order:bs_high',       'back9');  // БС ВВ�
 const inlineKeyboard29 = orderKb('order:olvvp_stvor',   'back10'); // ОЛВВП линейный створ
 const inlineKeyboard31 = orderKb('order:nil_sea_rgr',   'back12'); // НиЛ море РГР
 const inlineKeyboard32 = orderKb('order:nil_river_rgr9','back13'); // НиЛ река-море РГР
-const inlineKeyboard35 = orderKb('order:tss_test',      'backNil1tide'); // ТСС 11 тестов
+const inlineKeyboard35 = orderKb('order:tss_test',      'backTSS'); // ТСС 11 тестов
 
 // 4 курс
-const inlineKeyboardNil1tide = orderKb('order:nil_1tide',      'backNil1tide');  // НиЛ приливы 1 задача
-const inlineKeyboardNil2tide = orderKb('order:nil_2tide',      'backNil2tide');  // НиЛ приливы 2 задача
+const inlineKeyboardNil1tide = orderKb('order:nil_1tide',      'backNil4');  // НиЛ приливы 1 задача
+const inlineKeyboardNil2tide = orderKb('order:nil_2tide',      'backNil4');  // НиЛ приливы 2 задача
 const inlineKeyboardTSStest = orderKb('order:tss_test2',      'backTSS2');  // ТСС 11 тестов
 
 const orederKeyboard1 = new InlineKeyboard()
@@ -1884,7 +1884,7 @@ bot.callbackQuery('backTSS2', async (ctx) => {
     await go(ctx, `4 курс ⭐⭐⭐⭐\nТСС 📺${helpONSubject}`, inlineKeyboardTSS4);
 });
 
-bot.callbackQuery('backNil1tide', async (ctx) => {
+bot.callbackQuery('backNil4', async (ctx) => {
     await go(ctx, `4 курс ⭐⭐⭐⭐\nНиЛ 🧭${helpONSubject}`, inlineKeyboardNil);
 });
 
