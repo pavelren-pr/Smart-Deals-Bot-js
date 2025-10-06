@@ -88,6 +88,9 @@ const costNIL_sea_RGR = 790;
 const costNIL_river_RGR = 2790;
 const costNil_1tide = 1176;
 const costNil_2tide = 340;
+const costNil_3tide = 340;
+const costNil_4tide = 340;
+const costNil_5tide = 340;
 const costTSS_Test = 3290;
 
 //Каталог работ
@@ -308,6 +311,27 @@ const WORKS = {
         needs: ['details'],
         prompt: 'Отправьте номер своего варианта (201 - 270)'
     },
+    nil_3tide: {
+        title: '4 курс ⭐⭐⭐⭐\nНиЛ 🧭\nПриливы 3 задача 🚤',
+        price: costNil_3tide,
+        back: 'backNil4',
+        needs: ['details'],
+        prompt: 'Отправьте номер своего варианта (301 - 370)'
+    },
+    nil_2tide: {
+        title: '4 курс ⭐⭐⭐⭐\nНиЛ 🧭\nПриливы 4 задача 🚣',
+        price: costNil_4tide,
+        back: 'backNil4',
+        needs: ['details'],
+        prompt: 'Отправьте номер своего варианта (401 - 470)'
+    },
+    nil_2tide: {
+        title: '4 курс ⭐⭐⭐⭐\nНиЛ 🧭\nПриливы 5 задача 🪸',
+        price: costNil_5tide,
+        back: 'backNil4',
+        needs: ['details'],
+        prompt: 'Отправьте номер своего варианта (501 - 570)'
+    },
     tss_test2: {
         title: '4 курс ⭐⭐⭐⭐\nТСС 📺\n11 тестов на фарватере 🖥️',
         price: costTSS_Test,
@@ -356,6 +380,9 @@ const WORK_PAYMENT = {
     tss_test2: myCellNumber,
     nil_1tide: myCellNumber,
     nil_2tide: myCellNumber,
+    nil_3tide: myCellNumber,
+    nil_4tide: myCellNumber,
+    nil_5tide: myCellNumber,
 };
 
 //Разделение работ по чатам
@@ -389,6 +416,9 @@ const WORK_CHAT = {
     nil_river_rgr9: MY_CHAT_ID,
     nil_1tide: MY_CHAT_ID,
     nil_2tide: MY_CHAT_ID,
+    nil_3tide: MY_CHAT_ID,
+    nil_4tide: MY_CHAT_ID,
+    nil_5tide: MY_CHAT_ID,
     tss_test: OTHER_ORDERS_CHAT_ID,
     tss_test2: OTHER_ORDERS_CHAT_ID,
 };
@@ -615,6 +645,9 @@ const inlineKeyboardTSS4 = new InlineKeyboard()
 const inlineKeyboardNil = new InlineKeyboard()
     .text('Приливы 1 задача 🏄', 'nil1tide').row()
     .text('Приливы 2 задача 🦞', 'nil2tide').row()
+    .text('Приливы 3 задача 🚤', 'nil3tide').row()
+    .text('Приливы 4 задача 🚣', 'nil4tide').row()
+    .text('Приливы 5 задача 🪸', 'nil5tide').row()
     .text('Назад 🔙', 'back4year')
 
 //Клавиатуры через конструктор (доделать)
@@ -655,6 +688,9 @@ const inlineKeyboard35 = orderKb('order:tss_test',      'backTSS'); // ТСС 11
 // 4 курс
 const inlineKeyboardNil1tide = orderKb('order:nil_1tide',      'backNil4');  // НиЛ приливы 1 задача
 const inlineKeyboardNil2tide = orderKb('order:nil_2tide',      'backNil4');  // НиЛ приливы 2 задача
+const inlineKeyboardNil3tide = orderKb('order:nil_3tide',      'backNil4');  // НиЛ приливы 3 задача
+const inlineKeyboardNil4tide = orderKb('order:nil_4tide',      'backNil4');  // НиЛ приливы 4 задача
+const inlineKeyboardNil5tide = orderKb('order:nil_5tide',      'backNil4');  // НиЛ приливы 5 задача
 const inlineKeyboardTSStest = orderKb('order:tss_test2',      'backTSS2');  // ТСС 11 тестов
 
 const orederKeyboard1 = new InlineKeyboard()
@@ -1491,6 +1527,42 @@ bot.callbackQuery('nil2tide', async (ctx) => {
         disable_web_page_preview: true,
         parse_mode: 'HTML',
         reply_markup: inlineKeyboardNil2tide,
+    })
+    await ctx.answerCallbackQuery()
+})
+
+bot.callbackQuery('nil3tide', async (ctx) => {
+    const { line } = formatPriceInfo(ctx, costNil_3tide);
+    await ctx.callbackQuery.message.editText(`Приливы 3 задача 🚤\n\n${line}\n
+Пример готовой <a href="https://drive.google.com/file/d/18_hbHB7RNwDsnzOeEKCTKaJnIWDMeJru/view?usp=drive_link">работы</a>\n
+Срок выполнения: 1 день`, {
+        disable_web_page_preview: true,
+        parse_mode: 'HTML',
+        reply_markup: inlineKeyboardNil3tide,
+    })
+    await ctx.answerCallbackQuery()
+})
+
+bot.callbackQuery('nil4tide', async (ctx) => {
+    const { line } = formatPriceInfo(ctx, costNil_4tide);
+    await ctx.callbackQuery.message.editText(`Приливы 4 задача 🚣\n\n${line}\n
+Пример готовой <a href="https://drive.google.com/file/d/1eUfiKArqCBZGp-1Zq3tNjHOblWsHJAqY/view?usp=drive_link">работы</a>\n
+Срок выполнения: 1 день`, {
+        disable_web_page_preview: true,
+        parse_mode: 'HTML',
+        reply_markup: inlineKeyboardNil4tide,
+    })
+    await ctx.answerCallbackQuery()
+})
+
+bot.callbackQuery('nil5tide', async (ctx) => { //Пример готовой <a href="https://drive.google.com/file/d/1eUfiKArqCBZGp-1Zq3tNjHOblWsHJAqY/view?usp=drive_link">работы</a>\n
+    const { line } = formatPriceInfo(ctx, costNil_5tide);
+    await ctx.callbackQuery.message.editText(`Приливы 5 задача 🪸\n\n${line}\n
+
+Срок выполнения: 1 день`, {
+        disable_web_page_preview: true,
+        parse_mode: 'HTML',
+        reply_markup: inlineKeyboardNil5tide,
     })
     await ctx.answerCallbackQuery()
 })
