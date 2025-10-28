@@ -92,7 +92,7 @@ const costNil_3tide = 370;
 const costNil_4tide = 450;
 const costNil_5tide = 450;
 const costNil_ALLtide = 2530;
-const costMiUStasks = 2390;
+const costMiUStasks = 1190;
 const costTSS_Test = 3290;
 
 //Каталог работ
