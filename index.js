@@ -94,6 +94,10 @@ const costNil_5tide = 450;
 const costNil_ALLtide = 2530;
 const costMiUStasks = 1190;
 const costTSS_Test = 3290;
+const costTSS_Test_pract = 1495; //добавить
+const costAstro_kr1 = 1190; //добавить
+const costAstro_kr2 = 1490; //добавить
+
 
 //Каталог работ
 const WORKS = {
@@ -297,6 +301,20 @@ const WORKS = {
         needs: ['details'],
         prompt: 'Отправьте одним сообщением логин и пароль от фарватера.'
     },
+    tss_test_pract: {
+        title: '3 курс ⭐⭐⭐\nТСС 📺\n5 тестов на фарватере (практика) 🖥️',
+        price: costTSS_Test_pract,
+        back: 'backTSS',
+        needs: ['details'],
+        prompt: 'Отправьте одним сообщением логин и пароль от фарватера.'
+    },
+    Astro_kr1: {
+        title: '3 курс ⭐⭐⭐\nАстрономия 🌌\nПомощь на контрольной по ТВА 🔭',
+        price: costAstro_kr1,
+        back: 'backAstro1',
+        needs: ['details'],
+        prompt: 'Отправьте одним сообщением дату проведения контрольной работы.'
+    },
 
     // 4 курс
     nil_1tide: {
@@ -355,6 +373,20 @@ const WORKS = {
         needs: ['details'],
         prompt: 'Отправьте одним сообщением логин и пароль от фарватера.'
     },
+    tss_test_pract2: {
+        title: '4 курс ⭐⭐⭐⭐\nТСС 📺\n5 тестов на фарватере (практика) 🖥️',
+        price: costTSS_Test_pract,
+        back: 'backTSS2',
+        needs: ['details'],
+        prompt: 'Отправьте одним сообщением логин и пароль от фарватера.'
+    },
+    Astro_kr2: {
+        title: '3 курс ⭐⭐⭐\nАстрономия 🌌\nПомощь на контрольной по МАЕ 🔭',
+        price: costAstro_kr2,
+        back: 'backAstro2',
+        needs: ['details'],
+        prompt: 'Отправьте одним сообщением дату проведения контрольной работы.'
+    },
 };
 
 //Разделение способов оплаты
@@ -390,6 +422,8 @@ const WORK_PAYMENT = {
     nil_sea_rgr: myCardNumber,
     nil_river_rgr9: myCardNumber,
     tss_test: myCardNumber,
+    tss_test_pract: myCardNumber,
+    Astro_kr1: myCardNumber,
     tus_kurs: myCardNumber,
     
     // 4 курс
@@ -401,6 +435,8 @@ const WORK_PAYMENT = {
     nil_5tide: myCellNumber,
     nil_ALLtide: myCellNumber,
     MiUS_tasks: myCellNumber,
+    tss_test_pract2: myCardNumber,
+    Astro_kr2: myCardNumber,
 };
 
 //Разделение работ по чатам
@@ -441,6 +477,10 @@ const WORK_CHAT = {
     MiUS_tasks: MY_CHAT_ID,
     tss_test: OTHER_ORDERS_CHAT_ID,
     tss_test2: OTHER_ORDERS_CHAT_ID,
+    Astro_kr2: OTHER_ORDERS_CHAT_ID,
+    tss_test_pract: myCardNumber,
+    Astro_kr1: myCardNumber,
+    tss_test_pract2: myCardNumber,
 };
 
 // Форматирование цены с учётом лояльности (loyalty.getPriceForUser)
@@ -587,6 +627,7 @@ const inlineKeyboard6 = new InlineKeyboard()
     .text('Безопасность судоходства на ВВП🛟', 'bvvp').row()
     .text('Общая лоция ВВП 🌉', 'lvvp').row()
     .text('ГМОС 🌦️', 'gmos').row()
+    .text('Астрономия 🌌', 'astro1').row()
     .text('НиЛ 🧭', 'nil').row()
     .text('ТСС 📺', 'tss').row()
     .text('Назад 🔙', 'back');
@@ -594,6 +635,7 @@ const inlineKeyboard4year = new InlineKeyboard()
     .text('НиЛ 🧭', 'nil4').row()
     .text('МиУС 🚢', 'MiUS4').row()
     .text('ТСС 📺', 'tss2').row()
+    .text('Астрономия 🌌', 'astro2').row()
     .text('Назад 🔙', 'back');
 const inlineKeyboardNachert = new InlineKeyboard()
     .text('1-9 задача (каждая отдельно) 📎', 'nach1_9').row()
@@ -633,7 +675,8 @@ const inlineKeyboard9 = new InlineKeyboard()
     .text('Курсовая работа 🎯', 'kurs').row()
     .text('Назад 🔙', 'back3')
 const inlineKeyboard34 = new InlineKeyboard()
-    .text('Тесты на фарватере 🖥️', 'test1').row()
+    .text('11 Тестов на фарватере 🖥️', 'test1').row()
+    .text('5 тестов на фарватере (практика) 🖥️', 'testpract').row()
     .text('Назад 🔙', 'back3')
 const inlineKeyboard10 = new InlineKeyboard()
     .text('Море 🌊', 'sea').row()
@@ -660,8 +703,12 @@ const nilkeyboard1 = new InlineKeyboard()
 const inlineKeyboard13 = new InlineKeyboard()
     .text('Опр. высоты подмостового габарита 🌉', 'high').row()
     .text('Назад 🔙', 'back3')
+const inlineKeyboardAstro1 = new InlineKeyboard()
+    .text('Помощь на контрольной по ТВА', 'astro_kr1').row()
+    .text('Назад 🔙', 'back3')
 const inlineKeyboardTSS4 = new InlineKeyboard()
     .text('Тесты на фарватере 🖥️', 'tss4test').row()
+    .text('5 тестов на фарватере (практика) 🖥️', 'testpract2').row()
     .text('Назад 🔙', 'back4year')
 const inlineKeyboardNil = new InlineKeyboard()
     .text('Приливы 1 задача 🏄', 'nil1tide').row()
@@ -673,6 +720,9 @@ const inlineKeyboardNil = new InlineKeyboard()
     .text('Назад 🔙', 'back4year')
 const inlineKeyboardMiUS4 = new InlineKeyboard()
     .text('👑 Все задачи на зачёт 👑', 'MiUS_tasks').row()
+    .text('Назад 🔙', 'back4year')
+const inlineKeyboardAstro2 = new InlineKeyboard()
+    .text('Помощь на контрольной по МАЕ', 'astro_kr2').row()
     .text('Назад 🔙', 'back4year')
 //Клавиатуры через конструктор (доделать)
 const inlineKeyboard19 = orderKb('order8', 'back4'); //Итоговый тест по МСС (доделать)
@@ -708,6 +758,8 @@ const inlineKeyboard29 = orderKb('order:olvvp_stvor',   'back10'); // ОЛВВП
 const inlineKeyboard31 = orderKb('order:nil_sea_rgr',   'back12'); // НиЛ море РГР
 const inlineKeyboard32 = orderKb('order:nil_river_rgr9','back13'); // НиЛ река-море РГР
 const inlineKeyboard35 = orderKb('order:tss_test',      'backTSS'); // ТСС 11 тестов
+const inlineKeyboard36 = orderKb('order:tss_test_pract',      'backTSS'); // ТСС 5 тестов
+const inlineKeyboardAstro_kr1 = orderKb('order:Astro_kr1',      'backAstro1'); // кр по ТВА
 
 // 4 курс
 const inlineKeyboardNil1tide = orderKb('order:nil_1tide',      'backNil4');  // НиЛ приливы 1 задача
@@ -718,6 +770,8 @@ const inlineKeyboardNil5tide = orderKb('order:nil_5tide',      'backNil4');  // 
 const inlineKeyboardNilALLtide = orderKb('order:nil_ALLtide',      'backNil4');  // НиЛ приливы все задачи
 const inlineKeyboardMiUS_tasks = orderKb('order:MiUS_tasks',      'backMiUS4');  // МиУС все задачи на зачёт
 const inlineKeyboardTSStest = orderKb('order:tss_test2',      'backTSS2');  // ТСС 11 тестов
+const inlineKeyboardTSStest2 = orderKb('order:tss_test_pract2',      'backTSS2'); // ТСС 5 тестов
+const inlineKeyboardAstro_kr2 = orderKb('order:Astro_kr2',      'backAstro2'); // кр по МАЕ
 
 const orederKeyboard1 = new InlineKeyboard()
     .text('Заказ взят ✅', 'take1');
@@ -1257,6 +1311,15 @@ bot.callbackQuery('lvvp', async (ctx) => {
     await ctx.answerCallbackQuery()
 })
 
+bot.callbackQuery('astro_kr1', async (ctx) => {
+    await ctx.callbackQuery.message.editText(`3 курс ⭐⭐⭐\nАстрономия 🌌${helpONSubject}`, {
+        disable_web_page_preview: true,
+        parse_mode: 'HTML',
+        reply_markup: inlineKeyboardAstro1,
+    })
+    await ctx.answerCallbackQuery()
+})
+
 bot.callbackQuery('nil4', async (ctx) => {
     await ctx.callbackQuery.message.editText(`4 курс ⭐⭐⭐⭐\nНиЛ 🧭${helpONSubject}`, {
         disable_web_page_preview: true,
@@ -1280,6 +1343,15 @@ bot.callbackQuery('tss2', async (ctx) => {
         disable_web_page_preview: true,
         parse_mode: 'HTML',
         reply_markup: inlineKeyboardTSS4,
+    })
+    await ctx.answerCallbackQuery()
+})
+
+bot.callbackQuery('astro_kr2', async (ctx) => {
+    await ctx.callbackQuery.message.editText(`4 курс ⭐⭐⭐⭐\nАстрономия 🌌${helpONSubject}`, {
+        disable_web_page_preview: true,
+        parse_mode: 'HTML',
+        reply_markup: inlineKeyboardAstro2,
     })
     await ctx.answerCallbackQuery()
 })
@@ -1345,11 +1417,33 @@ bot.callbackQuery('test', async (ctx) => {
 
 bot.callbackQuery('test1', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costTSS_Test);
-    await ctx.callbackQuery.message.editText(`11 тестов на фарватере🖥️\n\n${line}\n
-Срок выполнения: 1 -2 дня.\nДля выполнения работы Вам нужно отправить логин и пароль от фарватера`, {
+    await ctx.callbackQuery.message.editText(`11 тестов на фарватере 🖥️\n\n${line}\n
+Срок выполнения: 4 - 7 дней.\nДля выполнения работы Вам нужно отправить логин и пароль от фарватера`, {
         disable_web_page_preview: true,
         parse_mode: 'HTML',
         reply_markup: inlineKeyboard35,
+    })
+    await ctx.answerCallbackQuery()
+})
+
+bot.callbackQuery('testpract', async (ctx) => {
+    const { line } = formatPriceInfo(ctx, costTSS_Test_pract);
+    await ctx.callbackQuery.message.editText(`5 тестов на фарватере 🖥️\n\n${line}\n
+Срок выполнения: 4 - 7 дней.\nДля выполнения работы Вам нужно отправить логин и пароль от фарватера`, {
+        disable_web_page_preview: true,
+        parse_mode: 'HTML',
+        reply_markup: inlineKeyboard36,
+    })
+    await ctx.answerCallbackQuery()
+})
+
+bot.callbackQuery('astro_kr1', async (ctx) => {
+    const { line } = formatPriceInfo(ctx, costAstro_kr1);
+    await ctx.callbackQuery.message.editText(`Помощь на контрольной по ТВА 🔭\n\n${line}\n
+Для согласования помощи на контрольной, напишите дату проведения контрольной ✍️`, {
+        disable_web_page_preview: true,
+        parse_mode: 'HTML',
+        reply_markup: inlineKeyboardAstro_kr1,
     })
     await ctx.answerCallbackQuery()
 })
@@ -1633,6 +1727,28 @@ bot.callbackQuery('tss4test', async (ctx) => {
         disable_web_page_preview: true,
         parse_mode: 'HTML',
         reply_markup: inlineKeyboardTSStest,
+    })
+    await ctx.answerCallbackQuery()
+})
+
+bot.callbackQuery('testpract2', async (ctx) => {
+    const { line } = formatPriceInfo(ctx, costTSS_Test_pract);
+    await ctx.callbackQuery.message.editText(`5 тестов на фарватере🖥️\n\n${line}\n
+Срок выполнения: 4 - 7 дней.\nДля выполнения работы Вам нужно отправить логин и пароль от фарватера`, {
+        disable_web_page_preview: true,
+        parse_mode: 'HTML',
+        reply_markup: inlineKeyboardTSStest2,
+    })
+    await ctx.answerCallbackQuery()
+})
+
+bot.callbackQuery('astro_kr2', async (ctx) => {
+    const { line } = formatPriceInfo(ctx, costAstro_kr2);
+    await ctx.callbackQuery.message.editText(`Помощь на контрольной по МАЕ 🔭\n\n${line}\n
+Для согласования помощи на контрольной, напишите дату проведения контрольной ✍️`, {
+        disable_web_page_preview: true,
+        parse_mode: 'HTML',
+        reply_markup: inlineKeyboardAstro_kr2,
     })
     await ctx.answerCallbackQuery()
 })
@@ -2009,6 +2125,14 @@ bot.callbackQuery('backToGMOS', async (ctx) => {
 
 bot.callbackQuery('backTSS', async (ctx) => {
     await go(ctx, `3 курс ⭐⭐⭐\nТСС 📺${helpONSubject}`, inlineKeyboard34);
+});
+
+bot.callbackQuery('backAstro1', async (ctx) => {
+    await go(ctx, `3 курс ⭐⭐⭐\nАстрономия 🌌${helpONSubject}`, inlineKeyboardAstro1);
+});
+
+bot.callbackQuery('backAstro2', async (ctx) => {
+    await go(ctx, `4 курс ⭐⭐⭐⭐\nАстрономия 🌌${helpONSubject}`, inlineKeyboardAstro2);
 });
 
 bot.callbackQuery('backTSS2', async (ctx) => {
