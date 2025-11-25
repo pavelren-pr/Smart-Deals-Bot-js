@@ -1347,7 +1347,7 @@ bot.callbackQuery('tss2', async (ctx) => {
     await ctx.answerCallbackQuery()
 })
 
-bot.callbackQuery('astrо2', async (ctx) => {
+bot.callbackQuery('astro2', async (ctx) => {
     await ctx.callbackQuery.message.editText(`4 курс ⭐⭐⭐⭐\nАстрономия 🌌${helpONSubject}`, {
         disable_web_page_preview: true,
         parse_mode: 'HTML',
