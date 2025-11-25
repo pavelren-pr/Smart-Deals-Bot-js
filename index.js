@@ -1311,7 +1311,7 @@ bot.callbackQuery('lvvp', async (ctx) => {
     await ctx.answerCallbackQuery()
 })
 
-bot.callbackQuery('astro_kr1', async (ctx) => {
+bot.callbackQuery('astro1', async (ctx) => {
     await ctx.callbackQuery.message.editText(`3 курс ⭐⭐⭐\nАстрономия 🌌${helpONSubject}`, {
         disable_web_page_preview: true,
         parse_mode: 'HTML',
@@ -1347,7 +1347,7 @@ bot.callbackQuery('tss2', async (ctx) => {
     await ctx.answerCallbackQuery()
 })
 
-bot.callbackQuery('astro_kr2', async (ctx) => {
+bot.callbackQuery('astrо2', async (ctx) => {
     await ctx.callbackQuery.message.editText(`4 курс ⭐⭐⭐⭐\nАстрономия 🌌${helpONSubject}`, {
         disable_web_page_preview: true,
         parse_mode: 'HTML',
