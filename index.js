@@ -435,8 +435,8 @@ const WORK_PAYMENT = {
     nil_5tide: myCellNumber,
     nil_ALLtide: myCellNumber,
     MiUS_tasks: myCellNumber,
-    tss_test_pract2: myCardNumber,
-    Astro_kr2: myCardNumber,
+    tss_test_pract2: myCellNumber,
+    Astro_kr2: myCellNumber,
 };
 
 //Разделение работ по чатам
