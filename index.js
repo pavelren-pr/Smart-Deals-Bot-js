@@ -185,9 +185,9 @@ const WORKS = {
     mss_pz2: { 
         title: "МСС 📏 — ПЗ №2 📓", 
         price: costMSS_PZ2, 
-        needs: ["variant"], 
+        needs: ['photo'], 
         back: "back4",
-        prompt: 'Отправьте Ваш номер по журналу группы'
+        prompt: '📸 Прикрепите фотографию Ваших измерений 📸'
     },
     mss_pz3: { 
         title: "МСС 📏 — ПЗ №3 📒", 
@@ -1371,8 +1371,7 @@ bot.callbackQuery('pz1', async (ctx) => {
 
 bot.callbackQuery('pz2', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costMSS_PZ2);
-    await ctx.callbackQuery.message.editText(`ПЗ №2 📓\n\n${line}\n\nНомер варианта это последняя цифра номера по списку. ` + 
-`Для выполнения работы нам необходим Ваш номер по списку учебной группы.\n
+    await ctx.callbackQuery.message.editText(`ПЗ №2 📓\n\n${line}\n
 Пример готовой <a href="https://drive.google.com/file/d/1-Q_KDObrjOvk1S-lz7iOiR8zbNX8Ly5_/view?usp=drive_link">работы</a> 🔍
 Срок выполнения - 1 день`, {
         disable_web_page_preview: true,
@@ -1709,9 +1708,9 @@ bot.callbackQuery('nilALLtide', async (ctx) => {
 })
 
 bot.callbackQuery('MiUS_tasks', async (ctx) => {
-    const { line } = formatPriceInfo(ctx, costMiUStasks); //Пример готовой <a href="https://drive.google.com/drive/folders/1oalkjgVXOzTB8g01PGV5LaKSGWZVOdmi?usp=drive_link">работы</a>\n
+    const { line } = formatPriceInfo(ctx, costMiUStasks);
     await ctx.callbackQuery.message.editText(`👑 Все задачи на зачёт 👑\n\n${line}\n
-
+Пример готовой <a href="https://drive.google.com/file/d/1oacQUexvctohzjdR__u6EFex3uje56OY/view?usp=drive_link">работы</a>\n
 Срок выполнения: 1 день`, {
         disable_web_page_preview: true,
         parse_mode: 'HTML',
