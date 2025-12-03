@@ -96,7 +96,7 @@ const costMiUStasks = 1390;
 const costTSS_Test = 3390;
 const costTSS_Test_pract = 1595; //добавить
 const costAstro_kr1 = 1190; //добавить
-const costAstro_kr2 = 1490; //добавить
+const costAstro_kr2 = 1690; //добавить
 
 
 //Каталог работ
@@ -477,7 +477,7 @@ const WORK_CHAT = {
     MiUS_tasks: MY_CHAT_ID,
     tss_test: MY_CHAT_ID,
     tss_test2: MY_CHAT_ID,
-    Astro_kr2: MY_CHAT_ID,
+    Astro_kr2: OTHER_ORDERS_CHAT_ID,
     tss_test_pract: MY_CHAT_ID,
     Astro_kr1: MY_CHAT_ID,
     tss_test_pract2: MY_CHAT_ID,
