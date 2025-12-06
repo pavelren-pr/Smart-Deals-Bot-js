@@ -94,7 +94,7 @@ const costNil_5tide = 450;
 const costNil_ALLtide = 2630;
 const costMiUStasks = 1390;
 const costTSS_Test = 3390;
-const costTSS_Test_pract = 1595; //добавить
+const costTSS_Test_pract = 2290; //добавить
 const costAstro_kr1 = 1190; //добавить
 const costAstro_kr2 = 1690; //добавить
 
