@@ -295,7 +295,7 @@ const WORKS = {
         prompt: 'Отправьте номер своего варианта'
     },
     tss_test: {
-        title: '3 курс ⭐⭐⭐\nТСС 📺\n11 тестов на фарватере 🖥️',
+        title: '3 курс ⭐⭐⭐\nТСС 📺\n11 тестов (РЛС, РНС, АИС и др.) 🖥️',
         price: costTSS_Test,
         back: 'backTSS',
         needs: ['details'],
@@ -367,7 +367,7 @@ const WORKS = {
         prompt: 'Отправьте свой номер по журналу группы'
     },
     tss_test2: {
-        title: '4 курс ⭐⭐⭐⭐\nТСС 📺\n11 тестов на фарватере 🖥️',
+        title: '4 курс ⭐⭐⭐⭐\nТСС 📺\n11 тестов (РЛС, РНС, АИС и др.) 🖥️',
         price: costTSS_Test,
         back: 'backTSS2',
         needs: ['details'],
@@ -675,7 +675,7 @@ const inlineKeyboard9 = new InlineKeyboard()
     .text('Курсовая работа 🎯', 'kurs').row()
     .text('Назад 🔙', 'back3')
 const inlineKeyboard34 = new InlineKeyboard()
-    .text('11 Тестов на фарватере 🖥️', 'test1').row()
+    .text('11 тестов (РЛС, РНС, АИС и др.) 🖥️', 'test1').row()
     .text('5 тестов на фарватере (практика) 🖥️', 'testpract').row()
     .text('Назад 🔙', 'back3')
 const inlineKeyboard10 = new InlineKeyboard()
@@ -707,7 +707,7 @@ const inlineKeyboardAstro1 = new InlineKeyboard()
     .text('Помощь на контрольной по ТВА', 'astro_kr1').row()
     .text('Назад 🔙', 'back3')
 const inlineKeyboardTSS4 = new InlineKeyboard()
-    .text('Тесты на фарватере 🖥️', 'tss4test').row()
+    .text('11 тестов (РЛС, РНС, АИС и др.) 🖥️', 'tss4test').row()
     .text('5 тестов на фарватере (практика) 🖥️', 'testpract2').row()
     .text('Назад 🔙', 'back4year')
 const inlineKeyboardNil = new InlineKeyboard()
@@ -1416,7 +1416,7 @@ bot.callbackQuery('test', async (ctx) => {
 
 bot.callbackQuery('test1', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costTSS_Test);
-    await ctx.callbackQuery.message.editText(`11 тестов на фарватере 🖥️\n\n${line}\n
+    await ctx.callbackQuery.message.editText(`11 тестов (РЛС, РНС, АИС и др.) 🖥️\n\n${line}\n
 Срок выполнения: 4 - 7 дней.\nДля выполнения работы Вам нужно отправить логин и пароль от фарватера`, {
         disable_web_page_preview: true,
         parse_mode: 'HTML',
@@ -1721,7 +1721,7 @@ bot.callbackQuery('MiUS_tasks', async (ctx) => {
 
 bot.callbackQuery('tss4test', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costTSS_Test);
-    await ctx.callbackQuery.message.editText(`11 тестов на фарватере 🖥️\n\n${line}\n
+    await ctx.callbackQuery.message.editText(`11 тестов (РЛС, РНС, АИС и др.) 🖥️\n\n${line}\n
 Срок выполнения: 1 - 2 дня.\nДля выполнения работы Вам нужно отправить логин и пароль от фарватера`, {
         disable_web_page_preview: true,
         parse_mode: 'HTML',
