@@ -1729,7 +1729,7 @@ bot.callbackQuery('MiUS_tasks', async (ctx) => {
     await ctx.answerCallbackQuery()
 })
 
-bot.callbackQuery('MiUS_tasks_breal', async (ctx) => {
+bot.callbackQuery('MiUS_tasks_break', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costMiUStasks_break);
     await ctx.callbackQuery.message.editText(`4 задачи на торможение 🐌\n\n${line}\n
 Пример готовой <a href="https://drive.google.com/file/d/1nb3V4HEFwPBtnkxRXTH-TKWSf5EVKlMk/view?usp=drive_link">работы</a>\n
