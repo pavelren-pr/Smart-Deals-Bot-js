@@ -92,7 +92,8 @@ const costNil_3tide = 390;
 const costNil_4tide = 450;
 const costNil_5tide = 450;
 const costNil_ALLtide = 2630;
-const costMiUStasks = 1390;
+const costMiUStasks = 1790;
+const costMiUStasks_break = 990;
 const costTSS_Test = 3390;
 const costTSS_Test_pract = 2290; //добавить
 const costAstro_kr1 = 1190; //добавить
@@ -360,8 +361,15 @@ const WORKS = {
         prompt: 'Отправьте номер своего варианта (01 - 70)'
     },
     MiUS_tasks: {
-        title: '4 курс ⭐⭐⭐⭐\nМиУС 🚢\n👑 Все задачи на зачёт 👑',
+        title: '4 курс ⭐⭐⭐⭐\nМиУС 🚢\n7 задач по пособию 🚤',
         price: costMiUStasks,
+        back: 'backMiUS4',
+        needs: ['details'],
+        prompt: 'Отправьте свой номер по журналу группы'
+    },
+    MiUS_tasks_break: {
+        title: '4 курс ⭐⭐⭐⭐\nМиУС 🚢\n4 задачи на торможение 🐌',
+        price: costMiUStasks_break,
         back: 'backMiUS4',
         needs: ['details'],
         prompt: 'Отправьте свой номер по журналу группы'
@@ -719,7 +727,8 @@ const inlineKeyboardNil = new InlineKeyboard()
     .text('👑 Все задачи на приливы 👑', 'nilALLtide').row()
     .text('Назад 🔙', 'back4year')
 const inlineKeyboardMiUS4 = new InlineKeyboard()
-    .text('👑 Все задачи на зачёт 👑', 'MiUS_tasks').row()
+    .text('7 задач по пособию 🚤', 'MiUS_tasks').row()
+    .text('4 задачи на торможение 🐌', 'MiUS_tasks_break').row()
     .text('Назад 🔙', 'back4year')
 const inlineKeyboardAstro2 = new InlineKeyboard()
     .text('Помощь на контрольной по МАЕ', 'astro_kr2').row()
@@ -768,7 +777,8 @@ const inlineKeyboardNil3tide = orderKb('order:nil_3tide',      'backNil4');  // 
 const inlineKeyboardNil4tide = orderKb('order:nil_4tide',      'backNil4');  // НиЛ приливы 4 задача
 const inlineKeyboardNil5tide = orderKb('order:nil_5tide',      'backNil4');  // НиЛ приливы 5 задача
 const inlineKeyboardNilALLtide = orderKb('order:nil_ALLtide',      'backNil4');  // НиЛ приливы все задачи
-const inlineKeyboardMiUS_tasks = orderKb('order:MiUS_tasks',      'backMiUS4');  // МиУС все задачи на зачёт
+const inlineKeyboardMiUS_tasks = orderKb('order:MiUS_tasks',      'backMiUS4');  // МиУС 7 задач по пособию
+const inlineKeyboardMiUS_tasks_break = orderKb('order:MiUS_tasks_break',      'backMiUS4');  // МиУС 4 задачи на торможение
 const inlineKeyboardTSStest = orderKb('order:tss_test2',      'backTSS2');  // ТСС 11 тестов
 const inlineKeyboardTSStest2 = orderKb('order:tss_test_pract2',      'backTSS2'); // ТСС 5 тестов
 const inlineKeyboardAstro_kr2 = orderKb('order:Astro_kr2',      'backAstro2'); // кр по МАЕ
@@ -1709,12 +1719,24 @@ bot.callbackQuery('nilALLtide', async (ctx) => {
 
 bot.callbackQuery('MiUS_tasks', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costMiUStasks);
-    await ctx.callbackQuery.message.editText(`👑 Все задачи на зачёт 👑\n\n${line}\n
-Пример готовой <a href="https://drive.google.com/file/d/1oacQUexvctohzjdR__u6EFex3uje56OY/view?usp=drive_link">работы</a>\n
+    await ctx.callbackQuery.message.editText(`7 задач по пособию 🚤\n\n${line}\n
+Пример готовой <a href="https://drive.google.com/file/d/13dF2TK0Qu4fSXnk6-HlobiIV4vzMfqq2/view?usp=drive_link">работы</a>\n
 Срок выполнения: 1 день`, {
         disable_web_page_preview: true,
         parse_mode: 'HTML',
         reply_markup: inlineKeyboardMiUS_tasks,
+    })
+    await ctx.answerCallbackQuery()
+})
+
+bot.callbackQuery('MiUS_tasks_breal', async (ctx) => {
+    const { line } = formatPriceInfo(ctx, costMiUStasks_break);
+    await ctx.callbackQuery.message.editText(`4 задачи на торможение 🐌\n\n${line}\n
+Пример готовой <a href="https://drive.google.com/file/d/1nb3V4HEFwPBtnkxRXTH-TKWSf5EVKlMk/view?usp=drive_link">работы</a>\n
+Срок выполнения: 1 день`, {
+        disable_web_page_preview: true,
+        parse_mode: 'HTML',
+        reply_markup: inlineKeyboardMiUS_tasks_break,
     })
     await ctx.answerCallbackQuery()
 })
