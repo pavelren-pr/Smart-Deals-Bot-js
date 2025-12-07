@@ -98,6 +98,7 @@ const costTSS_Test = 3390;
 const costTSS_Test_pract = 2290; //добавить
 const costAstro_kr1 = 1190; //добавить
 const costAstro_kr2 = 1690; //добавить
+const costVVPRadio_kurs = 3125; //добавить
 
 
 //Каталог работ
@@ -395,6 +396,13 @@ const WORKS = {
         needs: ['details'],
         prompt: 'Отправьте одним сообщением дату проведения контрольной работы.'
     },
+    VVPRadio_kurs: {
+        title: '4 курс ⭐⭐⭐⭐\nРадиосвязь на ВВП 📻\nКурсовая работа 🎛️',
+        price: costVVPRadio_kurs,
+        back: 'backVVPRadio',
+        needs: ['details'],
+        prompt: 'Отправьте свой номер по журналу группы.'
+    },
 };
 
 //Разделение способов оплаты
@@ -443,7 +451,9 @@ const WORK_PAYMENT = {
     nil_5tide: myCellNumber,
     nil_ALLtide: myCellNumber,
     MiUS_tasks: myCellNumber,
+    MiUS_tasks_break: myCellNumber,
     tss_test_pract2: myCellNumber,
+    VVPRadio_kurs: myCellNumber,
     Astro_kr2: myCellNumber,
 };
 
@@ -483,12 +493,14 @@ const WORK_CHAT = {
     nil_5tide: MY_CHAT_ID,
     nil_ALLtide: MY_CHAT_ID,
     MiUS_tasks: MY_CHAT_ID,
+    MiUS_tasks_break: MY_CHAT_ID,
     tss_test: MY_CHAT_ID,
     tss_test2: MY_CHAT_ID,
     Astro_kr2: OTHER_ORDERS_CHAT_ID,
     tss_test_pract: MY_CHAT_ID,
     Astro_kr1: MY_CHAT_ID,
     tss_test_pract2: MY_CHAT_ID,
+    VVPRadio_kurs: MY_CHAT_ID,
 };
 
 // Форматирование цены с учётом лояльности (loyalty.getPriceForUser)
@@ -644,6 +656,7 @@ const inlineKeyboard4year = new InlineKeyboard()
     .text('МиУС 🚢', 'MiUS4').row()
     .text('ТСС 📺', 'tss2').row()
     .text('Астрономия 🌌', 'astro2').row()
+    .text('Радиосвязь на ВВП 📻', 'VVPRadio').row()
     .text('Назад 🔙', 'back');
 const inlineKeyboardNachert = new InlineKeyboard()
     .text('1-9 задача (каждая отдельно) 📎', 'nach1_9').row()
@@ -733,6 +746,9 @@ const inlineKeyboardMiUS4 = new InlineKeyboard()
 const inlineKeyboardAstro2 = new InlineKeyboard()
     .text('Помощь на контрольной по МАЕ', 'astro_kr2').row()
     .text('Назад 🔙', 'back4year')
+const inlineKeyboardVVPRadio = new InlineKeyboard()
+    .text('Курсовая работа 🎛️', 'VVPRadio_kurs').row()
+    .text('Назад 🔙', 'back4year')
 //Клавиатуры через конструктор (доделать)
 const inlineKeyboard19 = orderKb('order8', 'back4'); //Итоговый тест по МСС (доделать)
 
@@ -782,7 +798,7 @@ const inlineKeyboardMiUS_tasks_break = orderKb('order:MiUS_tasks_break',      'b
 const inlineKeyboardTSStest = orderKb('order:tss_test2',      'backTSS2');  // ТСС 11 тестов
 const inlineKeyboardTSStest2 = orderKb('order:tss_test_pract2',      'backTSS2'); // ТСС 5 тестов
 const inlineKeyboardAstro_kr2 = orderKb('order:Astro_kr2',      'backAstro2'); // кр по МАЕ
-
+const inlineKeyboardVVPRadio_kurs = orderKb('order:VVPRadio_kurs',      'backVVPRadio'); // курсач по радиосвязи на ВВП
 const orederKeyboard1 = new InlineKeyboard()
     .text('Заказ взят ✅', 'take1');
 
@@ -1366,6 +1382,15 @@ bot.callbackQuery('astro2', async (ctx) => {
     await ctx.answerCallbackQuery()
 })
 
+bot.callbackQuery('VVPRadio', async (ctx) => {
+    await ctx.callbackQuery.message.editText(`4 курс ⭐⭐⭐⭐\nРадиосвязь на ВВП 📻${helpONSubject}`, {
+        disable_web_page_preview: true,
+        parse_mode: 'HTML',
+        reply_markup: inlineKeyboardVVPRadio,
+    })
+    await ctx.answerCallbackQuery()
+})
+
 bot.callbackQuery('pz1', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costMSS_PZ1);
     await ctx.callbackQuery.message.editText(`ПЗ №1 🗒️\n\n${line}\n\nРабота выполняется в электронном виде.` + 
@@ -1774,6 +1799,17 @@ bot.callbackQuery('astro_kr2', async (ctx) => {
     await ctx.answerCallbackQuery()
 })
 
+bot.callbackQuery('VVPRadio_kurs', async (ctx) => {
+    const { line } = formatPriceInfo(ctx, costVVPRadio_kurs);
+    await ctx.callbackQuery.message.editText(`Курсовая работа 🎛️\n\n${line}\n
+Срок выполнения: 4 - 7 дней.`, {
+        disable_web_page_preview: true,
+        parse_mode: 'HTML',
+        reply_markup: inlineKeyboardVVPRadio_kurs,
+    })
+    await ctx.answerCallbackQuery()
+})
+
 //Блок 6. Обработка разных типов заказов
 
 bot.callbackQuery('order8', async (ctx) => {
@@ -2168,6 +2204,9 @@ bot.callbackQuery('backMiUS4', async (ctx) => {
     await go(ctx, `4 курс ⭐⭐⭐⭐\nМиУС 🚢${helpONSubject}`, inlineKeyboardMiUS4);
 });
 
+bot.callbackQuery('backVVPRadio', async (ctx) => {
+    await go(ctx, `4 курс ⭐⭐⭐⭐\nРадиосвязь на ВВП 📻${helpONSubject}`, inlineKeyboardVVPRadio);
+});
 
 bot.callbackQuery('back14', async (ctx) => {
     await go(ctx, seaTreasure, inlineKeyboard1);
