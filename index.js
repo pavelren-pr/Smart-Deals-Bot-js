@@ -98,7 +98,7 @@ const costTSS_Test = 3390;
 const costTSS_Test_pract = 2290; //добавить
 const costAstro_kr1 = 1190; //добавить
 const costAstro_kr2 = 1690; //добавить
-const costVVPRadio_kurs = 3125; //добавить
+const costVVPRadio_kurs = 3470; //добавить
 
 
 //Каталог работ
