@@ -1,0 +1,4 @@
+node_modules/
+.env
+loyalty.json
+ToDo.txt
