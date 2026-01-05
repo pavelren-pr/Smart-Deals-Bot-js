@@ -66,8 +66,8 @@ const nachANDinjgraf = 10190;
 const inj146 = 1190;
 const inj5 = 890;
 const injALL = 6690;
-const costVal = 1090;
-const costBalka = 1090;
+const costVal = 1290;
+const costBalka = 1290;
 const costMSS_PZ1 = 490;
 const costMSS_PZ2 = 990;
 const costMSS_PZ3 = 490;
@@ -96,9 +96,10 @@ const costMiUStasks = 2390;
 const costMiUStasks_break = 1590;
 const costTSS_Test = 3990; //3390
 const costTSS_Test_pract = 2990; //2290
-const costAstro_kr1 = 1190; //добавить
-const costAstro_kr2 = 1690; //добавить
-const costVVPRadio_kurs = 3470; //добавить
+const costAstro_kr1 = 1190; 
+const costAstro_kr2 = 1690; 
+const costVVPRadio_kurs = 3470; 
+const costPSS_Test = 8490;
 
 
 //Каталог работ
@@ -297,7 +298,7 @@ const WORKS = {
         prompt: 'Отправьте номер своего варианта'
     },
     tss_test: {
-        title: '3 курс ⭐⭐⭐\nТСС 📺\n11 тестов (РЛС, РНС, АИС и др.) 🖥️',
+        title: '3 курс ⭐⭐⭐\nТСС 📺\n10 тестов (РЛС, РНС, АИС и др.) 🖥️',
         price: costTSS_Test,
         back: 'backTSS',
         needs: ['details'],
@@ -376,7 +377,7 @@ const WORKS = {
         prompt: 'Отправьте свой номер по журналу группы'
     },
     tss_test2: {
-        title: '4 курс ⭐⭐⭐⭐\nТСС 📺\n11 тестов (РЛС, РНС, АИС и др.) 🖥️',
+        title: '4 курс ⭐⭐⭐⭐\nТСС 📺\n10 тестов (РЛС, РНС, АИС и др.) 🖥️',
         price: costTSS_Test,
         back: 'backTSS2',
         needs: ['details'],
@@ -402,6 +403,13 @@ const WORKS = {
         back: 'backVVPRadio',
         needs: ['details'],
         prompt: 'Отправьте свой номер по журналу группы.'
+    },
+    pss_test: {
+        title: '4 курс ⭐⭐⭐⭐\nПСС 🛟\nВесь фарватер 🖥️',
+        price: costPSS_Test,
+        back: 'backPSS',
+        needs: ['details'],
+        prompt: 'Отправьте одним сообщением логин и пароль от фарватера.'
     },
 };
 
@@ -455,6 +463,7 @@ const WORK_PAYMENT = {
     tss_test_pract2: myCellNumber,
     VVPRadio_kurs: myCellNumber,
     Astro_kr2: myCellNumber,
+    pss_test: myCellNumber,
 };
 
 //Разделение работ по чатам
@@ -501,6 +510,7 @@ const WORK_CHAT = {
     Astro_kr1: MY_CHAT_ID,
     tss_test_pract2: MY_CHAT_ID,
     VVPRadio_kurs: MY_CHAT_ID,
+    pss_test: MY_CHAT_ID,
 };
 
 // Форматирование цены с учётом лояльности (loyalty.getPriceForUser)
@@ -656,6 +666,7 @@ const inlineKeyboard4year = new InlineKeyboard()
     .text('МиУС 🚢', 'MiUS4').row()
     .text('ТСС 📺', 'tss2').row()
     .text('Астрономия 🌌', 'astro2').row()
+    .text('ПСС 🛟', 'pss').row()
     .text('Радиосвязь на ВВП 📻', 'VVPRadio').row()
     .text('Назад 🔙', 'back');
 const inlineKeyboardNachert = new InlineKeyboard()
@@ -744,11 +755,15 @@ const inlineKeyboardMiUS4 = new InlineKeyboard()
     .text('4 задачи на торможение 🐌', 'MiUS_tasks_break').row()
     .text('Назад 🔙', 'back4year')
 const inlineKeyboardAstro2 = new InlineKeyboard()
-    .text('Помощь на контрольной по МАЕ', 'astro_kr2').row()
+    .text('Помощь на контрольной по МАЕ 🌌', 'astro_kr2').row()
     .text('Назад 🔙', 'back4year')
 const inlineKeyboardVVPRadio = new InlineKeyboard()
     .text('Курсовая работа 🎛️', 'VVPRadio_kurs').row()
     .text('Назад 🔙', 'back4year')
+const inlineKeyboardPSS = new InlineKeyboard()
+    .text('👑 Весь фарватер 👑', 'pss_test').row()
+    .text('Назад 🔙', 'back4year')
+
 //Клавиатуры через конструктор (доделать)
 const inlineKeyboard19 = orderKb('order8', 'back4'); //Итоговый тест по МСС (доделать)
 
@@ -799,6 +814,8 @@ const inlineKeyboardTSStest = orderKb('order:tss_test2',      'backTSS2');  // �
 const inlineKeyboardTSStest2 = orderKb('order:tss_test_pract2',      'backTSS2'); // ТСС 5 тестов
 const inlineKeyboardAstro_kr2 = orderKb('order:Astro_kr2',      'backAstro2'); // кр по МАЕ
 const inlineKeyboardVVPRadio_kurs = orderKb('order:VVPRadio_kurs',      'backVVPRadio'); // курсач по радиосвязи на ВВП
+const inlineKeyboardPSS_test = orderKb('order:PSS_test',      'backPSS'); // тесты на фарватере по ПСС
+
 const orederKeyboard1 = new InlineKeyboard()
     .text('Заказ взят ✅', 'take1');
 
@@ -1451,7 +1468,7 @@ bot.callbackQuery('test', async (ctx) => {
 
 bot.callbackQuery('test1', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costTSS_Test);
-    await ctx.callbackQuery.message.editText(`11 тестов (РЛС, РНС, АИС и др.) 🖥️\n\n${line}\n
+    await ctx.callbackQuery.message.editText(`10 тестов (РЛС, РНС, АИС и др.) 🖥️\n\n${line}\n
 Срок выполнения: 4 - 7 дней.\nДля выполнения работы Вам нужно отправить логин и пароль от фарватера`, {
         disable_web_page_preview: true,
         parse_mode: 'HTML',
@@ -1768,7 +1785,7 @@ bot.callbackQuery('MiUS_tasks_break', async (ctx) => {
 
 bot.callbackQuery('tss4test', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costTSS_Test);
-    await ctx.callbackQuery.message.editText(`11 тестов (РЛС, РНС, АИС и др.) 🖥️\n\n${line}\n
+    await ctx.callbackQuery.message.editText(`10 тестов (РЛС, РНС, АИС и др.) 🖥️\n\n${line}\n
 Срок выполнения: 1 - 2 дня.\nДля выполнения работы Вам нужно отправить логин и пароль от фарватера`, {
         disable_web_page_preview: true,
         parse_mode: 'HTML',
@@ -1810,13 +1827,24 @@ bot.callbackQuery('VVPRadio_kurs', async (ctx) => {
     await ctx.answerCallbackQuery()
 })
 
+bot.callbackQuery('PSS_test', async (ctx) => {
+    const { line } = formatPriceInfo(ctx, costPSS_Test);
+    await ctx.callbackQuery.message.editText(`👑 Весь фарватер по ПСС 👑\n\n${line}\n
+Срок выполнения: 7 - 14 дней.`, {
+        disable_web_page_preview: true,
+        parse_mode: 'HTML',
+        reply_markup: inlineKeyboardPSS_test,
+    })
+    await ctx.answerCallbackQuery()
+})
+
 //Блок 6. Обработка разных типов заказов
 
 bot.callbackQuery('order8', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costMSS_test);
     ctx.session.order8.waitingForData8 = true;
     ctx.session.order8.step8 = 1;
-    await ctx.reply(`3 курс ⭐⭐⭐\nМСС 📏\nтоговый тест по МСС 🖥️\n\n${line}\n
+    await ctx.reply(`3 курс ⭐⭐⭐\nМСС 📏\nИтоговый тест по МСС 🖥️\n\n${line}\n
 Для получения доступа к тестам Вам необходимо отправить свою почту боту`, { parse_mode: 'HTML' });
     await ctx.answerCallbackQuery();
 });
@@ -2206,6 +2234,10 @@ bot.callbackQuery('backMiUS4', async (ctx) => {
 
 bot.callbackQuery('backVVPRadio', async (ctx) => {
     await go(ctx, `4 курс ⭐⭐⭐⭐\nРадиосвязь на ВВП 📻${helpONSubject}`, inlineKeyboardVVPRadio);
+});
+
+bot.callbackQuery('backPSS', async (ctx) => {
+    await go(ctx, `4 курс ⭐⭐⭐⭐\nПСС 🛟${helpONSubject}`, inlineKeyboardPSS);
 });
 
 bot.callbackQuery('back14', async (ctx) => {
