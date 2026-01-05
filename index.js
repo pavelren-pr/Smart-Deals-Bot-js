@@ -404,7 +404,7 @@ const WORKS = {
         needs: ['details'],
         prompt: 'Отправьте свой номер по журналу группы.'
     },
-    pss_test: {
+    PSS_test: {
         title: '4 курс ⭐⭐⭐⭐\nПСС 🛟\nВесь фарватер 🖥️',
         price: costPSS_Test,
         back: 'backPSS',
@@ -463,7 +463,7 @@ const WORK_PAYMENT = {
     tss_test_pract2: myCellNumber,
     VVPRadio_kurs: myCellNumber,
     Astro_kr2: myCellNumber,
-    pss_test: myCellNumber,
+    PSS_test: myCellNumber,
 };
 
 //Разделение работ по чатам
@@ -510,7 +510,7 @@ const WORK_CHAT = {
     Astro_kr1: MY_CHAT_ID,
     tss_test_pract2: MY_CHAT_ID,
     VVPRadio_kurs: MY_CHAT_ID,
-    pss_test: MY_CHAT_ID,
+    PSS_test: MY_CHAT_ID,
 };
 
 // Форматирование цены с учётом лояльности (loyalty.getPriceForUser)
@@ -666,7 +666,7 @@ const inlineKeyboard4year = new InlineKeyboard()
     .text('МиУС 🚢', 'MiUS4').row()
     .text('ТСС 📺', 'tss2').row()
     .text('Астрономия 🌌', 'astro2').row()
-    .text('ПСС 🛟', 'pss').row()
+    .text('ПСС 🛟', 'PSS').row()
     .text('Радиосвязь на ВВП 📻', 'VVPRadio').row()
     .text('Назад 🔙', 'back');
 const inlineKeyboardNachert = new InlineKeyboard()
@@ -761,7 +761,7 @@ const inlineKeyboardVVPRadio = new InlineKeyboard()
     .text('Курсовая работа 🎛️', 'VVPRadio_kurs').row()
     .text('Назад 🔙', 'back4year')
 const inlineKeyboardPSS = new InlineKeyboard()
-    .text('👑 Весь фарватер 👑', 'pss_test').row()
+    .text('👑 Весь фарватер 👑', 'PSS_test').row()
     .text('Назад 🔙', 'back4year')
 
 //Клавиатуры через конструктор (доделать)
@@ -1408,7 +1408,7 @@ bot.callbackQuery('VVPRadio', async (ctx) => {
     await ctx.answerCallbackQuery()
 })
 
-bot.callbackQuery('pss', async (ctx) => {
+bot.callbackQuery('PSS', async (ctx) => {
     await ctx.callbackQuery.message.editText(`4 курс ⭐⭐⭐⭐\nПСС 🛟${helpONSubject}`, {
         disable_web_page_preview: true,
         parse_mode: 'HTML',
