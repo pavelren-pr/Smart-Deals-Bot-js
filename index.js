@@ -1408,6 +1408,16 @@ bot.callbackQuery('VVPRadio', async (ctx) => {
     await ctx.answerCallbackQuery()
 })
 
+bot.callbackQuery('pss', async (ctx) => {
+    await ctx.callbackQuery.message.editText(`4 курс ⭐⭐⭐⭐\nПСС 🛟${helpONSubject}`, {
+        disable_web_page_preview: true,
+        parse_mode: 'HTML',
+        reply_markup: inlineKeyboardPSS,
+    })
+    await ctx.answerCallbackQuery()
+})
+
+
 bot.callbackQuery('pz1', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costMSS_PZ1);
     await ctx.callbackQuery.message.editText(`ПЗ №1 🗒️\n\n${line}\n\nРабота выполняется в электронном виде.` + 
