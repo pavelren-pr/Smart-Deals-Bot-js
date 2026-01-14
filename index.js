@@ -57,7 +57,7 @@ bot.use(session({ initial: () => ({
 
 
 // Блок 1. Объявление констант для цен.
-const commission = 20;
+const commission = 20; // управление комиссией
 const nach1_9 = 520; // 375
 const nach10_12 = 590; 
 const nachall1_9 = 3890; // 3375
