@@ -84,7 +84,7 @@ const costMOS_river_PZ2 = 690;
 const costMOS_river_PZ4 = 690;
 const costBS_high = 890;
 const costOLVVP_Stvor = 790;
-const costNIL_sea_RGR = 790;
+const costNIL_sea_RGR = 1190;
 const costNIL_river_RGR = 2790;
 const costNil_1tide = 1350;
 const costNil_2tide = 390;
@@ -1682,8 +1682,7 @@ bot.callbackQuery('rgr', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costNIL_sea_RGR);
     await ctx.callbackQuery.message.editText(`РГР вертикальный угол (4 задачи)\n\n${line}\n
 Работа выполняется полностью в электронном виде со всеми графиками и титульным листом 💡 Вам будет нужно только распечатать её и сдать 🖨️
-Срок выполнения: 1 день.\n\nДля выполнения работы необходимы следующие данные:\n1. Ваш номер по журналу\n2. Ваш номер учебной группы
-3. Ваша фамилия и инициалы`, {
+Срок выполнения: 1 день.`, {
         disable_web_page_preview: true,
         parse_mode: 'HTML',
         reply_markup: inlineKeyboard31,
