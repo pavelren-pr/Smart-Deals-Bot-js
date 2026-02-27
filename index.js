@@ -865,7 +865,7 @@ const inlineKeyboardVVP_Tug = orderKb('order:VVP_Tug',       'back9');  // БС 
 const inlineKeyboard29 = orderKb('order:olvvp_stvor',   'back10'); // ОЛВВП линейный створ
 const inlineKeyboardVertAngl_RGR = orderKb('order:NIL_VertAngl_RGR',   'back11'); // НиЛ вертикальный угол РГР
 const inlineKeyboardriver_rgr9 = orderKb('order:nil_river_rgr9',    'back11'); // НиЛ 9 задач по пособиям РГР
-const inlineKeyboardсhart_rgr = orderKb('order:nil_chart_RGR',    'back11'); // НиЛ расчёт сетки и рамки карты РГР
+const inlineKeyboardchart_rgr = orderKb('order:nil_chart_RGR',    'back11'); // НиЛ расчёт сетки и рамки карты РГР
 const inlineKeyboard35 = orderKb('order:tss_test',      'backTSS'); // ТСС 11 тестов
 const inlineKeyboard36 = orderKb('order:tss_test_pract',      'backTSS'); // ТСС 5 тестов
 const inlineKeyboardAstro_kr1 = orderKb('order:Astro_kr1',      'backAstro1'); // кр по ТВА
@@ -1769,7 +1769,7 @@ bot.callbackQuery('chart_RGR', async (ctx) => {
     await ctx.callbackQuery.message.editText(`Расчёт Сетки и Рамки Карты 🗺️\n\n${line}`, {
         disable_web_page_preview: true,
         parse_mode: 'HTML',
-        reply_markup: inlineKeyboardсhart_rgr,
+        reply_markup: inlineKeyboardchart_rgr,
     })
     await ctx.answerCallbackQuery()
 })
