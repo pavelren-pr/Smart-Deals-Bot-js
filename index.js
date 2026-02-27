@@ -824,10 +824,10 @@ const inlineKeyboardVVPRadio = new InlineKeyboard()
     .text('Курсовая работа 🎛️', 'VVPRadio_kurs').row()
     .text('Назад 🔙', 'back4year')
 const inlineKeyboardPSS = new InlineKeyboard()
-    .text('Фарватер. Вводная часть 💡', 'PSS_test_Preamble').row()
-    .text('Фарватер. 1 Раздел 🥇', 'PSS_test_P1').row()
-    .text('Фарватер. 2 Раздел 🥈', 'PSS_test_P2').row()
-    .text('Фарватер. 3 Раздел 🥉', 'PSS_test_P3').row()
+    .text('Фарватер. Вводная часть 💡', 'PSS_test_Preamble_0').row()
+    .text('Фарватер. 1 Раздел 🥇', 'PSS_test_P1_0').row()
+    .text('Фарватер. 2 Раздел 🥈', 'PSS_test_P2_0').row()
+    .text('Фарватер. 3 Раздел 🥉', 'PSS_test_P3_0').row()
     .text('👑 Весь фарватер 👑', 'PSS_test').row()
     .text('Назад 🔙', 'back4year')
 
@@ -1925,7 +1925,7 @@ bot.callbackQuery('PSS_test', async (ctx) => {
     await ctx.answerCallbackQuery()
 })
 
-bot.callbackQuery('PSS_test_Preamble', async (ctx) => {
+bot.callbackQuery('PSS_test_Preamble_0', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costPSS_Test_Preamble);
     await ctx.callbackQuery.message.editText(`Фарватер. Вводная часть 💡\n\n${line}\n
 Срок выполнения: 1 день.`, {
@@ -1936,7 +1936,7 @@ bot.callbackQuery('PSS_test_Preamble', async (ctx) => {
     await ctx.answerCallbackQuery()
 })
 
-bot.callbackQuery('PSS_test_P1', async (ctx) => {
+bot.callbackQuery('PSS_test_P1_0', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costPSS_Test_P1);
     await ctx.callbackQuery.message.editText(`Фарватер. 1 Раздел 🥇\n\n${line}\n
 Срок выполнения: 2 - 4 дня.`, {
@@ -1947,7 +1947,7 @@ bot.callbackQuery('PSS_test_P1', async (ctx) => {
     await ctx.answerCallbackQuery()
 })
 
-bot.callbackQuery('PSS_test_P2', async (ctx) => {
+bot.callbackQuery('PSS_test_P2_0', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costPSS_Test_P2);
     await ctx.callbackQuery.message.editText(`Фарватер. 2 Раздел 🥈\n\n${line}\n
 Срок выполнения: 2 - 4 дня.`, {
@@ -1958,7 +1958,7 @@ bot.callbackQuery('PSS_test_P2', async (ctx) => {
     await ctx.answerCallbackQuery()
 })
 
-bot.callbackQuery('PSS_test_P3', async (ctx) => {
+bot.callbackQuery('PSS_test_P3_0', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costPSS_Test_P3);
     await ctx.callbackQuery.message.editText(`Фарватер. 3 Раздел 🥉\n\n${line}\n
 Срок выполнения: 2 - 4 дня.`, {
