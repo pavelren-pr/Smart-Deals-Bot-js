@@ -468,54 +468,54 @@ const WORKS = {
 const WORK_PAYMENT = {
     
     // 2 курс
-    nach1_9: myCardNumber,
-    nach10_12: myCardNumber,
-    nachall1_9: myCardNumber,
-    nachall10_12: myCardNumber,
-    inj146: myCardNumber,
-    inj5: myCardNumber,
-    injALL: myCardNumber,
-    nachANDinjgraf: myCardNumber,
-    mech_beam: myCardNumber,
-    mech_val: myCardNumber,
+    nach1_9: tempCardNumber,
+    nach10_12: tempCardNumber,
+    nachall1_9: tempCardNumber,
+    nachall10_12: tempCardNumber,
+    inj146: tempCardNumber,
+    inj5: tempCardNumber,
+    injALL: tempCardNumber,
+    nachANDinjgraf: tempCardNumber,
+    mech_beam: tempCardNumber,
+    mech_val: tempCardNumber,
     
     //3 курс
-    mss_pz1: myCardNumber,
-    mss_pz2: myCardNumber,
-    mss_pz3: myCardNumber,
-    mss_pz4: myCardNumber,
-    GMOS_PZ1: myCardNumber,
-    GMOS_PZ2: myCardNumber,
-    GMOS_PZ3: myCardNumber,
-    GMOS_PZ4: myCardNumber,
-    GMOS_laba: myCardNumber,
-    mos_river_pz2: myCardNumber,
-    mos_river_pz4: myCardNumber,
-    mos_kurs: myCardNumber,
-    bs_high: myCardNumber,
-    VVP_Tug: myCardNumber,
-    olvvp_stvor: myCardNumber,
-    NIL_VertAngl_RGR: myCardNumber,
-    nil_river_rgr9: myCardNumber,
-    nil_Chart_RGR: myCardNumber,
-    tss_test: myCardNumber,
-    tss_test_pract: myCardNumber,
-    Astro_kr1: myCardNumber,
-    tus_kurs: myCardNumber,
+    mss_pz1: tempCardNumber,
+    mss_pz2: tempCardNumber,
+    mss_pz3: tempCardNumber,
+    mss_pz4: tempCardNumber,
+    GMOS_PZ1: tempCardNumber,
+    GMOS_PZ2: tempCardNumber,
+    GMOS_PZ3: tempCardNumber,
+    GMOS_PZ4: tempCardNumber,
+    GMOS_laba: tempCardNumber,
+    mos_river_pz2: tempCardNumber,
+    mos_river_pz4: tempCardNumber,
+    mos_kurs: ivanCardNumber,
+    bs_high: tempCardNumber,
+    VVP_Tug: ivanCardNumber,
+    olvvp_stvor: tempCardNumber,
+    NIL_VertAngl_RGR: tempCardNumber,
+    nil_river_rgr9: tempCardNumber,
+    nil_Chart_RGR: tempCardNumber,
+    tss_test: ivanCardNumber,
+    tss_test_pract: ivanCardNumber,
+    Astro_kr1: tempCardNumber,
+    tus_kurs: ivanCardNumber,
     
     // 4 курс
-    tss_test2: myCellNumber,
-    nil_1tide: myCellNumber,
-    nil_2tide: myCellNumber,
-    nil_3tide: myCellNumber,
-    nil_4tide: myCellNumber,
-    nil_5tide: myCellNumber,
-    nil_ALLtide: myCellNumber,
-    MiUS_tasks: myCellNumber,
-    MiUS_tasks_break: myCellNumber,
-    tss_test_pract2: myCellNumber,
-    VVPRadio_kurs: myCellNumber,
-    Astro_kr2: myCellNumber,
+    tss_test2: tempCardNumber,
+    nil_1tide: tempCardNumber,
+    nil_2tide: tempCardNumber,
+    nil_3tide: tempCardNumber,
+    nil_4tide: tempCardNumber,
+    nil_5tide: tempCardNumber,
+    nil_ALLtide: tempCardNumber,
+    MiUS_tasks: tempCardNumber,
+    MiUS_tasks_break: tempCardNumber,
+    tss_test_pract2: ivanCardNumber,
+    VVPRadio_kurs: tempCardNumber,
+    Astro_kr2: tempCardNumber,
     PSS_test: ivanCardNumber,
     PSS_Test_Preamble: ivanCardNumber,
     PSS_Test_P1: ivanCardNumber,
@@ -630,7 +630,7 @@ function getTargetChat(workId) {
 
 //Функция для выбора метода оплаты для каждой работы
 function getPaymentTarget(workId) {
-  return WORK_PAYMENT[workId] || myCardNumber; // по умолчанию — моя карта
+  return WORK_PAYMENT[workId] || tempCardNumber; // по умолчанию — моя карта
 }
 
 // Блок 1.2. Объявление переменных для ссылок
@@ -2228,7 +2228,7 @@ bot.callbackQuery('ok', async (ctx) => {
     if (ctx.session.order8.step8 === 2) {
         const { line } = formatPriceInfo(ctx, costMSS_test);
         await ctx.reply(`Предмет - МСС 📏\nИтоговый тест по МСС 🖥️\n\n${line}\nВаша почта: ${ctx.session.order8.email8}
-Для оплаты заказа и получения доступа переведите указанную сумму на номер карты: ${myCardNumber}${payconfmes}`, {
+Для оплаты заказа и получения доступа переведите указанную сумму на номер карты: ${tempCardNumber}${payconfmes}`, {
             parse_mode: `HTML`,
             reply_markup: writeManager2
         });
