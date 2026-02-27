@@ -1766,7 +1766,7 @@ bot.callbackQuery('rgr1', async (ctx) => {
 
 bot.callbackQuery('chart_RGR', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costNIL_Chart_RGR);
-    await ctx.callbackQuery.message.editText(`Расчёт Сетки и рамки карты 🗺️\n\n${line}`, {
+    await ctx.callbackQuery.message.editText(`Расчёт Сетки и Рамки Карты 🗺️\n\n${line}`, {
         disable_web_page_preview: true,
         parse_mode: 'HTML',
         reply_markup: inlineKeyboardсhart_rgr,
