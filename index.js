@@ -884,10 +884,10 @@ const inlineKeyboardTSStest2 = orderKb('order:tss_test_pract2',      'backTSS2')
 const inlineKeyboardAstro_kr2 = orderKb('order:Astro_kr2',      'backAstro2'); // кр по МАЕ
 const inlineKeyboardVVPRadio_kurs = orderKb('order:VVPRadio_kurs',      'backVVPRadio'); // курсач по радиосвязи на ВВП
 const inlineKeyboardPSS_test = orderKb('order:PSS_test',      'backPSS'); // ВСЕ тесты на фарватере по ПСС
-const inlineKeyboardPSS_test_Preamble = orderKb('order:PSS_test_Preamble',      'backPSS'); // ПСС фарватер вводная часть
-const inlineKeyboardPSS_test_P1 = orderKb('order:PSS_test_P1',      'backPSS'); // ПСС фарватер 1 раздел
-const inlineKeyboardPSS_test_P2 = orderKb('order:PSS_test_P2',      'backPSS'); // ПСС фарватер 2 раздел
-const inlineKeyboardPSS_test_P3 = orderKb('order:PSS_test_P3',      'backPSS'); // ПСС фарватер 3 раздел
+const inlineKeyboardPSS_test_Preamble = orderKb('order:PSS_Test_Preamble',      'backPSS'); // ПСС фарватер вводная часть
+const inlineKeyboardPSS_test_P1 = orderKb('order:PSS_Test_P1',      'backPSS'); // ПСС фарватер 1 раздел
+const inlineKeyboardPSS_test_P2 = orderKb('order:PSS_Test_P2',      'backPSS'); // ПСС фарватер 2 раздел
+const inlineKeyboardPSS_test_P3 = orderKb('order:PSS_Test_P3',      'backPSS'); // ПСС фарватер 3 раздел
 
 const orederKeyboard1 = new InlineKeyboard()
     .text('Заказ взят ✅', 'take1');
