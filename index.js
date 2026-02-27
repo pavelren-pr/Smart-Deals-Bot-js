@@ -300,7 +300,7 @@ const WORKS = {
         prompt: 'Отправьте номер своего варианта'
     },
     nil_Chart_RGR: {
-        title: '3 курс ⭐⭐⭐\nНиЛ 🧭\nРГР «9 задач по 6 сборникам» 📚',
+        title: '3 курс ⭐⭐⭐\nНиЛ 🧭\nРасчёт Сетки и рамки карты 🗺️',
         price: costNIL_Chart_RGR,
         back: 'back11',
         needs: ['variant'],
@@ -791,7 +791,7 @@ const mosriver = new InlineKeyboard()
 const inlineKeyboardNIL3year = new InlineKeyboard()
     .text('РГР вертикальный угол (4 задачи) 📐', 'rgr').row()
     .text('РГР 9 задач по 6 сборникам 📚', 'rgr1').row()
-    .text('Расчёт Сетки и рамки карты 🗺️', 'rgrChart').row()
+    .text('Расчёт Сетки и рамки карты 🗺️', 'nil_chart_RGR').row()
     .text('Назад 🔙', 'back3')
 const inlineKeyboard13 = new InlineKeyboard()
     .text('РГР План безопасной буксировки ⛴️', 'VVP_Tug').row()
@@ -1764,7 +1764,7 @@ bot.callbackQuery('rgr1', async (ctx) => {
     await ctx.answerCallbackQuery()
 })
 
-bot.callbackQuery('rgrChart', async (ctx) => {
+bot.callbackQuery('nil_chart_RGR', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costNIL_Chart_RGR);
     await ctx.callbackQuery.message.editText(`Расчёт Сетки и рамки карты 🗺️\n\n${line}`, {
         disable_web_page_preview: true,
