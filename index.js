@@ -764,6 +764,7 @@ const inlineKeyboarInjgraf = new InlineKeyboard()
 const inlineKeyboard3 = new InlineKeyboard()
     .text('Расчёт Вала 📏', 'shaft').row()
     .text('Расчёт Балки 🧮', 'beam').row()
+    .text('Расчёт Вала и Балки ‼️Выгода 590₽‼️', 'shaft_beam').row()
     .text('Назад 🔙', 'back1');
 
 const inlineKeyboard7 = new InlineKeyboard()
@@ -851,6 +852,7 @@ const inlineKeyboard19 = orderKb('order8', 'back4'); //Итоговый тест
 // 2 курс
 const inlineKeyboard4  = orderKb('order:mech_beam', 'back2'); // Механика. Балка
 const inlineKeyboard5  = orderKb('order:mech_val',  'back2'); // Механика. Вал
+const inlineKeyboardVal_Beam  = orderKb('order:mech_val_beam',  'back2'); // Механика. Вал и Балка (вместе)
 const inlineKeyboardNachertorder1_9 = orderKb('order:nach1_9', 'backnachert') //Начерталка
 const inlineKeyboardNachertorder10_12 = orderKb('order:nach10_12', 'backnachert') //Начерталка
 const inlineKeyboardNachertALLorder1_9 = orderKb('order:nachall1_9', 'backnachert') //Начерталка
@@ -1364,6 +1366,19 @@ bot.callbackQuery('shaft', async (ctx) => {
 2. Ваш номер учебной группы\n3. Ваша фамилия и инициалы`, {
         disable_web_page_preview: true,
         reply_markup: inlineKeyboard5,
+        parse_mode: 'HTML'
+    })
+    await ctx.answerCallbackQuery()
+})
+
+bot.callbackQuery('shaft_beam', async (ctx) => {
+    const { line } = formatPriceInfo(ctx, costVal_Balka);
+    await ctx.callbackQuery.message.editText(`Расчёт Вала и Балки ‼️Выгода 590₽‼️\n\n${line}\n
+Работа выполняется полностью в электронном виде, Вам нужно будет только распечатать её и сдать. Срок выполнения: 1 день. \n
+Для расчёта необходимы следующие данные:\n1. Ваш номер по журналу (у преподавателя могут быть свои списки, поэтому лучше уточнить)
+2. Ваш номер учебной группы\n3. Ваша фамилия и инициалы`, {
+        disable_web_page_preview: true,
+        reply_markup: inlineKeyboardVal_Beam,
         parse_mode: 'HTML'
     })
     await ctx.answerCallbackQuery()
