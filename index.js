@@ -813,7 +813,7 @@ const inlineKeyboard13 = new InlineKeyboard()
     .text('Опр. высоты подмостового габарита 🌉', 'high').row()
     .text('Назад 🔙', 'back3')
 const inlineKeyboardAstro1 = new InlineKeyboard()
-    .text('Помощь на контрольной по ТВА', 'astro_kr1').row()
+    .text('Помощь на контрольной по ТВА (Килнас)', 'astro_kr1').row()
     .text('Назад 🔙', 'back3')
 
 const inlineKeyboardTSS4 = new InlineKeyboard()
@@ -1602,7 +1602,7 @@ bot.callbackQuery('testpract', async (ctx) => {
 
 bot.callbackQuery('astro_kr1', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costAstro_kr1);
-    await ctx.callbackQuery.message.editText(`Помощь на контрольной по ТВА 🔭\n\n${line}\n
+    await ctx.callbackQuery.message.editText(`Помощь на контрольной по ТВА (Килнас) 🔭\n\n${line}\n
 Для согласования помощи на контрольной, напишите дату проведения контрольной ✍️`, {
         disable_web_page_preview: true,
         parse_mode: 'HTML',
