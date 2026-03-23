@@ -833,7 +833,7 @@ const inlineKeyboardMiUS4 = new InlineKeyboard()
     .text('4 задачи на торможение 🐌', 'MiUS_tasks_break').row()
     .text('Назад 🔙', 'back4year')
 const inlineKeyboardAstro2 = new InlineKeyboard()
-    .text('Помощь на контрольной по МАЕ 🌌', 'astro_kr2').row()
+    .text('Помощь на контрольной по МАЕ (Килнас)🌌', 'astro_kr2').row()
     .text('Назад 🔙', 'back4year')
 const inlineKeyboardVVPRadio = new InlineKeyboard()
     .text('Курсовая работа 🎛️', 'VVPRadio_kurs').row()
@@ -1923,7 +1923,7 @@ bot.callbackQuery('testpract2', async (ctx) => {
 
 bot.callbackQuery('astro_kr2', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costAstro_kr2);
-    await ctx.callbackQuery.message.editText(`Помощь на контрольной по МАЕ 🔭\n\n${line}\n
+    await ctx.callbackQuery.message.editText(`Помощь на контрольной по МАЕ (Килнас) 🔭\n\n${line}\n
 Для согласования помощи на контрольной, напишите дату проведения контрольной ✍️`, {
         disable_web_page_preview: true,
         parse_mode: 'HTML',
