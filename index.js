@@ -415,7 +415,7 @@ const WORKS = {
         prompt: 'Отправьте свой номер по журналу группы'
      },
         MiUS_tasks_tasksbreak: {
-        title: '4 курс ⭐⭐⭐⭐\nМиУС 🚤\nВсе задачи по пособию и торможению 🐌',
+        title: '4 курс ⭐⭐⭐⭐\nМиУС 🚤\nВсе задачи по пособию и торможению 👑',
         price: costMiUStasks_tasksbreak,
         back: 'backMiUS4',
         needs: ['details'],
@@ -840,8 +840,8 @@ const inlineKeyboardNil = new InlineKeyboard()
     .text('Назад 🔙', 'back4year')
 const inlineKeyboardMiUS4 = new InlineKeyboard()
     .text('7 задач по пособию 🚤', 'MiUS_tasks').row()
-    .text('4 задачи на торможение 🐌', 'MiUS_tasks_break').row()
-    .text('Все задачи по пособию и на торможение 🚤🐌', 'MiUS_tasks_tasksbreak').row()
+    .text('Задачи на торможение 🐌', 'MiUS_tasks_break').row()
+    .text('Все задачи по пособию и на торможение (выгода 600 руб.) 👑', 'MiUS_tasks_tasksbreak').row()
     .text('Назад 🔙', 'back4year')
 const inlineKeyboardAstro2 = new InlineKeyboard()
     .text('Помощь на контрольной по МАЕ (Килнас)🌌', 'astro_kr2').row()
@@ -1913,7 +1913,7 @@ bot.callbackQuery('MiUS_tasks_break', async (ctx) => {
 
 bot.callbackQuery('MiUS_tasks_tasksbreak', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costMiUStasks_tasksbreak);
-    await ctx.callbackQuery.message.editText(`Все задачи по пособию и на торможение 🚤🐌\n\n${line}\n
+    await ctx.callbackQuery.message.editText(`Все задачи по пособию и на торможение (выгода 600 руб.) 👑\n\n${line}\n
 Пример готовой <a href="https://drive.google.com/file/d/13dF2TK0Qu4fSXnk6-HlobiIV4vzMfqq2/view?usp=drive_link">работы по пособию</a>\n
 Пример готовой <a href="https://drive.google.com/file/d/1nb3V4HEFwPBtnkxRXTH-TKWSf5EVKlMk/view?usp=drive_link">работы на торможение</a>\n
 Срок выполнения: 1 день`, {
