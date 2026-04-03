@@ -106,6 +106,7 @@ const costNil_5tide = 450; //НиЛ Приливы 5 задача
 const costNil_ALLtide = 2630; //НиЛ Приливы все задачи
 const costMiUStasks = 2390; // МиУС 7 задач по пособию
 const costMiUStasks_break = 1590; // МиУС 4 задачи на торможение
+const costMiUStasks_tasksbreak = 1590; // МиУС все задачи (по пособию + торможение)
 const costTSS_Test = 3990; //3390 ТСС фарватер 11 тестов
 const costTSS_Test_pract = 2990; //2290 ТСС фарватер (практика) 5 тестов
 const costAstro_kr1 = 1190; // Астрономия Помощь на контрольной по ТВА
