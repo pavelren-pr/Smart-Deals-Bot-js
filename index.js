@@ -105,8 +105,8 @@ const costNil_4tide = 450; //НиЛ Приливы 4 задача
 const costNil_5tide = 450; //НиЛ Приливы 5 задача
 const costNil_ALLtide = 2630; //НиЛ Приливы все задачи
 const costMiUStasks = 2390; // МиУС 7 задач по пособию
-const costMiUStasks_break = 1590; // МиУС 4 задачи на торможение
-const costMiUStasks_tasksbreak = 1590; // МиУС все задачи (по пособию + торможение)
+const costMiUStasks_break = 1590; // МиУС задачи на торможение
+const costMiUStasks_tasksbreak = 3383; // МиУС все задачи (по пособию + торможение)
 const costTSS_Test = 3990; //3390 ТСС фарватер 11 тестов
 const costTSS_Test_pract = 2990; //2290 ТСС фарватер (практика) 5 тестов
 const costAstro_kr1 = 1190; // Астрономия Помощь на контрольной по ТВА
@@ -408,8 +408,15 @@ const WORKS = {
         prompt: 'Отправьте свой номер по журналу группы'
     },
     MiUS_tasks_break: {
-        title: '4 курс ⭐⭐⭐⭐\nМиУС 🚢\n4 задачи на торможение 🐌',
+        title: '4 курс ⭐⭐⭐⭐\nМиУС 🚢\n Задачи на торможение 🐌',
         price: costMiUStasks_break,
+        back: 'backMiUS4',
+        needs: ['details'],
+        prompt: 'Отправьте свой номер по журналу группы'
+     },
+        MiUS_tasks_tasksbreak: {
+        title: '4 курс ⭐⭐⭐⭐\nМиУС 🚤\nВсе задачи по пособию и торможению 🐌',
+        price: costMiUStasks_tasksbreak,
         back: 'backMiUS4',
         needs: ['details'],
         prompt: 'Отправьте свой номер по журналу группы'
@@ -528,6 +535,7 @@ const WORK_PAYMENT = {
     nil_ALLtide: tempCardNumber,
     MiUS_tasks: tempCardNumber,
     MiUS_tasks_break: tempCardNumber,
+    MiUS_tasks_tasksbreak: tempCardNumber,
     tss_test_pract2: ivanCardNumber,
     VVPRadio_kurs: tempCardNumber,
     Astro_kr2: tempCardNumber,
@@ -577,6 +585,7 @@ const WORK_CHAT = {
     nil_ALLtide: MY_CHAT_ID,
     MiUS_tasks: MY_CHAT_ID,
     MiUS_tasks_break: MY_CHAT_ID,
+    MiUS_tasks_tasksbreak: MY_CHAT_ID,
     tss_test: MY_CHAT_ID,
     tss_test2: MY_CHAT_ID,
     Astro_kr2: OTHER_ORDERS_CHAT_ID,
@@ -832,6 +841,7 @@ const inlineKeyboardNil = new InlineKeyboard()
 const inlineKeyboardMiUS4 = new InlineKeyboard()
     .text('7 задач по пособию 🚤', 'MiUS_tasks').row()
     .text('4 задачи на торможение 🐌', 'MiUS_tasks_break').row()
+    .text('Все задачи по пособию и на торможение 🚤🐌', 'MiUS_tasks_tasksbreak').row()
     .text('Назад 🔙', 'back4year')
 const inlineKeyboardAstro2 = new InlineKeyboard()
     .text('Помощь на контрольной по МАЕ (Килнас)🌌', 'astro_kr2').row()
@@ -895,7 +905,8 @@ const inlineKeyboardNil4tide = orderKb('order:nil_4tide',      'backNil4');  // 
 const inlineKeyboardNil5tide = orderKb('order:nil_5tide',      'backNil4');  // НиЛ приливы 5 задача
 const inlineKeyboardNilALLtide = orderKb('order:nil_ALLtide',      'backNil4');  // НиЛ приливы все задачи
 const inlineKeyboardMiUS_tasks = orderKb('order:MiUS_tasks',      'backMiUS4');  // МиУС 7 задач по пособию
-const inlineKeyboardMiUS_tasks_break = orderKb('order:MiUS_tasks_break',      'backMiUS4');  // МиУС 4 задачи на торможение
+const inlineKeyboardMiUS_tasks_break = orderKb('order:MiUS_tasks_break',      'backMiUS4');  // МиУС Все задачи на торможение
+const inlineKeyboardMiUS_tasks_tasksbreak = orderKb('order:MiUS_tasks_tasksbreak',      'backMiUS4');  // МиУС Все задачи
 const inlineKeyboardTSStest = orderKb('order:tss_test2',      'backTSS2');  // ТСС 11 тестов
 const inlineKeyboardTSStest2 = orderKb('order:tss_test_pract2',      'backTSS2'); // ТСС 5 тестов
 const inlineKeyboardAstro_kr2 = orderKb('order:Astro_kr2',      'backAstro2'); // кр по МАЕ
@@ -1896,6 +1907,19 @@ bot.callbackQuery('MiUS_tasks_break', async (ctx) => {
         disable_web_page_preview: true,
         parse_mode: 'HTML',
         reply_markup: inlineKeyboardMiUS_tasks_break,
+    })
+    await ctx.answerCallbackQuery()
+})
+
+bot.callbackQuery('MiUS_tasks_tasksbreak', async (ctx) => {
+    const { line } = formatPriceInfo(ctx, costMiUStasks_tasksbreak);
+    await ctx.callbackQuery.message.editText(`Все задачи по пособию и на торможение 🚤🐌\n\n${line}\n
+Пример готовой <a href="https://drive.google.com/file/d/13dF2TK0Qu4fSXnk6-HlobiIV4vzMfqq2/view?usp=drive_link">работы по пособию</a>\n
+Пример готовой <a href="https://drive.google.com/file/d/1nb3V4HEFwPBtnkxRXTH-TKWSf5EVKlMk/view?usp=drive_link">работы на торможение</a>\n
+Срок выполнения: 1 день`, {
+        disable_web_page_preview: true,
+        parse_mode: 'HTML',
+        reply_markup: inlineKeyboardMiUS_tasks_tasksbreak,
     })
     await ctx.answerCallbackQuery()
 })
