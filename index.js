@@ -98,12 +98,12 @@ const costNIL_river_RGR = 2790; //НиЛ 9 задач по сборнику
 const costNIL_Chart_RGR = 990; //НиЛ Расчёт сетки и рамки карты
 
 //4 курс
-const costNil_1tide = 1350; //НиЛ Приливы 1 задача
+const costNil_1tide = 1490; //НиЛ Приливы 1 задача
 const costNil_2tide = 390; //НиЛ Приливы 2 задача
 const costNil_3tide = 390; //НиЛ Приливы 3 задача
 const costNil_4tide = 450; //НиЛ Приливы 4 задача
 const costNil_5tide = 450; //НиЛ Приливы 5 задача
-const costNil_ALLtide = 2630; //НиЛ Приливы все задачи
+const costNil_ALLtide = 2990; //НиЛ Приливы все задачи
 const costMiUStasks = 2390; // МиУС 7 задач по пособию
 const costMiUStasks_break = 1590; // МиУС задачи на торможение
 const costMiUStasks_tasksbreak = 3383; // МиУС все задачи (по пособию + торможение)
@@ -1764,7 +1764,7 @@ bot.callbackQuery('VVP_Tug', async (ctx) => {
     await ctx.callbackQuery.message.editText(`РГР План безопасной буксировки ⛴️\n\n${line}\n
 Работа выполняется в электронном виде. Для выполнения работы необходима фотография вашего задания 📸
 
-Срок выполнения: до 2 дней 🗓️`, {
+Срок выполнения: до 3 дней 🗓️`, {
         disable_web_page_preview: true,
         parse_mode: 'HTML',
         reply_markup: inlineKeyboardVVP_Tug,
