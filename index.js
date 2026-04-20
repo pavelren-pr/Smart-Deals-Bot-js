@@ -25,7 +25,7 @@ const myCellNumber = process.env.MY_CELL_NUMBER;
 const ivanCellNumber = process.env.IVAN_CELL_NUMBER;
 const tempCellNumber = process.env.TEMP_CELL_NUMBER;
 const tempCardNumber = process.env.TEMP_CARD_NUMBER;
-const tempCardNumber = process.env.VICTOR_CARD_NUMBER;
+const victorCardNumber = process.env.VICTOR_CARD_NUMBER;
 
 bot.api.setMyCommands([
     {
