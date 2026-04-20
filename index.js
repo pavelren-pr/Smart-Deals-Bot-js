@@ -25,6 +25,7 @@ const myCellNumber = process.env.MY_CELL_NUMBER;
 const ivanCellNumber = process.env.IVAN_CELL_NUMBER;
 const tempCellNumber = process.env.TEMP_CELL_NUMBER;
 const tempCardNumber = process.env.TEMP_CARD_NUMBER;
+const tempCardNumber = process.env.VICTOR_CARD_NUMBER;
 
 bot.api.setMyCommands([
     {
@@ -513,7 +514,7 @@ const WORK_PAYMENT = {
     GMOS_laba: tempCardNumber,
     mos_river_pz2: tempCardNumber,
     mos_river_pz4: tempCardNumber,
-    mos_kurs: ivanCardNumber,
+    mos_kurs: victorCardNumber,
     bs_high: tempCardNumber,
     VVP_Tug: ivanCardNumber,
     olvvp_stvor: tempCardNumber,
@@ -523,7 +524,7 @@ const WORK_PAYMENT = {
     tss_test: ivanCardNumber,
     tss_test_pract: ivanCardNumber,
     Astro_kr1: tempCardNumber,
-    tus_kurs: ivanCardNumber,
+    tus_kurs: victorCardNumber,
     
     // 4 курс
     tss_test2: tempCardNumber,
