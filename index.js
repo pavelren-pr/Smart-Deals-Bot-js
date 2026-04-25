@@ -288,7 +288,7 @@ const WORKS = {
         prompt: 'Отправьте номер своего варианта' 
     },
     mos_river_pz4: {
-        title: '3 курс ⭐⭐⭐\nМОС 🧮\nПоток: Река-море 🌉🌊\nПЗ №4. Оценка нав параметров',
+        title: '3 курс ⭐⭐⭐\nМОС 🧮\nПоток: Река-море 🌉🌊\nПЗ №4. ОМС по 2 линиям положения',
         price: costMOS_river_PZ4,
         back: 'back8',
         needs: ['variant'],
@@ -812,7 +812,7 @@ const mossea = new InlineKeyboard()
 const mosriver = new InlineKeyboard()
     .text('Курсовая работа 🚢', 'kurs2').row()
     .text('ПЗ №2. Сферические треугольники', 'trg').row()
-    .text('ПЗ №4. Оценка нав параметров', 'nav').row()
+    .text('ПЗ №4. ОМС по 2 линиям положения', 'nav').row()
     .text('Назад 🔙', 'back6')
 const inlineKeyboardNIL3year = new InlineKeyboard()
     .text('РГР вертикальный угол (4 задачи) 📐', 'rgr').row()
@@ -1713,7 +1713,7 @@ bot.callbackQuery('river', async (ctx) => {
 bot.callbackQuery('nav', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costMOS_river_PZ4);
     await ctx.callbackQuery.message.editText(`3 курс ⭐⭐⭐\nМОС 🧮\nПоток: Река-море 🌉🌊
-Задание: ПЗ №4. Оценка нав параметров\n\n${line}`, {
+Задание: ПЗ №4. ОМС по 2 линиям положения\n\n${line}`, {
         disable_web_page_preview: true,
         parse_mode: 'HTML',
         reply_markup: inlineKeyboard26,
