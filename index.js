@@ -523,7 +523,7 @@ const WORK_PAYMENT = {
     nil_Chart_RGR: tempCardNumber,
     tss_test: ivanCardNumber,
     tss_test_pract: ivanCardNumber,
-    Astro_kr1: tempCardNumber,
+    Astro_kr1: myCardNumber,
     tus_kurs: victorCardNumber,
     
     // 4 курс
@@ -534,9 +534,9 @@ const WORK_PAYMENT = {
     nil_4tide: tempCardNumber,
     nil_5tide: tempCardNumber,
     nil_ALLtide: tempCardNumber,
-    MiUS_tasks: tempCardNumber,
-    MiUS_tasks_break: tempCardNumber,
-    MiUS_tasks_tasksbreak: tempCardNumber,
+    MiUS_tasks: myCardNumber,
+    MiUS_tasks_break: myCardNumber,
+    MiUS_tasks_tasksbreak: myCardNumber,
     tss_test_pract2: ivanCardNumber,
     VVPRadio_kurs: tempCardNumber,
     Astro_kr2: tempCardNumber,
