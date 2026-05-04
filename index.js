@@ -487,7 +487,7 @@ const WORKS = {
         prompt: 'Отправьте одним сообщением логин и пароль от фарватера.'
     },
     TiOMPG_kurs: {
-        title: '4 курс ⭐⭐⭐⭐\nТиОМПГ 🏗 🛟\n Курсовая работа 🧮',
+        title: '4 курс ⭐⭐⭐⭐\nТиОМПГ 🏗 \n Курсовая работа 🧮',
         price: costTiOMPG_kurs,
         back: 'backTiOMPG',
         needs: ['details'],
@@ -2038,7 +2038,7 @@ bot.callbackQuery('PSS_test_P3_0', async (ctx) => {
     await ctx.answerCallbackQuery()
 })
 
-bot.callbackQuery('TPG_TiOMPG', async (ctx) => {
+bot.callbackQuery('TiOMPG_kurs', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costTiOMPG_kurs);
     await ctx.callbackQuery.message.editText(`Курсовая работа 🧮\n\n${line}\n
 Планирование рейса на т/х "Dmitry Varvarin" (перевозка леса или контейнеров)\n
