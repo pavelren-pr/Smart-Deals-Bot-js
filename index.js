@@ -118,7 +118,7 @@ const costPSS_Test_Preamble = 569; //ПСС фарватер вводная ча
 const costPSS_Test_P1 = 3250; //ПСС фарватер 1 раздел
 const costPSS_Test_P2 = 2650; //ПСС фарватер 2 раздел
 const costPSS_Test_P3 = 2865; //ПСС фарватер 3 раздел
-const costTPG_TiOMPG = 2390; //ТиОМПГ
+const costTiOMPG_kurs = 2390; //ТиОМПГ Курсовая работа
 
 
 //Каталог работ
@@ -486,10 +486,10 @@ const WORKS = {
         needs: ['details'],
         prompt: 'Отправьте одним сообщением логин и пароль от фарватера.'
     },
-    TPG_TiOMPG: {
-        title: '4 курс ⭐⭐⭐⭐\nТПГ 🛟\nТиОМПГ 🏗',
-        price: costTPG_TiOMPG,
-        back: 'backTPG',
+    TiOMPG_kurs: {
+        title: '4 курс ⭐⭐⭐⭐\nТиОМПГ 🏗 🛟\n Курсовая работа 🧮',
+        price: costTiOMPG_kurs,
+        back: 'backTiOMPG',
         needs: ['details'],
         prompt: 'Отправьте одним сообщением:\n1. Номер вашего варианта\n2. Номер группы\n3. Вашу фамилию и инициалы'
     },
@@ -552,7 +552,7 @@ const WORK_PAYMENT = {
     PSS_Test_P1: ivanCardNumber,
     PSS_Test_P2: ivanCardNumber,
     PSS_Test_P3: ivanCardNumber,
-    TPG_TiOMPG: tempCardNumber,
+    TiOMPG_kurs: tempCardNumber,
 };
 
 //Разделение работ по чатам
@@ -607,7 +607,7 @@ const WORK_CHAT = {
     PSS_Test_P1: MY_CHAT_ID,
     PSS_Test_P2: MY_CHAT_ID,
     PSS_Test_P3: MY_CHAT_ID,
-    TPG_TiOMPG: MY_CHAT_ID,
+    TiOMPG_kurs: MY_CHAT_ID,
 };
 
 // Форматирование цены с учётом лояльности (loyalty.getPriceForUser)
@@ -866,6 +866,9 @@ const inlineKeyboardPSS = new InlineKeyboard()
     .text('Фарватер. 3 Раздел 🥉', 'PSS_test_P3_0').row()
     .text('👑 Весь фарватер 👑', 'PSS_test').row()
     .text('Назад 🔙', 'back4year')
+const inlineKeyboardTiOMPG = new InlineKeyboard()
+    .text('Курсовая работа 🧮', 'TiOMPG_kurs').row()
+    .text('Назад 🔙', 'back4year')
 
 //Клавиатуры через конструктор (доделать)
 const inlineKeyboard19 = orderKb('order8', 'back4'); //Итоговый тест по МСС (доделать)
@@ -926,7 +929,7 @@ const inlineKeyboardPSS_test_Preamble = orderKb('order:PSS_Test_Preamble',      
 const inlineKeyboardPSS_test_P1 = orderKb('order:PSS_Test_P1',      'backPSS'); // ПСС фарватер 1 раздел
 const inlineKeyboardPSS_test_P2 = orderKb('order:PSS_Test_P2',      'backPSS'); // ПСС фарватер 2 раздел
 const inlineKeyboardPSS_test_P3 = orderKb('order:PSS_Test_P3',      'backPSS'); // ПСС фарватер 3 раздел
-const inlineKeyboardTPG_TiOMPG = orderKb('order:TPG_TiOMPG',      'backTPG'); // ТиОМПГ
+const inlineKeyboardTiOMPG_kurs = orderKb('order:TiOMPG_kurs',      'backTiOMPG'); // ТиОМПГ
 
 const orederKeyboard1 = new InlineKeyboard()
     .text('Заказ взят ✅', 'take1');
@@ -2035,14 +2038,14 @@ bot.callbackQuery('PSS_test_P3_0', async (ctx) => {
 })
 
 bot.callbackQuery('TPG_TiOMPG', async (ctx) => {
-    const { line } = formatPriceInfo(ctx, costTPG_TiOMPG);
-    await ctx.callbackQuery.message.editText(`ТиОМПГ 🏗\n\n${line}\n
+    const { line } = formatPriceInfo(ctx, costTiOMPG_kurs);
+    await ctx.callbackQuery.message.editText(`Курсовая работа 🧮\n\n${line}\n
 Планирование рейса на т/х "Dmitry Varvarin" (перевозка леса или контейнеров)\n
 Методические указания <a href="https://drive.google.com/file/d/1nb3V4HEFwPBtnkxRXTH-TKWSf5EVKlMk/view?usp=drive_link"></a>\n
 Срок выполнения: 1 день.`, {
         disable_web_page_preview: true,
         parse_mode: 'HTML',
-        reply_markup: inlineKeyboardTPG_TiOMPG,
+        reply_markup: inlineKeyboardTiOMPG_kurs,
     })
     await ctx.answerCallbackQuery()
 })
@@ -2446,8 +2449,9 @@ bot.callbackQuery('back14', async (ctx) => {
     await go(ctx, seaTreasure, inlineKeyboard1);
 });
 
-bot.callbackQuery('backTPG', async (ctx) => {
-    await go(ctx, seaTreasure, inlineKeyboardTPG);
+bot.callbackQuery('backTiOMPG', async (ctx) => {
+    await go(ctx, seaTreasure, inlineKeyboardTiOMPG);
+});
 
 
 //Обработка ошибок
