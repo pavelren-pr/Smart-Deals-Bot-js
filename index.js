@@ -118,6 +118,7 @@ const costPSS_Test_Preamble = 569; //ПСС фарватер вводная ча
 const costPSS_Test_P1 = 3250; //ПСС фарватер 1 раздел
 const costPSS_Test_P2 = 2650; //ПСС фарватер 2 раздел
 const costPSS_Test_P3 = 2865; //ПСС фарватер 3 раздел
+const costTPG_TiOMPG = 2390; //ТиОМПГ
 
 
 //Каталог работ
@@ -485,7 +486,13 @@ const WORKS = {
         needs: ['details'],
         prompt: 'Отправьте одним сообщением логин и пароль от фарватера.'
     },
-};
+    TPG_TiOMPG: {
+        title: '4 курс ⭐⭐⭐⭐\nТПГ 🛟\nТиОМПГ 🏗',
+        price: costTPG_TiOMPG,
+        back: 'backTPG',
+        needs: ['details'],
+        prompt: 'Отправьте одним сообщением:\n1. Номер вашего варианта\n2. Номер группы\n3. Вашу фамилию и инициалы'
+    },
 
 //Разделение способов оплаты
 const WORK_PAYMENT = {
@@ -545,6 +552,7 @@ const WORK_PAYMENT = {
     PSS_Test_P1: ivanCardNumber,
     PSS_Test_P2: ivanCardNumber,
     PSS_Test_P3: ivanCardNumber,
+    TPG_TiOMPG: tempCardNumber,
 };
 
 //Разделение работ по чатам
@@ -599,6 +607,7 @@ const WORK_CHAT = {
     PSS_Test_P1: MY_CHAT_ID,
     PSS_Test_P2: MY_CHAT_ID,
     PSS_Test_P3: MY_CHAT_ID,
+    TPG_TiOMPG: MY_CHAT_ID,
 };
 
 // Форматирование цены с учётом лояльности (loyalty.getPriceForUser)
@@ -917,6 +926,7 @@ const inlineKeyboardPSS_test_Preamble = orderKb('order:PSS_Test_Preamble',      
 const inlineKeyboardPSS_test_P1 = orderKb('order:PSS_Test_P1',      'backPSS'); // ПСС фарватер 1 раздел
 const inlineKeyboardPSS_test_P2 = orderKb('order:PSS_Test_P2',      'backPSS'); // ПСС фарватер 2 раздел
 const inlineKeyboardPSS_test_P3 = orderKb('order:PSS_Test_P3',      'backPSS'); // ПСС фарватер 3 раздел
+const inlineKeyboardTPG_TiOMPG = orderKb('order:TPG_TiOMPG',      'backTPG'); // ТиОМПГ
 
 const orederKeyboard1 = new InlineKeyboard()
     .text('Заказ взят ✅', 'take1');
@@ -2024,6 +2034,19 @@ bot.callbackQuery('PSS_test_P3_0', async (ctx) => {
     await ctx.answerCallbackQuery()
 })
 
+bot.callbackQuery('TPG_TiOMPG', async (ctx) => {
+    const { line } = formatPriceInfo(ctx, costTPG_TiOMPG);
+    await ctx.callbackQuery.message.editText(`ТиОМПГ 🏗\n\n${line}\n
+Планирование рейса на т/х "Dmitry Varvarin" (перевозка леса или контейнеров)\n
+Методические указания <a href="https://drive.google.com/file/d/1nb3V4HEFwPBtnkxRXTH-TKWSf5EVKlMk/view?usp=drive_link"></a>\n
+Срок выполнения: 1 день.`, {
+        disable_web_page_preview: true,
+        parse_mode: 'HTML',
+        reply_markup: inlineKeyboardTPG_TiOMPG,
+    })
+    await ctx.answerCallbackQuery()
+})
+
 
 //Блок 6. Обработка разных типов заказов
 
@@ -2422,6 +2445,9 @@ bot.callbackQuery('backPSS', async (ctx) => {
 bot.callbackQuery('back14', async (ctx) => {
     await go(ctx, seaTreasure, inlineKeyboard1);
 });
+
+bot.callbackQuery('backTPG', async (ctx) => {
+    await go(ctx, seaTreasure, inlineKeyboardTPG);
 
 
 //Обработка ошибок
