@@ -931,7 +931,7 @@ const inlineKeyboardPSS_test_Preamble = orderKb('order:PSS_Test_Preamble',      
 const inlineKeyboardPSS_test_P1 = orderKb('order:PSS_Test_P1',      'backPSS'); // ПСС фарватер 1 раздел
 const inlineKeyboardPSS_test_P2 = orderKb('order:PSS_Test_P2',      'backPSS'); // ПСС фарватер 2 раздел
 const inlineKeyboardPSS_test_P3 = orderKb('order:PSS_Test_P3',      'backPSS'); // ПСС фарватер 3 раздел
-const inlineKeyboardTiOMPG = orderKb('order:TiOMPG',      'backTiOMPG_kurs'); // ТиОМПГ
+const inlineKeyboardTiOMPG_kurs = orderKb('order:TiOMPG_kurs',      'backTiOMPG'); // ТиОМПГ
 
 const orederKeyboard1 = new InlineKeyboard()
     .text('Заказ взят ✅', 'take1');
