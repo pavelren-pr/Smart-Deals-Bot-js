@@ -2457,7 +2457,7 @@ bot.callbackQuery('backPSS', async (ctx) => {
 });
 
 bot.callbackQuery('backTiOMPG', async (ctx) => {
-    await go(ctx, `4 курс ⭐⭐⭐⭐\nПСС 🛟${helpONSubject}`, inlineKeyboardTiOMPG);
+    await go(ctx, `4 курс ⭐⭐⭐⭐\nТиОМПГ 🏗 ${helpONSubject}`, inlineKeyboardTiOMPG);
 });
 
 bot.callbackQuery('back14', async (ctx) => {
