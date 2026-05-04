@@ -2056,7 +2056,7 @@ bot.callbackQuery('TiOMPG', async (ctx) => {
 Срок выполнения: 1 день.`, {
         disable_web_page_preview: true,
         parse_mode: 'HTML',
-        reply_markup: inlineKeyboardTiOMPG,
+        reply_markup: inlineKeyboardTiOMPG_kurs,
     })
     await ctx.answerCallbackQuery()
 })
