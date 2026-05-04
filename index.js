@@ -868,7 +868,7 @@ const inlineKeyboardPSS = new InlineKeyboard()
     .text('Фарватер. 3 Раздел 🥉', 'PSS_test_P3_0').row()
     .text('👑 Весь фарватер 👑', 'PSS_test').row()
     .text('Назад 🔙', 'back4year')
-const inlineKeyboardTiOMPG = new InlineKeyboard()
+const inlineKeyboardTiOMPG_kurs = new InlineKeyboard()
     .text('Курсовая работа 🧮', 'TiOMPG_kurs').row()
     .text('Назад 🔙', 'back4year')
 
