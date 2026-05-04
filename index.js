@@ -869,7 +869,7 @@ const inlineKeyboardPSS = new InlineKeyboard()
     .text('👑 Весь фарватер 👑', 'PSS_test').row()
     .text('Назад 🔙', 'back4year')
 const inlineKeyboardTiOMPG = new InlineKeyboard()
-    .text('Курсовая работа 🧮', 'TiOMPG_kurs1').row()
+    .text('Курсовая работа 🧮', 'TiOMPG_kurs').row()
     .text('Назад 🔙', 'back4year')
 
 //Клавиатуры через конструктор (доделать)
@@ -931,7 +931,7 @@ const inlineKeyboardPSS_test_Preamble = orderKb('order:PSS_Test_Preamble',      
 const inlineKeyboardPSS_test_P1 = orderKb('order:PSS_Test_P1',      'backPSS'); // ПСС фарватер 1 раздел
 const inlineKeyboardPSS_test_P2 = orderKb('order:PSS_Test_P2',      'backPSS'); // ПСС фарватер 2 раздел
 const inlineKeyboardPSS_test_P3 = orderKb('order:PSS_Test_P3',      'backPSS'); // ПСС фарватер 3 раздел
-const inlineKeyboardTiOMPG_kurs = orderKb('order:TiOMPG_kurs',      'backTiOMPG'); // ТиОМПГ
+const inlineKeyboardTiOMPG_kurs = orderKb('order:TiOMPG_kurs',      'backTiOMPG_kurs'); // ТиОМПГ
 
 const orederKeyboard1 = new InlineKeyboard()
     .text('Заказ взят ✅', 'take1');
@@ -2039,7 +2039,7 @@ bot.callbackQuery('PSS_test_P3_0', async (ctx) => {
     await ctx.answerCallbackQuery()
 })
 
-bot.callbackQuery('TiOMPG_kurs1', async (ctx) => {
+bot.callbackQuery('TiOMPG_kurs', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costTiOMPG_kurs);
     await ctx.callbackQuery.message.editText(`Курсовая работа 🧮\n\n${line}\n
 Планирование рейса на т/х "Dmitry Varvarin" (перевозка леса или контейнеров)\n
@@ -2451,8 +2451,8 @@ bot.callbackQuery('back14', async (ctx) => {
     await go(ctx, seaTreasure, inlineKeyboard1);
 });
 
-bot.callbackQuery('backTiOMPG', async (ctx) => {
-    await go(ctx, seaTreasure, inlineKeyboardTiOMPG);
+bot.callbackQuery('backTiOMPG_kurs', async (ctx) => {
+    await go(ctx, seaTreasure, inlineKeyboardTiOMPG_kurs);
 });
 
 
