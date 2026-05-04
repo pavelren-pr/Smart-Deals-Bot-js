@@ -869,7 +869,7 @@ const inlineKeyboardPSS = new InlineKeyboard()
     .text('👑 Весь фарватер 👑', 'PSS_test').row()
     .text('Назад 🔙', 'back4year')
 const inlineKeyboardTiOMPG = new InlineKeyboard()
-    .text('Курсовая работа 🧮', 'TiOMPG_kurs').row()
+    .text('Курсовая работа 🧮', 'TiOMPG_kurs1').row()
     .text('Назад 🔙', 'back4year')
 
 //Клавиатуры через конструктор (доделать)
@@ -2039,7 +2039,7 @@ bot.callbackQuery('PSS_test_P3_0', async (ctx) => {
     await ctx.answerCallbackQuery()
 })
 
-bot.callbackQuery('TiOMPG_kurs', async (ctx) => {
+bot.callbackQuery('TiOMPG_kurs1', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costTiOMPG_kurs);
     await ctx.callbackQuery.message.editText(`Курсовая работа 🧮\n\n${line}\n
 Планирование рейса на т/х "Dmitry Varvarin" (перевозка леса или контейнеров)\n
