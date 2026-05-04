@@ -766,6 +766,7 @@ const inlineKeyboard4year = new InlineKeyboard()
     .text('Астрономия 🌌', 'astro2').row()
     .text('ПСС 🛟', 'PSS').row()
     .text('Радиосвязь на ВВП 📻', 'VVPRadio').row()
+    .text('ТиОМПГ 🏗', 'TiOMPG').row()
     .text('Назад 🔙', 'back');
 
 
