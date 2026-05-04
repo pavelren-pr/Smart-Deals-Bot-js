@@ -869,7 +869,7 @@ const inlineKeyboardPSS = new InlineKeyboard()
     .text('👑 Весь фарватер 👑', 'PSS_test').row()
     .text('Назад 🔙', 'back4year')
 const inlineKeyboardTiOMPG_kurs = new InlineKeyboard()
-    .text('Курсовая работа 🧮', 'TiOMPG_kurs').row()
+    .text('Курсовая работа 🧮', 'TiOMPG_kurs1').row()
     .text('Назад 🔙', 'back4year')
 
 //Клавиатуры через конструктор (доделать)
