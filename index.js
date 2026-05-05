@@ -1551,7 +1551,7 @@ bot.callbackQuery('TiOMPG', async (ctx) => {
     await ctx.callbackQuery.message.editText(`4 курс ⭐⭐⭐⭐\nТиОМПГ 🏗 ${helpONSubject}`, {
         disable_web_page_preview: true,
         parse_mode: 'HTML',
-        reply_markup: inlineKeyboardTiOMPG_kurs,
+        reply_markup: inlineKeyboardTiOMPG,
     })
     await ctx.answerCallbackQuery()
 })
