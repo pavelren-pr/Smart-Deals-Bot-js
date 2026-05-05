@@ -118,7 +118,7 @@ const costPSS_Test_Preamble = 569; //ПСС фарватер вводная ча
 const costPSS_Test_P1 = 3250; //ПСС фарватер 1 раздел
 const costPSS_Test_P2 = 2650; //ПСС фарватер 2 раздел
 const costPSS_Test_P3 = 2865; //ПСС фарватер 3 раздел
-const costTiOMPG_kurs = 2390; //ТиОМПГ Курсовая работа
+const costTiOMPG_kurs = 2390; //ТиОМПГ Курсовая работа "Дмитрий Варварин"
 
 
 //Каталог работ
@@ -1551,7 +1551,7 @@ bot.callbackQuery('TiOMPG', async (ctx) => {
     await ctx.callbackQuery.message.editText(`4 курс ⭐⭐⭐⭐\nТиОМПГ 🏗 ${helpONSubject}`, {
         disable_web_page_preview: true,
         parse_mode: 'HTML',
-        reply_markup: inlineKeyboardTiOMPG,
+        reply_markup: inlineKeyboardTiOMPG_kurs,
     })
     await ctx.answerCallbackQuery()
 })
@@ -2048,7 +2048,7 @@ bot.callbackQuery('PSS_test_P3_0', async (ctx) => {
     await ctx.answerCallbackQuery()
 })
 
-bot.callbackQuery('TiOMPG', async (ctx) => {
+bot.callbackQuery('TiOMPG_kurs', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costTiOMPG_kurs);
     await ctx.callbackQuery.message.editText(`Курсовая работа 🧮\n\n${line}\n
 Планирование рейса на т/х "Dmitry Varvarin" (перевозка леса или контейнеров)\n
