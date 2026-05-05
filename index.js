@@ -2052,7 +2052,7 @@ bot.callbackQuery('TiOMPG_kurs', async (ctx) => {
     const { line } = formatPriceInfo(ctx, costTiOMPG_kurs);
     await ctx.callbackQuery.message.editText(`Курсовая работа 🧮\n\n${line}\n
 Планирование рейса на т/х "Dmitry Varvarin" (перевозка леса или контейнеров)\n
-<a href="https://drive.google.com/drive/folders/1rl0JhqJBSYnST9vrcMD42V_uB-uqwPJM">Методические указания</a>👑\n
+<a href="https://drive.google.com/drive/folders/1rl0JhqJBSYnST9vrcMD42V_uB-uqwPJM">Методические указания</a>🔍\n
 Срок выполнения: 1 день.`, {
         disable_web_page_preview: true,
         parse_mode: 'HTML',
