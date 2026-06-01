@@ -665,7 +665,7 @@ function getTargetChat(workId) {
 
 //Функция для выбора метода оплаты для каждой работы
 function getPaymentTarget(workId) {
-  return WORK_PAYMENT[workId] || tempCardNumber; // по умолчанию — моя карта
+  return WORK_PAYMENT[workId] || myCardNumber; // по умолчанию — моя карта
 }
 
 // Блок 1.2. Объявление переменных для ссылок
@@ -2320,7 +2320,7 @@ bot.callbackQuery('ok', async (ctx) => {
     if (ctx.session.order8.step8 === 2) {
         const { line } = formatPriceInfo(ctx, costMSS_test);
         await ctx.reply(`Предмет - МСС 📏\nИтоговый тест по МСС 🖥️\n\n${line}\nВаша почта: ${ctx.session.order8.email8}
-Для оплаты заказа и получения доступа переведите указанную сумму на номер карты: ${tempCardNumber}${payconfmes}`, {
+Для оплаты заказа и получения доступа переведите указанную сумму на номер карты: ${myCardNumber}${payconfmes}`, {
             parse_mode: `HTML`,
             reply_markup: writeManager2
         });
