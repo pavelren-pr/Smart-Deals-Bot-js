@@ -757,7 +757,7 @@ const inlineKeyboard6 = new InlineKeyboard()
     .text('ГМОС 🌦️', 'gmos').row()
     .text('Астрономия 🌌', 'astro1').row()
     .text('НиЛ 🧭', 'nil').row()
-    .text('ТСС 📺', 'tss').row()
+    // .text('ТСС 📺', 'tss').row()
     .text('Назад 🔙', 'back');
 const inlineKeyboard4year = new InlineKeyboard()
     .text('НиЛ 🧭', 'nil4').row()
